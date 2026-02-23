@@ -1,5 +1,11 @@
-# 🏛 Sistema de Gestión de Identidad Digital  
-**Proyecto – Sector Gobierno**
+## PROYECTO PATRONES DE SOFTWARE
+## INTEGRANTES
+* BRAYAN YESID MEJIA ORTEGA
+* KEVIN GEOVANNY QUINTERO GALINDO
+
+---
+
+# 🏛 Sistema de Gestión de Identidad Digital
 
 ## 📌 Descripción
 Este proyecto implementa un **Sistema de Gestión de Identidad Digital** orientado al sector gubernamental, desarrollado bajo una **arquitectura de microservicios**.
