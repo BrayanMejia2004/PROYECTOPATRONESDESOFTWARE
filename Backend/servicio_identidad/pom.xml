@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gobierno</groupId>
-	<artifactId>servicio-identidad</artifactId>
+	<artifactId>servicio_identidad</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>servicio-identidad</name>
+	<name>servicio_identidad</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
