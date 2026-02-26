@@ -6,7 +6,7 @@ import java.util.Properties;
 public enum SeguridadConfig {
 
     INSTANCE;
-
+    
     private final String jwtSecret;
     private final long jwtExpiracion;
 

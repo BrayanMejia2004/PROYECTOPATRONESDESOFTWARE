@@ -17,5 +17,4 @@ public class ServicioIdentidadApplication {
 		System.out.println("Expiración JWT: "
 				+ SeguridadConfig.INSTANCE.getJwtExpiracion());
 	}
-
 }
