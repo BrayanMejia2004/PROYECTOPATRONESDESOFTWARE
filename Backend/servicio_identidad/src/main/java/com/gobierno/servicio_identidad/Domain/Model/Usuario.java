@@ -9,10 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+// Modelo Entidad Usuario
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
 
+    // Campos de la entidad Usuario
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,10 +35,13 @@ public class Usuario {
     @Column(name = "fecha_creacion")
     private Timestamp fechaCreacion;
 
+
+    // Constructor vacío requerido por JPA
     protected Usuario() {
 
     }
 
+    // Constructor para crear un nuevo usuario
     public Usuario(String username, String password, String email, Boolean estado, Timestamp fechaCreacion) {
         this.username = username;
         this.password = password;
@@ -44,14 +50,17 @@ public class Usuario {
         this.fechaCreacion = Timestamp.from(java.time.Instant.now());
     }
 
+    // Métodos para desactivar el usuario
     public void desactivar() {
         this.estado = false;
     }
 
+    // Método para activar el usuario
     public void activar() {
         this.estado = true;
     }
 
+    // Getters para los campos de la entidad
     public Long getId() {
         return id;
     }

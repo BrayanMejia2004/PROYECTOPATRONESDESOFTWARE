@@ -1,11 +1,14 @@
 package com.gobierno.servicio_identidad.Infrastructure.Controller;
 
+// Clase que representa la solicitud de registro de usuario
 public class RegistroUsuarioRequest {
 
+    // Campos necesarios para el registro de un nuevo usuario
     private String username;
     private String password;
     private String email;
 
+    // Getters y setters para los campos de la solicitud de registro
     public String getUsername() {
         return username;
     }

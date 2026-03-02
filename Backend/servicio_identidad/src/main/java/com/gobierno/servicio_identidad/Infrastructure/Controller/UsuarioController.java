@@ -12,18 +12,22 @@ import com.gobierno.servicio_identidad.Application.UseCase.RegistroUsuarioUseCas
 import com.gobierno.servicio_identidad.Domain.Model.Usuario;
 import com.gobierno.servicio_identidad.Infrastructure.Dto.UsuarioResponse;
 
+// Controlador REST para manejar las solicitudes relacionadas con los usuarios
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+    // Dependencias para los casos de uso de login y registro de usuarios, inyectados a través del constructor
     private final LoginUsuarioUseCase loginUsuarioUseCase;
     private final RegistroUsuarioUseCase registrarUsuarioUseCase;
 
+    // Constructor para inyectar las dependencias necesarias para el controlador
     public UsuarioController(LoginUsuarioUseCase loginUsuarioUseCase, RegistroUsuarioUseCase registrarUsuarioUseCase) {
         this.loginUsuarioUseCase = loginUsuarioUseCase;
         this.registrarUsuarioUseCase = registrarUsuarioUseCase;
     }
 
+    // Endpoint para el inicio de sesión de usuarios, que recibe una solicitud con el nombre de usuario y la contraseña
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
 
@@ -34,6 +38,7 @@ public class UsuarioController {
         return ResponseEntity.ok(token);
     }
 
+    // Endpoint para el registro de nuevos usuarios, que recibe una solicitud con el nombre de usuario, contraseña y correo electrónico
     @PostMapping("/registro")
     public ResponseEntity<UsuarioResponse> registrarUsuario(@RequestBody RegistroUsuarioRequest request) {
 
@@ -50,6 +55,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
+    // Endpoint protegido que requiere autenticación
     @GetMapping("/perfil")
     public ResponseEntity<String> perfil() {
         return ResponseEntity.ok("Acceso autorizado al perfil");

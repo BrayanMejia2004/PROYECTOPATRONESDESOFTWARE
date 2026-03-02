@@ -11,10 +11,5 @@ public class ServicioIdentidadApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ServicioIdentidadApplication.class, args);
 
-		System.out.println("Secret JWT: "
-				+ SeguridadConfig.INSTANCE.getJwtSecret());
-
-		System.out.println("Expiración JWT: "
-				+ SeguridadConfig.INSTANCE.getJwtExpiracion());
 	}
 }
