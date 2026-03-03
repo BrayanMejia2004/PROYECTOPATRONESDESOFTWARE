@@ -35,7 +35,6 @@ public class Usuario {
     @Column(name = "fecha_creacion")
     private Timestamp fechaCreacion;
 
-
     // Constructor vacío requerido por JPA
     protected Usuario() {
 
@@ -48,16 +47,6 @@ public class Usuario {
         this.email = email;
         this.estado = true;
         this.fechaCreacion = Timestamp.from(java.time.Instant.now());
-    }
-
-    // Métodos para desactivar el usuario
-    public void desactivar() {
-        this.estado = false;
-    }
-
-    // Método para activar el usuario
-    public void activar() {
-        this.estado = true;
     }
 
     // Getters para los campos de la entidad
@@ -83,5 +72,26 @@ public class Usuario {
 
     public Timestamp getFechaCreacion() {
         return fechaCreacion;
+    }
+
+    
+    // Método para activar el usuario
+    public void activar() {
+        this.estado = true;
+    }
+
+    // Métodos para desactivar el usuario
+    public void desactivar() {
+        this.estado = false;
+    }
+
+    // Metodo para actualizar el email del usuario
+    public void actualizarEmail(String nuevoEmail) {
+        this.email = nuevoEmail;
+    }
+
+    // Método para actualizar la contraseña del usuario
+    public void actualizarPassword(String nuevaPasswordEncriptada) {
+        this.password = nuevaPasswordEncriptada;
     }
 }

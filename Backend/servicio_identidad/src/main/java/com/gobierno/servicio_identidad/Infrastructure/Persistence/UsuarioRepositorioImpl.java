@@ -46,5 +46,11 @@ public class UsuarioRepositorioImpl implements UsuarioRepositorio {
     public boolean existePorEmail(String email) {
         return jpaRepository.existsByEmail(email);
     }
+
+    // Método para eliminar un usuario por su username
+    @Override
+    public void eliminarPorUsername(String username) {
+        jpaRepository.deleteByUsername(username);
+    }
     
 }

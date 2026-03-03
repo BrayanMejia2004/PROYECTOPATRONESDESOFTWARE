@@ -18,5 +18,8 @@ public interface UsuarioJpaRepository extends JpaRepository<Usuario, Long> {
 
     // Método para verificar la existencia de email
     boolean existsByEmail(String email);
-    
+
+    // Método para eliminar un usuario por su username
+    void deleteByUsername(String username);
+  
 }

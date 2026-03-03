@@ -41,7 +41,7 @@ public enum SeguridadConfig {
             this.jwtSecret = secret;
             this.jwtExpiracion = Long.parseLong(expiracionStr);
 
-            System.out.println("✅ SeguridadConfig cargado correctamente");
+            System.out.println("SeguridadConfig cargado correctamente");
 
         } catch (Exception e) {
             throw new RuntimeException(

@@ -21,4 +21,7 @@ public interface UsuarioRepositorio {
     // Método para verificar si un usuario existe por su email
     boolean existePorEmail(String email);
 
+    // Método para eliminar un usuario por su username
+    void eliminarPorUsername(String username);
+
 }

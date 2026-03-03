@@ -1,4 +1,4 @@
-package com.gobierno.servicio_identidad.Infrastructure.Controller;
+package com.gobierno.servicio_identidad.Infrastructure.Dto;
 
 // Clase que representa la solicitud de registro de usuario
 public class RegistroUsuarioRequest {

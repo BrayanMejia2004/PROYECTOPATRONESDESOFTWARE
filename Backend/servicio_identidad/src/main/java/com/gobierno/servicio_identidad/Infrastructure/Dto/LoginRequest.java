@@ -1,8 +1,7 @@
-package com.gobierno.servicio_identidad.Infrastructure.Controller;
+package com.gobierno.servicio_identidad.Infrastructure.Dto;
 
 
-// Clase que representa la solicitud de inicio de sesión, 
-// conteniendo el nombre de usuario y la contraseña proporcionados por el usuario.
+// Clase que representa la solicitud de inicio de sesión
 public class LoginRequest {
 
     private String username;
