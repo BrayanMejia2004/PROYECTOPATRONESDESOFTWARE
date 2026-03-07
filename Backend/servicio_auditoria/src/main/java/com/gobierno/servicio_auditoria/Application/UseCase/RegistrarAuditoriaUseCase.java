@@ -2,7 +2,7 @@ package com.gobierno.servicio_auditoria.Application.UseCase;
 
 import org.springframework.stereotype.Service;
 
-import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaFactory;
+import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaAbsFactory;
 import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaBasicaFactory;
 import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaCompletaFactory;
 import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaSeguridadFactory;
@@ -21,7 +21,7 @@ public class RegistrarAuditoriaUseCase {
 
     public AuditoriaResponse ejecutar(Auditoria auditoria, String tipo) {
 
-        AuditoriaFactory factory;
+        AuditoriaAbsFactory factory;
 
         switch (tipo.toUpperCase()) {
 
