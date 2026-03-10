@@ -9,7 +9,7 @@ public class AuditoriaCompletaFactory extends AuditoriaAbsFactory {
     @Override
     public Auditoria creAuditoria(Auditoria auditoria) {
 
-        auditoria.setTipo("BASICA");
+        auditoria.setTipo("COMPLETA");
         return auditoria;
     }
 
