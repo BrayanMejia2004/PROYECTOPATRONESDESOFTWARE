@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "auditoria")
 public class Auditoria {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,19 +26,24 @@ public class Auditoria {
     @Column(name = "descripcion", length = 255)
     private String descripcion;
 
-    @Column(name = "fecha", nullable = false)
+    @Column(name = "fecha")
     private Timestamp fecha;
 
     @Column(name = "ip_origen", length = 45)
     private String ip_origen;
 
+    @Column(name = "tipo", length = 50)
+    private String tipo;
+
     // Constructor para crear una nueva auditoría
-    public Auditoria(Integer usuario_id, String accion, String descripcion, Timestamp fecha, String ip_origen) {
+    public Auditoria(Integer usuario_id, String accion, String descripcion, Timestamp fecha, String ip_origen,
+            String tipo) {
         this.usuario_id = usuario_id;
         this.accion = accion;
         this.descripcion = descripcion;
         this.fecha = Timestamp.from(java.time.Instant.now());
         this.ip_origen = ip_origen;
+        this.tipo = tipo;
     }
 
     // Getters para los campos de la entidad
@@ -66,10 +71,14 @@ public class Auditoria {
         return ip_origen;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public void setUsuario_id(Integer usuario_id) {
         this.usuario_id = usuario_id;
     }
@@ -88,5 +97,9 @@ public class Auditoria {
 
     public void setIp_origen(String ip_origen) {
         this.ip_origen = ip_origen;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

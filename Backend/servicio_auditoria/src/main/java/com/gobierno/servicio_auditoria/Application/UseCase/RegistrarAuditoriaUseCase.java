@@ -47,23 +47,7 @@ public class RegistrarAuditoriaUseCase {
         // Guardar auditoría en base de datos
         registroAuditoria.registrarAccion(auditoriaProcesada);
 
-        // Construir la respuesta
-        AuditoriaResponse response = new AuditoriaResponse();
-
-        response.setUsuario(auditoriaProcesada.getUsuario_id());
-        response.setAccion(auditoriaProcesada.getAccion());
-        response.setDescripcion(auditoriaProcesada.getDescripcion());
-        response.setTipo(tipo.toUpperCase());
-
-        if (tipo.equalsIgnoreCase("SEGURIDAD") || tipo.equalsIgnoreCase("COMPLETA")) {
-            response.setIp(auditoriaProcesada.getIp_origen());
-        }
-
-        if (tipo.equalsIgnoreCase("COMPLETA")) {
-            response.setFecha(auditoriaProcesada.getFecha());
-        }
-
-        return response;
+        return factory.crearRespuesta(auditoriaProcesada);
     }
 
 }

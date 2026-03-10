@@ -1,5 +1,6 @@
 package com.gobierno.servicio_auditoria.Infrastructure.Controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,7 @@ import com.gobierno.servicio_auditoria.Application.UseCase.RegistrarAuditoriaUse
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auditoria")
@@ -22,8 +24,12 @@ public class AuditoriaController {
     }
 
     @PostMapping("/registrar/{tipo}")
-    public AuditoriaResponse registrarAuditoria(@PathVariable String tipo, @RequestBody Auditoria auditoria) {
-        
-        return registrarAuditoriaUseCase.ejecutar(auditoria, tipo);
+    public ResponseEntity<AuditoriaResponse> registrarAuditoria(@PathVariable String tipo,
+            @RequestBody Auditoria auditoria, HttpServletRequest request) {
+
+        String ip_origen = request.getRemoteAddr();
+        auditoria.setIp_origen(ip_origen);
+
+        return ResponseEntity.ok(registrarAuditoriaUseCase.ejecutar(auditoria, tipo));
     }
 }
