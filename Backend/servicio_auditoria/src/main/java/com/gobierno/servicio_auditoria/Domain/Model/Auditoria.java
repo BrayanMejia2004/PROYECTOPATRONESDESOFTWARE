@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+// Entidad auditoria
 @Entity
 @Table(name = "auditoria")
 public class Auditoria {
@@ -35,18 +36,65 @@ public class Auditoria {
     @Column(name = "tipo", length = 50)
     private String tipo;
 
-    // Constructor para crear una nueva auditoría
-    public Auditoria(Integer usuario_id, String accion, String descripcion, Timestamp fecha, String ip_origen,
-            String tipo) {
-        this.usuario_id = usuario_id;
-        this.accion = accion;
-        this.descripcion = descripcion;
-        this.fecha = Timestamp.from(java.time.Instant.now());
-        this.ip_origen = ip_origen;
-        this.tipo = tipo;
+    // Constructor requerido por JPA
+    public Auditoria() {
+
     }
 
-    // Getters para los campos de la entidad
+    // Constructor requerido por Builder
+    private Auditoria(Builder builder) {
+        this.usuario_id = builder.usuario_id;
+        this.accion = builder.accion;
+        this.descripcion = builder.descripcion;
+        this.fecha = builder.fecha;
+        this.ip_origen = builder.ip_origen;
+        this.tipo = builder.tipo;
+    }
+
+    public static class Builder {
+
+        private Integer usuario_id;
+        private String accion;
+        private String descripcion;
+        private Timestamp fecha;
+        private String ip_origen;
+        private String tipo;
+
+        public Builder usuario(Integer usuario_id) {
+            this.usuario_id = usuario_id;
+            return this;
+        }
+
+        public Builder accion(String accion) {
+            this.accion = accion;
+            return this;
+        }
+
+        public Builder descripcion(String descripcion) {
+            this.descripcion = descripcion;
+            return this;
+        }
+
+        public Builder ip(String ip_origen) {
+            this.ip_origen = ip_origen;
+            return this;
+        }
+
+        public Builder tipo(String tipo) {
+            this.tipo = tipo;
+            return this;
+        }
+
+        public Builder fecha(Timestamp fecha) {
+            this.fecha = fecha;
+            return this;
+        }
+
+        public Auditoria build() {
+            return new Auditoria(this);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -75,31 +123,7 @@ public class Auditoria {
         return tipo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsuario_id(Integer usuario_id) {
-        this.usuario_id = usuario_id;
-    }
-
-    public void setAccion(String accion) {
-        this.accion = accion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public void setFecha(Timestamp fecha) {
-        this.fecha = fecha;
-    }
-
     public void setIp_origen(String ip_origen) {
         this.ip_origen = ip_origen;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 }

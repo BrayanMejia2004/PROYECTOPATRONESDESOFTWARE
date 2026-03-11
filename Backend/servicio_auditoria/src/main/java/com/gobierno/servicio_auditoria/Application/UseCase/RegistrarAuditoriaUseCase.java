@@ -19,35 +19,39 @@ public class RegistrarAuditoriaUseCase {
         this.registroAuditoria = registroAuditoria;
     }
 
+    // Registra una auditoria segun su tipo
     public AuditoriaResponse ejecutar(Auditoria auditoria, String tipo) {
 
-        AuditoriaAbsFactory factory;
+        // Referencia a la clase abstracta
+        AuditoriaAbsFactory Absfactory;
 
+        // Selección de la fábrica concreta según el tipo recibido
         switch (tipo.toUpperCase()) {
 
             case "BASICA":
-                factory = new AuditoriaBasicaFactory();
+                Absfactory = new AuditoriaBasicaFactory();
                 break;
 
             case "SEGURIDAD":
-                factory = new AuditoriaSeguridadFactory();
+                Absfactory = new AuditoriaSeguridadFactory();
                 break;
 
             case "COMPLETA":
-                factory = new AuditoriaCompletaFactory();
+                Absfactory = new AuditoriaCompletaFactory();
                 break;
 
             default:
                 throw new IllegalArgumentException("Tipo inválido");
         }
 
-        // Crear auditoría usando la factory
-        Auditoria auditoriaProcesada = factory.creAuditoria(auditoria);
+        // La fábrica construye y transforma el objeto Auditoria según las reglas del tipo elegido
+        Auditoria auditoriaProcesada = Absfactory.crearAuditoria(auditoria);
 
         // Guardar auditoría en base de datos
         registroAuditoria.registrarAccion(auditoriaProcesada);
 
-        return factory.crearRespuesta(auditoriaProcesada);
+        //Crear auditoria usando el abstract factory
+        return Absfactory.crearRespuesta(auditoriaProcesada);
     }
 
 }

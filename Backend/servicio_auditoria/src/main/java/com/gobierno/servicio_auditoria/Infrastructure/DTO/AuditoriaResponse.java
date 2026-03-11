@@ -2,6 +2,10 @@ package com.gobierno.servicio_auditoria.Infrastructure.DTO;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+// DTO que representa la respuesta devuelta al cliente tras registrar una auditoría
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuditoriaResponse {
 
     private Integer usuario;
@@ -11,19 +15,65 @@ public class AuditoriaResponse {
     private String tipo;
     private Timestamp fecha;
 
+    // Constructor vacío
     public AuditoriaResponse() {
     }
 
-    public AuditoriaResponse(Integer usuario, String accion, String descripcion,
-            String ip, String tipo, Timestamp fecha) {
-        this.usuario = usuario;
-        this.accion = accion;
-        this.descripcion = descripcion;
-        this.ip = ip;
-        this.tipo = tipo;
-        this.fecha = fecha;
+    // Constructor requerido por Builder
+    private AuditoriaResponse(Builder builder) {
+        this.usuario = builder.usuario;
+        this.accion = builder.accion;
+        this.descripcion = builder.descripcion;
+        this.fecha = builder.fecha;
+        this.ip = builder.ip;
+        this.tipo = builder.tipo;
     }
 
+    public static class Builder {
+
+        private Integer usuario;
+        private String accion;
+        private String descripcion;
+        private Timestamp fecha;
+        private String ip;
+        private String tipo;
+
+        public Builder usuario(Integer usuario) {
+            this.usuario = usuario;
+            return this;
+        }
+
+        public Builder accion(String accion) {
+            this.accion = accion;
+            return this;
+        }
+
+        public Builder descripcion(String descripcion) {
+            this.descripcion = descripcion;
+            return this;
+        }
+
+        public Builder ip(String ip) {
+            this.ip = ip;
+            return this;
+        }
+
+        public Builder tipo(String tipo) {
+            this.tipo = tipo;
+            return this;
+        }
+
+        public Builder fecha(Timestamp fecha) {
+            this.fecha = fecha;
+            return this;
+        }
+
+        public AuditoriaResponse build() {
+            return new AuditoriaResponse(this);
+        }
+    }
+
+    // Getters y Setters: permiten acceder y modificar cada campo individualmente
     public Integer getUsuario() {
         return usuario;
     }

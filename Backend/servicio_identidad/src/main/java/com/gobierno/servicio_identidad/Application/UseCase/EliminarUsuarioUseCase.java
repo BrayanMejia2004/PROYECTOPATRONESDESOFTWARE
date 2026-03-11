@@ -10,6 +10,7 @@ public class EliminarUsuarioUseCase {
 
     private final UsuarioRepositorio usuarioRepositorio;
 
+    // Inyección de dependencia por constructor
     public EliminarUsuarioUseCase(UsuarioRepositorio usuarioRepositorio) {
         this.usuarioRepositorio = usuarioRepositorio;
     }
@@ -17,10 +18,12 @@ public class EliminarUsuarioUseCase {
     @Transactional
     public void ejecutar(String username) {
 
+        // Verifica que el usuario exista antes de intentar eliminarlo
         if (!usuarioRepositorio.existePorUsername(username)) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+        // Elimina el usuario de la base de datos
         usuarioRepositorio.eliminarPorUsername(username);
     }
     
