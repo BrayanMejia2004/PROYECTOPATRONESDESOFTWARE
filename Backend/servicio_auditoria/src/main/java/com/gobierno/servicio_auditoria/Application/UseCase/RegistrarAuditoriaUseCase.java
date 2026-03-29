@@ -7,6 +7,7 @@ import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaBasicaFact
 import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaCompletaFactory;
 import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaSeguridadFactory;
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
+import com.gobierno.servicio_auditoria.Domain.Prototype.AuditoriaPrototypeRegistry;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 import com.gobierno.servicio_auditoria.Ports.Output.RegistroAuditoria;
 
@@ -22,6 +23,19 @@ public class RegistrarAuditoriaUseCase {
     // Registra una auditoria segun su tipo
     public AuditoriaResponse ejecutar(Auditoria auditoria, String tipo) {
 
+        // Se obtiene una copia del prototipo en lugar de crear un objeto nuevo
+        Auditoria auditoriaBase = AuditoriaPrototypeRegistry.obtenerPrototipo(tipo);
+
+        // Se complementan los datos provenientes del request
+        auditoriaBase = new Auditoria.Builder()
+            .usuario(auditoria.getUsuario_id())
+            .accion(auditoria.getAccion())
+            .descripcion(auditoria.getDescripcion())
+            .ip(auditoria.getIp_origen())
+            .tipo(auditoria.getTipo())
+            .build();
+
+        
         // Referencia a la clase abstracta
         AuditoriaAbsFactory Absfactory;
 
@@ -45,7 +59,7 @@ public class RegistrarAuditoriaUseCase {
         }
 
         // La fábrica construye y transforma el objeto Auditoria según las reglas del tipo elegido
-        Auditoria auditoriaProcesada = Absfactory.crearAuditoria(auditoria);
+        Auditoria auditoriaProcesada = Absfactory.crearAuditoria(auditoriaBase);
 
         // Guardar auditoría en base de datos
         registroAuditoria.registrarAccion(auditoriaProcesada);

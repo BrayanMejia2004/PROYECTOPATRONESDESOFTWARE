@@ -14,14 +14,9 @@ public class AuditoriaCompletaFactory extends AuditoriaAbsFactory {
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
 
-        return new Auditoria.Builder()
-                .usuario(auditoria.getUsuario_id())
-                .accion(auditoria.getAccion())
-                .descripcion(auditoria.getDescripcion())
-                .ip(auditoria.getIp_origen())
-                .tipo("COMPLETA")
-                .fecha(Timestamp.from(java.time.Instant.now()))
-                .build();
+        auditoria.setTipo("COMPLETA");
+        auditoria.setFecha(new Timestamp((System.currentTimeMillis())));
+        return auditoria;
     }
 
     // Construccion de la respuesta con todos los campos

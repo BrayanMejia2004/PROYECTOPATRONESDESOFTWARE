@@ -126,4 +126,29 @@ public class Auditoria {
     public void setIp_origen(String ip_origen) {
         this.ip_origen = ip_origen;
     }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setFecha(Timestamp fecha) {
+        this.fecha = fecha;
+    }
+
+    //metodo Prototype
+    // permite crear una copia exacta del objeto actual 
+    @Override
+    public Auditoria clone() {
+
+        Auditoria copia = new Auditoria();
+
+        copia.usuario_id = this.usuario_id;
+        copia.accion = this.accion;
+        copia.descripcion = this.descripcion;
+        copia.fecha = this.fecha;
+        copia.ip_origen = this.ip_origen;
+        copia.tipo = this.tipo;
+
+        return copia;
+    }
 }
