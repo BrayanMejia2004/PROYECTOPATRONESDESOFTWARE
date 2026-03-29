@@ -11,13 +11,8 @@ public class AuditoriaSeguridadFactory extends AuditoriaAbsFactory {
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
 
-        return new Auditoria.Builder()
-                .usuario(auditoria.getUsuario_id())
-                .accion(auditoria.getAccion())
-                .descripcion(auditoria.getDescripcion())
-                .ip(auditoria.getIp_origen())
-                .tipo("SEGURIDAD")
-                .build();
+        auditoria.setTipo("SEGURIDAD");
+        return auditoria;
     }
 
     // Construccion de la respuesta con todos los campos

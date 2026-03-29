@@ -12,12 +12,10 @@ public class AuditoriaBasicaFactory extends AuditoriaAbsFactory {
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
 
-        return new Auditoria.Builder()
-                .usuario(auditoria.getUsuario_id())
-                .accion(auditoria.getAccion())
-                .descripcion(auditoria.getDescripcion())
-                .tipo("BASICA")
-                .build();
+        auditoria.setIp_origen(null);
+        auditoria.setTipo("BASICA");
+
+        return auditoria;
     }
 
     // Construccion de la respuesta con todos los campos
