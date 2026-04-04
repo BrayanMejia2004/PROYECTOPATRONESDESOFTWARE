@@ -13,7 +13,6 @@ public class AuditoriaPrototypeRegistry {
     static {
 
         Auditoria basica = new Auditoria();
-        basica.setIp_origen(null);
         basica.setTipo("BASICA");
 
         Auditoria seguridad = new Auditoria();

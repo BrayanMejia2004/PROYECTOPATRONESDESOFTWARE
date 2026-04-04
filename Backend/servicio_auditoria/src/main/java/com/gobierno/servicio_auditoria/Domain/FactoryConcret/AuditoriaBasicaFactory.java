@@ -7,14 +7,11 @@ import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 //Fábrica concreta que implementa la creación de auditorías de tipo BASICA
 public class AuditoriaBasicaFactory extends AuditoriaAbsFactory {
 
-    // Construye una Auditoria solo con los campos esenciales
-    // (sin ip ni fecha)
+    // Construye una Auditoria solo con los campos esenciales (sin ip ni fecha)
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
 
-        auditoria.setIp_origen(null);
         auditoria.setTipo("BASICA");
-
         return auditoria;
     }
 

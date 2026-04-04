@@ -26,16 +26,12 @@ public class RegistrarAuditoriaUseCase {
         // Se obtiene una copia del prototipo en lugar de crear un objeto nuevo
         Auditoria auditoriaBase = AuditoriaPrototypeRegistry.obtenerPrototipo(tipo);
 
-        // Se complementan los datos provenientes del request
-        auditoriaBase = new Auditoria.Builder()
-            .usuario(auditoria.getUsuario_id())
-            .accion(auditoria.getAccion())
-            .descripcion(auditoria.getDescripcion())
-            .ip(auditoria.getIp_origen())
-            .tipo(auditoria.getTipo())
-            .build();
+        // Se complementan los datos sobre el objeto clonado
+        auditoriaBase.setUsuario_id(auditoria.getUsuario_id());
+        auditoriaBase.setAccion(auditoria.getAccion());
+        auditoriaBase.setDescripcion(auditoria.getDescripcion());
+        auditoriaBase.setIp_origen(auditoria.getIp_origen());
 
-        
         // Referencia a la clase abstracta
         AuditoriaAbsFactory Absfactory;
 
@@ -58,13 +54,14 @@ public class RegistrarAuditoriaUseCase {
                 throw new IllegalArgumentException("Tipo inválido");
         }
 
-        // La fábrica construye y transforma el objeto Auditoria según las reglas del tipo elegido
+        // La fábrica construye y transforma el objeto Auditoria según las reglas del
+        // tipo elegido
         Auditoria auditoriaProcesada = Absfactory.crearAuditoria(auditoriaBase);
 
         // Guardar auditoría en base de datos
         registroAuditoria.registrarAccion(auditoriaProcesada);
 
-        //Crear auditoria usando el abstract factory
+        // Crear auditoria usando el abstract factory
         return Absfactory.crearRespuesta(auditoriaProcesada);
     }
 

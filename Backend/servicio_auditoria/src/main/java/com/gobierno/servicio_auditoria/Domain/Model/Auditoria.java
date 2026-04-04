@@ -123,6 +123,18 @@ public class Auditoria {
         return tipo;
     }
 
+    public void setUsuario_id(Integer usuario_id) {
+        this.usuario_id = usuario_id;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public void setIp_origen(String ip_origen) {
         this.ip_origen = ip_origen;
     }
@@ -135,8 +147,8 @@ public class Auditoria {
         this.fecha = fecha;
     }
 
-    //metodo Prototype
-    // permite crear una copia exacta del objeto actual 
+    // metodo Prototype
+    // permite crear una copia exacta del objeto actual
     @Override
     public Auditoria clone() {
 
