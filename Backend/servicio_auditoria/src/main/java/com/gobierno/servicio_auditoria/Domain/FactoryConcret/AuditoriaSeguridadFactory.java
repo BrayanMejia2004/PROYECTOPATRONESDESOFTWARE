@@ -1,13 +1,15 @@
 package com.gobierno.servicio_auditoria.Domain.FactoryConcret;
 
+import org.springframework.stereotype.Component;
+
 import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaAbsFactory;
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 
-//Fábrica concreta que implementa la creación de auditorías de tipo SEGURIDAD
+@Component("SEGURIDAD")
 public class AuditoriaSeguridadFactory extends AuditoriaAbsFactory {
 
-    // Construye una Auditoria con campos básicos más la ip (sin fecha)
+    // Construye una Auditoria con campos básicos más la ip
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
 

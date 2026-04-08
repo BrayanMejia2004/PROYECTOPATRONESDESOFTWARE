@@ -1,11 +1,10 @@
 package com.gobierno.servicio_auditoria.Application.UseCase;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaAbsFactory;
-import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaBasicaFactory;
-import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaCompletaFactory;
-import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaSeguridadFactory;
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
 import com.gobierno.servicio_auditoria.Domain.Prototype.AuditoriaPrototypeRegistry;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
@@ -15,9 +14,12 @@ import com.gobierno.servicio_auditoria.Ports.Output.RegistroAuditoria;
 public class RegistrarAuditoriaUseCase {
 
     private final RegistroAuditoria registroAuditoria;
+    private final Map<String, AuditoriaAbsFactory> factories;
 
-    public RegistrarAuditoriaUseCase(RegistroAuditoria registroAuditoria) {
+    public RegistrarAuditoriaUseCase(RegistroAuditoria registroAuditoria,
+            Map<String, AuditoriaAbsFactory> factories) {
         this.registroAuditoria = registroAuditoria;
+        this.factories = factories;
     }
 
     // Registra una auditoria segun su tipo
@@ -32,37 +34,21 @@ public class RegistrarAuditoriaUseCase {
         auditoriaBase.setDescripcion(auditoria.getDescripcion());
         auditoriaBase.setIp_origen(auditoria.getIp_origen());
 
-        // Referencia a la clase abstracta
-        AuditoriaAbsFactory Absfactory;
+        // Obtener la factory del Map inyectado
+        AuditoriaAbsFactory factory = factories.get(tipo.toUpperCase());
 
-        // Selección de la fábrica concreta según el tipo recibido
-        switch (tipo.toUpperCase()) {
-
-            case "BASICA":
-                Absfactory = new AuditoriaBasicaFactory();
-                break;
-
-            case "SEGURIDAD":
-                Absfactory = new AuditoriaSeguridadFactory();
-                break;
-
-            case "COMPLETA":
-                Absfactory = new AuditoriaCompletaFactory();
-                break;
-
-            default:
-                throw new IllegalArgumentException("Tipo inválido");
+        if (factory == null) {
+            throw new IllegalArgumentException("Tipo de auditoria invalido");
         }
 
-        // La fábrica construye y transforma el objeto Auditoria según las reglas del
-        // tipo elegido
-        Auditoria auditoriaProcesada = Absfactory.crearAuditoria(auditoriaBase);
+        // La fábrica construye y transforma el objeto Auditoria según las reglas del tipo elegido
+        Auditoria auditoriaProcesada = factory.crearAuditoria(auditoriaBase);
 
         // Guardar auditoría en base de datos
         registroAuditoria.registrarAccion(auditoriaProcesada);
 
-        // Crear auditoria usando el abstract factory
-        return Absfactory.crearRespuesta(auditoriaProcesada);
+        // Crear respuesta de la auditoria usando el abstract factory
+        return factory.crearRespuesta(auditoriaProcesada);
     }
 
 }
