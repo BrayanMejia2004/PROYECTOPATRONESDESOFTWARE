@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "gof-patterns": {
+      "source": "grndlvl/software-patterns",
+      "sourceType": "github",
+      "computedHash": "d8bdbb7fd273da67fd6d9328fd983392f502dc55e7af12a74782d982f4c1487a"
+    }
+  }
+}

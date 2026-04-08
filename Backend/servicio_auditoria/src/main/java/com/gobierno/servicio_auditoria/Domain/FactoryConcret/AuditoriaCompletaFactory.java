@@ -2,15 +2,16 @@ package com.gobierno.servicio_auditoria.Domain.FactoryConcret;
 
 import java.sql.Timestamp;
 
+import org.springframework.stereotype.Component;
+
 import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaAbsFactory;
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 
-//Fábrica concreta que implementa la creación de auditorías de tipo COMPLETA
+@Component("COMPLETA")
 public class AuditoriaCompletaFactory extends AuditoriaAbsFactory {
 
     // Construye una nueva Auditoria con todos los campos disponibles
-    // usando el patrón Builder
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
 
