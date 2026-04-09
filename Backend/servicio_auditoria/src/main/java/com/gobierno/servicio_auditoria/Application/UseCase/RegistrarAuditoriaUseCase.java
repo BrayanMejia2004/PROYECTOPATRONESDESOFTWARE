@@ -1,54 +1,45 @@
 package com.gobierno.servicio_auditoria.Application.UseCase;
 
+import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.stereotype.Service;
-
 import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaAbsFactory;
+import com.gobierno.servicio_auditoria.Domain.Bridge.Abstraction.AuditoriaProcessor;
+import com.gobierno.servicio_auditoria.Domain.Bridge.Abstraction.RegistrarAuditoriaProcessor;
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
-import com.gobierno.servicio_auditoria.Domain.Prototype.AuditoriaPrototypeRegistry;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 import com.gobierno.servicio_auditoria.Ports.Output.RegistroAuditoria;
 
+// Caso de uso que coordina el flujo de auditoria
 @Service
 public class RegistrarAuditoriaUseCase {
 
-    private final RegistroAuditoria registroAuditoria;
-    private final Map<String, AuditoriaAbsFactory> factories;
+    // Mapa de processors por tipo de auditoria
+    private final Map<String, AuditoriaProcessor> processors;
 
-    public RegistrarAuditoriaUseCase(RegistroAuditoria registroAuditoria,
-            Map<String, AuditoriaAbsFactory> factories) {
-        this.registroAuditoria = registroAuditoria;
-        this.factories = factories;
+    // Constructor que recibe factories de Spring y crea processors asociados
+    public RegistrarAuditoriaUseCase(Map<String, AuditoriaAbsFactory> factories, 
+        RegistroAuditoria registroAuditoria) {
+        this.processors = new HashMap<>();
+
+        // Por cada factory crea un processor asociado
+        factories.forEach((tipo, factory) ->
+                processors.put(tipo, new RegistrarAuditoriaProcessor(factory, registroAuditoria))
+        );
     }
 
-    // Registra una auditoria segun su tipo
+    // Ejecuta el caso de uso - selecciona y ejecuta el processor correcto
     public AuditoriaResponse ejecutar(Auditoria auditoria, String tipo) {
+        
+        // Obtiene el processor segun el tipo
+        AuditoriaProcessor processor = processors.get(tipo.toUpperCase());
 
-        // Se obtiene una copia del prototipo en lugar de crear un objeto nuevo
-        Auditoria auditoriaBase = AuditoriaPrototypeRegistry.obtenerPrototipo(tipo);
-
-        // Se complementan los datos sobre el objeto clonado
-        auditoriaBase.setUsuario_id(auditoria.getUsuario_id());
-        auditoriaBase.setAccion(auditoria.getAccion());
-        auditoriaBase.setDescripcion(auditoria.getDescripcion());
-        auditoriaBase.setIp_origen(auditoria.getIp_origen());
-
-        // Obtener la factory del Map inyectado
-        AuditoriaAbsFactory factory = factories.get(tipo.toUpperCase());
-
-        if (factory == null) {
+        // Lanza excepcion si el tipo no existe
+        if (processor == null) {
             throw new IllegalArgumentException("Tipo de auditoria invalido");
         }
 
-        // La fábrica construye y transforma el objeto Auditoria según las reglas del tipo elegido
-        Auditoria auditoriaProcesada = factory.crearAuditoria(auditoriaBase);
-
-        // Guardar auditoría en base de datos
-        registroAuditoria.registrarAccion(auditoriaProcesada);
-
-        // Crear respuesta de la auditoria usando el abstract factory
-        return factory.crearRespuesta(auditoriaProcesada);
+        // Delega el procesamiento al processor
+        return processor.procesar(auditoria);
     }
-
 }

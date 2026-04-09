@@ -1,13 +1,13 @@
 package com.gobierno.servicio_auditoria.Infrastructure.DTO;
 
 import java.sql.Timestamp;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-// DTO que representa la respuesta devuelta al cliente tras registrar una auditoría
+// Excluye campos nulos en la serializacion JSON
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuditoriaResponse {
 
+    // Campos de la respuesta
     private Integer usuario;
     private String accion;
     private String descripcion;
@@ -15,11 +15,11 @@ public class AuditoriaResponse {
     private String tipo;
     private Timestamp fecha;
 
-    // Constructor vacío
+    // Constructor vacio requerido por Jackson
     public AuditoriaResponse() {
     }
 
-    // Constructor requerido por Builder
+    // Constructor privado requerido por el Builder
     private AuditoriaResponse(Builder builder) {
         this.usuario = builder.usuario;
         this.accion = builder.accion;
@@ -29,6 +29,7 @@ public class AuditoriaResponse {
         this.tipo = builder.tipo;
     }
 
+    // Builder Pattern - clase estatica para construccion fluida
     public static class Builder {
 
         private Integer usuario;
@@ -38,6 +39,7 @@ public class AuditoriaResponse {
         private String ip;
         private String tipo;
 
+        // Metodos fluent para configurar cada campo
         public Builder usuario(Integer usuario) {
             this.usuario = usuario;
             return this;
@@ -68,12 +70,13 @@ public class AuditoriaResponse {
             return this;
         }
 
+        // Metodo build que crea la instancia
         public AuditoriaResponse build() {
             return new AuditoriaResponse(this);
         }
     }
 
-    // Getters y Setters: permiten acceder y modificar cada campo individualmente
+    // Getters y setters
     public Integer getUsuario() {
         return usuario;
     }

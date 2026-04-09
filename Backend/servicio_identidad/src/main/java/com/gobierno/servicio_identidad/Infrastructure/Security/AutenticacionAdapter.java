@@ -1,35 +1,33 @@
 package com.gobierno.servicio_identidad.Infrastructure.Security;
 
-import com.gobierno.servicio_identidad.Application.UseCase.LoginUsuarioUseCase;
+import org.springframework.stereotype.Component;
+
 import com.gobierno.servicio_identidad.Infrastructure.Dto.SolicitudAutenticacion;
 import com.gobierno.servicio_identidad.Ports.Output.Autenticador;
+import com.gobierno.servicio_identidad.Ports.Output.AutenticadorPorCredenciales;
 
-// Adapter que unifica autenticación por:
-// Credenciales (LoginUsuarioUseCase)
-// Token JWT (ValidadorJwt)
+@Component
 public class AutenticacionAdapter implements Autenticador {
 
-    private final LoginUsuarioUseCase loginUseCase;
+    private final AutenticadorPorCredenciales autenticadorPorCredenciales;
+    private final ValidadorJwt validadorJwt;
 
-    // Se inyectan las clases existentess
-    public AutenticacionAdapter(LoginUsuarioUseCase loginUseCase) {
-        this.loginUseCase = loginUseCase;
-
+    public AutenticacionAdapter(AutenticadorPorCredenciales autenticadorPorCredenciales,
+            ValidadorJwt validadorJwt) {
+        this.autenticadorPorCredenciales = autenticadorPorCredenciales;
+        this.validadorJwt = validadorJwt;
     }
 
     @Override
     public Object autenticar(SolicitudAutenticacion solicitud) {
-
-        // Login usuario/password
         if (solicitud.getUsername() != null && solicitud.getPassword() != null) {
-            return loginUseCase.ejecutar(
+            return autenticadorPorCredenciales.autenticarPorCredenciales(
                     solicitud.getUsername(),
                     solicitud.getPassword());
         }
 
-        // Validación de token
         if (solicitud.getToken() != null) {
-            return ValidadorJwt.validarToken(solicitud.getToken());
+            return validadorJwt.validarToken(solicitud.getToken());
         }
 
         throw new RuntimeException("Solicitud de autenticación inválida");

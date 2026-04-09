@@ -1,26 +1,22 @@
 package com.gobierno.servicio_auditoria.Domain.FactoryConcret;
 
-import org.springframework.stereotype.Component;
-
 import com.gobierno.servicio_auditoria.Domain.AbsFactory.AuditoriaAbsFactory;
 import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
 import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
 
-@Component("SEGURIDAD")
+// Factory para auditorias de seguridad - incluye IP de origen
 public class AuditoriaSeguridadFactory extends AuditoriaAbsFactory {
 
-    // Construye una Auditoria con campos básicos más la ip
+    // Establece el tipo SEGURIDAD y retorna la auditoria
     @Override
     public Auditoria crearAuditoria(Auditoria auditoria) {
-
         auditoria.setTipo("SEGURIDAD");
         return auditoria;
     }
 
-    // Construccion de la respuesta con todos los campos
+    // Crea respuesta con campos de seguridad (incluye IP)
     @Override
     public AuditoriaResponse crearRespuesta(Auditoria auditoria) {
-
         return new AuditoriaResponse.Builder()
                 .usuario(auditoria.getUsuario_id())
                 .accion(auditoria.getAccion())
@@ -29,5 +25,4 @@ public class AuditoriaSeguridadFactory extends AuditoriaAbsFactory {
                 .tipo(auditoria.getTipo())
                 .build();
     }
-
 }

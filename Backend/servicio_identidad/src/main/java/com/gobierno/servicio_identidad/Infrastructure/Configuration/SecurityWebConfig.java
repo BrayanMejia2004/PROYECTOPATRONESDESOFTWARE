@@ -11,16 +11,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.gobierno.servicio_identidad.Infrastructure.Security.FiltroJwt;
 
-// Configuración de seguridad para la aplicación, definiendo las reglas de acceso y los filtros de autenticación.
 @Configuration
 @EnableWebSecurity
 public class SecurityWebConfig {
 
-    // Configura la cadena de filtros de seguridad, permitiendo el acceso a las rutas de registro y login sin autenticación, 
-    // y requiriendo autenticación para cualquier otra ruta.
+    private final FiltroJwt filtroJwt;
+
+    public SecurityWebConfig(FiltroJwt filtroJwt) {
+        this.filtroJwt = filtroJwt;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
@@ -29,13 +31,11 @@ public class SecurityWebConfig {
                         .requestMatchers("/usuarios/login").permitAll()
                         .anyRequest().authenticated())
 
-                .addFilterBefore(new FiltroJwt(),
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Bean para el codificador de contraseñas, utilizando BCrypt para asegurar las contraseñas almacenadas en la base de datos.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
