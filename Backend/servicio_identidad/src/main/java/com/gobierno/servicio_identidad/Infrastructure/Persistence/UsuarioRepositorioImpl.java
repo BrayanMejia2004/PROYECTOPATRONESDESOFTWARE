@@ -23,7 +23,11 @@ public class UsuarioRepositorioImpl implements UsuarioRepositorio {
         return jpaRepository.save(usuario);
     }
 
-    // Método para buscar un usuario por su ID
+    @Override
+    public Optional<Usuario> buscarPorId(Long id) {
+        return jpaRepository.findById(id);
+    }
+
     @Override
     public Optional<Usuario> buscarPorUsername(String username) {
         return jpaRepository.findByUsername(username);

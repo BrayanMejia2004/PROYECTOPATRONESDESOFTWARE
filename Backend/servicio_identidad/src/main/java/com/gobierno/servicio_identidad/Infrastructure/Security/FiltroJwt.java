@@ -7,13 +7,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
 
-// Filtro de seguridad para validar el token JWT en cada solicitud
+@Component
 public class FiltroJwt extends OncePerRequestFilter {
+
+    private final ValidadorJwt validadorJwt;
+
+    public FiltroJwt(ValidadorJwt validadorJwt) {
+        this.validadorJwt = validadorJwt;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -21,29 +28,21 @@ public class FiltroJwt extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Obtener el token JWT del encabezado Authorization
         String header = request.getHeader("Authorization");
 
-        // Validar el token JWT
         if (header != null && header.startsWith("Bearer ")) {
-
-            // Extraer el token JWT del encabezado
             String token = header.substring(7);
 
             try {
-                // Validar el token y obtener los claims
-                Claims claims = ValidadorJwt.validarToken(token);
+                Claims claims = validadorJwt.validarToken(token);
 
-                // Obtener el username del token
                 String username = claims.getSubject();
 
-                // Crear una autenticación basada en el username y establecerla en el contexto de seguridad
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         username,
                         null,
                         Collections.emptyList());
 
-                // Establecer la autenticación en el contexto de seguridad
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
@@ -52,7 +51,6 @@ public class FiltroJwt extends OncePerRequestFilter {
             }
         }
 
-        // Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
     }
 

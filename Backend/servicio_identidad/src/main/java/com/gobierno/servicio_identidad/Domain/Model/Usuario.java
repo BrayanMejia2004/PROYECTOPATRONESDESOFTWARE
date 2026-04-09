@@ -40,13 +40,49 @@ public class Usuario {
 
     }
 
-    // Constructor para crear un nuevo usuario
-    public Usuario(String username, String password, String email, Boolean estado, Timestamp fechaCreacion) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.estado = true;
-        this.fechaCreacion = Timestamp.from(java.time.Instant.now());
+    private Usuario(Builder builder) {
+        this.username = builder.username;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.estado = builder.estado;
+        this.fechaCreacion = builder.fechaCreacion;
+    }
+
+    public static class Builder {
+        private String username;
+        private String password;
+        private String email;
+        private Boolean estado;
+        private java.sql.Timestamp fechaCreacion;
+
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder estado(Boolean estado) {
+            this.estado = estado;
+            return this;
+        }
+
+        public Builder fechaCreacion(java.sql.Timestamp fechaCreacion) {
+            this.fechaCreacion = fechaCreacion;
+            return this;
+        }
+
+        public Usuario build() {
+            return new Usuario(this);
+        }
     }
 
     // Getters para los campos de la entidad

@@ -10,6 +10,9 @@ public interface UsuarioRepositorio {
     Usuario guardar(Usuario usuario);
 
     // Método para buscar un usuario por su ID
+    Optional<Usuario> buscarPorId(Long id);
+
+    // Método para buscar un usuario por su username
     Optional<Usuario> buscarPorUsername(String username);
 
     // Método para buscar un usuario por su email
