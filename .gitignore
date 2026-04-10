@@ -1,0 +1,32 @@
+# Documentación local (no se visualiza bien en GitHub)
+Contextos/
+
+# Agentes y skills de documentación
+.agents/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Variables de entorno
+.env
+.env.local
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Archivos compilados de Java
+**/target/
+**/*.class
+
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/build/
