@@ -6,7 +6,7 @@ import com.gobierno.servicio_reportes.domain.ports.out.ReporteDataProviderPort;
 import com.gobierno.servicio_reportes.domain.ports.out.ReporteRepositoryPort;
 import com.gobierno.servicio_reportes.domain.services.CsvDecorator;
 import com.gobierno.servicio_reportes.domain.services.PdfDecorator;
-import com.gobierno.servicio_reportes.domain.services.ReporteBaseComponent;
+import com.gobierno.servicio_reportes.domain.services.ReporteConcreteComponent;
 import com.gobierno.servicio_reportes.domain.services.ReporteComponent;
 import com.gobierno.servicio_reportes.domain.services.ZipDecorator;
 import com.gobierno.servicio_reportes.domain.valueobjects.ReporteData;
@@ -47,7 +47,7 @@ public class GenerarReporteUseCase implements GenerarReportePort {
     }
     
     private byte[] generarContenido(ReporteData datos, String formato, String tipo) {
-        ReporteComponent reporte = new ReporteBaseComponent();
+        ReporteComponent reporte = new ReporteConcreteComponent();
         reporte = aplicarDecorators(reporte, formato, tipo);
         return reporte.generar(datos);
     }

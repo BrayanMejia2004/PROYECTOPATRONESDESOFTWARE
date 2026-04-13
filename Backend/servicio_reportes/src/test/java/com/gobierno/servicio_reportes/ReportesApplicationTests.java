@@ -9,9 +9,11 @@ import com.gobierno.servicio_reportes.domain.ports.out.ReporteRepositoryPort;
 @SpringBootTest
 class ReportesApplicationTests {
 
+    @SuppressWarnings("removal")
     @MockBean
     private ReporteDataProviderPort dataProviderPort;
 
+    @SuppressWarnings("removal")
     @MockBean
     private ReporteRepositoryPort repositoryPort;
 

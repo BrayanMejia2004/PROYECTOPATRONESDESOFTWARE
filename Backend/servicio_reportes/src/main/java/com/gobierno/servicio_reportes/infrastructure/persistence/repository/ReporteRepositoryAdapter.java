@@ -20,6 +20,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
     @Override
     public Reporte guardar(Reporte reporte) {
         ReporteEntity entity = ReporteEntity.fromDomain(reporte);
+        @SuppressWarnings("null")
         ReporteEntity saved = jpaRepository.save(entity);
         Objects.requireNonNull(saved, "Error al guardar reporte en la base de datos");
         return saved.toDomain();
@@ -39,6 +40,7 @@ public class ReporteRepositoryAdapter implements ReporteRepositoryPort {
                 .toList();
     }
     
+    @SuppressWarnings("null")
     @Override
     public Optional<Reporte> findById(Long id) {
         return jpaRepository.findById(id)

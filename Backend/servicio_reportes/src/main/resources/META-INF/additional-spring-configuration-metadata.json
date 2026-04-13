@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "servicio.auditoria.url",
+      "type": "java.lang.String",
+      "description": "URL base del servicio de auditoria"
+    },
+    {
+      "name": "servicio.identidad.url",
+      "type": "java.lang.String",
+      "description": "URL base del servicio de identidad"
+    },
+    {
+      "name": "servicio.autorizacion.url",
+      "type": "java.lang.String",
+      "description": "URL base del servicio de autorizacion"
+    }
+  ]
+}

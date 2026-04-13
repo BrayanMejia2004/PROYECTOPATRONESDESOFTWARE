@@ -32,6 +32,7 @@ public class ReporteDataProviderAdapter implements ReporteDataProviderPort {
     public ReporteData obtenerDatosAuditoria() {
         try {
             String url = auditoriaUrl + "/auditoria/lista";
+            @SuppressWarnings("null")
             ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 url,
                 org.springframework.http.HttpMethod.GET,
@@ -74,6 +75,7 @@ public class ReporteDataProviderAdapter implements ReporteDataProviderPort {
     public ReporteData obtenerDatosUsuarios() {
         try {
             String url = identidadUrl + "/usuarios/lista";
+            @SuppressWarnings("null")
             ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 url,
                 org.springframework.http.HttpMethod.GET,
@@ -114,6 +116,7 @@ public class ReporteDataProviderAdapter implements ReporteDataProviderPort {
     public ReporteData obtenerDatosRoles() {
         try {
             String url = autorizacionUrl + "/roles/lista";
+            @SuppressWarnings("null")
             ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 url,
                 org.springframework.http.HttpMethod.GET,
