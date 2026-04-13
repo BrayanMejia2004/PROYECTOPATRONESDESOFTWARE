@@ -4,6 +4,12 @@ Contextos/
 # Agentes y skills de documentación
 .agents/
 
+# GitHub workflows y configuración
+.github/
+
+# Lock de skills
+skills-lock.json
+
 # Archivos de sistema
 .DS_Store
 Thumbs.db

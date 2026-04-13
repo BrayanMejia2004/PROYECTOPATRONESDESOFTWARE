@@ -25,6 +25,7 @@ import com.gobierno.servicio_identidad.Infrastructure.Dto.PerfilResponse;
 import com.gobierno.servicio_identidad.Infrastructure.Dto.RegistroUsuarioRequest;
 import com.gobierno.servicio_identidad.Infrastructure.Dto.SolicitudAutenticacion;
 import com.gobierno.servicio_identidad.Infrastructure.Dto.UsuarioResponse;
+import com.gobierno.servicio_identidad.Infrastructure.Persistence.UsuarioJpaRepository;
 import com.gobierno.servicio_identidad.Ports.Output.Autenticador;
 import com.gobierno.servicio_identidad.Ports.Output.UsuarioRepositorio;
 
@@ -39,6 +40,7 @@ public class UsuarioController {
     private final ActualizarPerfilUseCase actualizarPerfilUseCase;
     private final UsuarioRepositorio usuarioRepositorio;
     private final Autenticador autenticador;
+    private final UsuarioJpaRepository usuarioJpaRepository;
 
     public UsuarioController(RegistroUsuarioUseCase registrarUsuarioUseCase,
             ActualizarUsuarioUseCase actualizarUsuarioUseCase,
@@ -46,7 +48,8 @@ public class UsuarioController {
             RegistrarPerfilUseCase registrarPerfilUseCase,
             ActualizarPerfilUseCase actualizarPerfilUseCase,
             UsuarioRepositorio usuarioRepositorio,
-            Autenticador autenticador) {
+            Autenticador autenticador,
+            UsuarioJpaRepository usuarioJpaRepository) {
                 
         this.registrarUsuarioUseCase = registrarUsuarioUseCase;
         this.actualizarUsuarioUseCase = actualizarUsuarioUseCase;
@@ -55,6 +58,7 @@ public class UsuarioController {
         this.actualizarPerfilUseCase = actualizarPerfilUseCase;
         this.usuarioRepositorio = usuarioRepositorio;
         this.autenticador = autenticador;
+        this.usuarioJpaRepository = usuarioJpaRepository;
     }
 
     // Endpoint para el inicio de sesión de usuarios (Con Adapter)
@@ -207,5 +211,10 @@ public class UsuarioController {
         eliminarUsuarioUseCase.ejecutar(username);
 
         return ResponseEntity.ok("Usuario Eliminado correctamente");
+    }
+
+    @GetMapping("/lista")
+    public ResponseEntity<?> obtenerListaUsuarios() {
+        return ResponseEntity.ok(usuarioJpaRepository.findAll());
     }
 }
