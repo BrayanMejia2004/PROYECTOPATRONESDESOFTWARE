@@ -8,11 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaCompletaFactory;
-import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
-import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
+import com.gobierno.servicio_auditoria.domain.factory.AuditoriaCompletaFactory;
+import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
+import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.AuditoriaResponse;
 
-// Test para Abstract Factory - AuditoriaCompletaFactory
 class AuditoriaCompletaFactoryTest {
 
     private AuditoriaCompletaFactory factory;
@@ -31,10 +30,8 @@ class AuditoriaCompletaFactoryTest {
     @Test
     @DisplayName("Debe crear auditoria con tipo COMPLETA")
     void debeCrearAuditoriaConTipoCompleta() {
-        // Act
         Auditoria resultado = factory.crearAuditoria(auditoria);
 
-        // Assert
         assertNotNull(resultado);
         assertEquals("COMPLETA", resultado.getTipo());
     }
@@ -42,12 +39,10 @@ class AuditoriaCompletaFactoryTest {
     @Test
     @DisplayName("Debe crear auditoria con fecha actual")
     void debeCrearAuditoriaConFechaActual() {
-        // Act
         Timestamp antes = new Timestamp(System.currentTimeMillis());
         Auditoria resultado = factory.crearAuditoria(auditoria);
         Timestamp despues = new Timestamp(System.currentTimeMillis());
 
-        // Assert
         assertNotNull(resultado);
         assertNotNull(resultado.getFecha());
         assertTrue(resultado.getFecha().compareTo(antes) >= 0);
@@ -57,20 +52,17 @@ class AuditoriaCompletaFactoryTest {
     @Test
     @DisplayName("Debe crear respuesta con IP y fecha")
     void debeCrearRespuestaConIpYFecha() {
-        // Arrange
         auditoria.setTipo("COMPLETA");
         auditoria.setFecha(new Timestamp(System.currentTimeMillis()));
 
-        // Act
         AuditoriaResponse respuesta = factory.crearRespuesta(auditoria);
 
-        // Assert
         assertNotNull(respuesta);
         assertEquals(3, respuesta.getUsuario());
         assertEquals("ELIMINAR_USUARIO", respuesta.getAccion());
         assertEquals("COMPLETA", respuesta.getTipo());
-        assertNotNull(respuesta.getIp()); // Debe incluir IP
+        assertNotNull(respuesta.getIp());
         assertEquals("192.168.1.200", respuesta.getIp());
-        assertNotNull(respuesta.getFecha()); // Debe incluir fecha
+        assertNotNull(respuesta.getFecha());
     }
 }
