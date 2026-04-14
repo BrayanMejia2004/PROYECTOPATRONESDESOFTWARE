@@ -12,6 +12,7 @@ import com.gobierno.servicio_reportes.domain.services.ZipDecorator;
 import com.gobierno.servicio_reportes.domain.valueobjects.ReporteData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Base64;
 
 @Service
 public class GenerarReporteUseCase implements GenerarReportePort {
@@ -39,8 +40,9 @@ public class GenerarReporteUseCase implements GenerarReportePort {
     @Transactional
     public Reporte guardarReporte(String tipo, String titulo, String descripcion,
                                    byte[] contenido, String formato, String usuarioSolicitante) {
+        String contenidoBase64 = Base64.getEncoder().encodeToString(contenido);
         Reporte reporte = new Reporte(
-            tipo.toUpperCase(), titulo, descripcion, new String(contenido),
+            tipo.toUpperCase(), titulo, descripcion, contenidoBase64,
             formato.toUpperCase(), usuarioSolicitante
         );
         return reporteRepository.guardar(reporte);

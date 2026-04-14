@@ -1,0 +1,59 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      forward-headers-strategy: native
+      
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 30000
+      
+      routes:
+        - id: servicio-auditoria
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auditoria/**
+          filters:
+            - StripPrefix=1
+        
+        - id: servicio-identidad
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/usuarios/**
+          filters:
+            - StripPrefix=1
+        
+        - id: servicio-autorizacion
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/roles/**
+          filters:
+            - StripPrefix=1
+        
+        - id: servicio-reportes
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/reportes/**
+          filters:
+            - StripPrefix=1
+      
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://localhost:8080"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true

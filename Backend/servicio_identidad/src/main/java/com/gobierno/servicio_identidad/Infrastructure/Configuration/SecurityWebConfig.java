@@ -29,6 +29,7 @@ public class SecurityWebConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/registro").permitAll()
                         .requestMatchers("/usuarios/login").permitAll()
+                        .requestMatchers("/usuarios/lista").permitAll()
                         .anyRequest().authenticated())
 
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
