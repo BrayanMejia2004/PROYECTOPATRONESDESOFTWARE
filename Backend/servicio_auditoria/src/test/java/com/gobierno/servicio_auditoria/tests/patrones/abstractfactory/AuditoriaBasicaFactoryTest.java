@@ -6,11 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import com.gobierno.servicio_auditoria.Domain.FactoryConcret.AuditoriaBasicaFactory;
-import com.gobierno.servicio_auditoria.Domain.Model.Auditoria;
-import com.gobierno.servicio_auditoria.Infrastructure.DTO.AuditoriaResponse;
+import com.gobierno.servicio_auditoria.domain.factory.AuditoriaBasicaFactory;
+import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
+import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.AuditoriaResponse;
 
-// Test para Abstract Factory - AuditoriaBasicaFactory
 class AuditoriaBasicaFactoryTest {
 
     private AuditoriaBasicaFactory factory;
@@ -29,10 +28,8 @@ class AuditoriaBasicaFactoryTest {
     @Test
     @DisplayName("Debe crear auditoria con tipo BASICA")
     void debeCrearAuditoriaConTipoBasica() {
-        // Act
         Auditoria resultado = factory.crearAuditoria(auditoria);
 
-        // Assert
         assertNotNull(resultado);
         assertEquals("BASICA", resultado.getTipo());
     }
@@ -40,19 +37,16 @@ class AuditoriaBasicaFactoryTest {
     @Test
     @DisplayName("Debe crear respuesta sin IP ni fecha")
     void debeCrearRespuestaSinIpNiFecha() {
-        // Arrange
         auditoria.setTipo("BASICA");
 
-        // Act
         AuditoriaResponse respuesta = factory.crearRespuesta(auditoria);
 
-        // Assert
         assertNotNull(respuesta);
         assertEquals(1, respuesta.getUsuario());
         assertEquals("LOGIN", respuesta.getAccion());
         assertEquals("Inicio de sesion", respuesta.getDescripcion());
         assertEquals("BASICA", respuesta.getTipo());
-        assertNull(respuesta.getIp()); // No debe incluir IP
-        assertNull(respuesta.getFecha()); // No debe incluir fecha
+        assertNull(respuesta.getIp());
+        assertNull(respuesta.getFecha());
     }
 }

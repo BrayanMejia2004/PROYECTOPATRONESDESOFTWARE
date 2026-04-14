@@ -1,4 +1,4 @@
-package com.gobierno.servicio_identidad.Infrastructure.Configuration;
+package com.gobierno.servicio_identidad.infrastructure.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

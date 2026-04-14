@@ -1,9 +1,9 @@
-package com.gobierno.servicio_autorizacion.Domain.Factory;
+package com.gobierno.servicio_autorizacion.domain.factory;
 
 import org.springframework.stereotype.Component;
 
-import com.gobierno.servicio_autorizacion.Domain.Model.UserRol;
-import com.gobierno.servicio_autorizacion.Domain.Model.Rol;
+import com.gobierno.servicio_autorizacion.domain.entities.Rol;
+import com.gobierno.servicio_autorizacion.domain.entities.UserRol;
 
 @Component("USER")
 public class UserRolCreator extends AbstractRolCreator {

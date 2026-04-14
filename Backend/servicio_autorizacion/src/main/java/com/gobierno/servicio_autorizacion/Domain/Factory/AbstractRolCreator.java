@@ -1,6 +1,6 @@
-package com.gobierno.servicio_autorizacion.Domain.Factory;
+package com.gobierno.servicio_autorizacion.domain.factory;
 
-import com.gobierno.servicio_autorizacion.Domain.Model.Rol;
+import com.gobierno.servicio_autorizacion.domain.entities.Rol;
 
 public abstract class AbstractRolCreator {
 
