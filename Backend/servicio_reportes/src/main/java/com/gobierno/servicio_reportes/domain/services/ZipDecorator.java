@@ -23,7 +23,8 @@ public class ZipDecorator extends ReporteBaseDecorator {
     private byte[] comprimirZip(byte[] contenido) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ZipOutputStream zos = new ZipOutputStream(baos)) {
-            String nombreArchivo = "reporte_" + tipo.toLowerCase() + ".pdf";
+            String extension = detectarExtension(contenido);
+            String nombreArchivo = "reporte_" + tipo.toLowerCase() + extension;
             ZipEntry entry = new ZipEntry(nombreArchivo);
             zos.putNextEntry(entry);
             zos.write(contenido);
@@ -33,5 +34,15 @@ public class ZipDecorator extends ReporteBaseDecorator {
         } catch (Exception e) {
             throw new RuntimeException("Error al comprimir ZIP", e);
         }
+    }
+    
+    private String detectarExtension(byte[] contenido) {
+        if (contenido != null && contenido.length >= 4) {
+            String header = new String(contenido, 0, 4);
+            if (header.startsWith("%PDF")) {
+                return ".pdf";
+            }
+        }
+        return ".csv";
     }
 }

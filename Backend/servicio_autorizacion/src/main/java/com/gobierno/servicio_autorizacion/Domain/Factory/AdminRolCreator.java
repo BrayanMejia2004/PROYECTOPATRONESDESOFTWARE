@@ -10,7 +10,7 @@ public class AdminRolCreator extends AbstractRolCreator {
 
     @Override
     public Rol crearRol() {
-        return new AdminRol();
+        return AdminRol.crear();
     }
     
 }

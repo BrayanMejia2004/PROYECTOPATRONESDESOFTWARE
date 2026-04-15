@@ -1,6 +1,7 @@
 package com.gobierno.servicio_identidad.infrastructure.adapter.client;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -20,18 +21,24 @@ public class GeneradorJwtAdapter {
         this.config = config;
     }
 
-    public String generarToken(Usuario usuario) {
+    public String generarToken(Usuario usuario, List<String> roles) {
         String secret = config.getJwtSecret();
         long expiracion = config.getJwtExpiracion();
 
         java.util.Date ahora = new java.util.Date();
         java.util.Date fechaExpiracion = new java.util.Date(ahora.getTime() + expiracion);
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .setSubject(usuario.getUsername())
+                .claim("roles", roles)
                 .setIssuedAt(ahora)
                 .setExpiration(fechaExpiracion)
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
-                .compact();
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256);
+
+        return builder.compact();
+    }
+
+    public String generarToken(Usuario usuario) {
+        return generarToken(usuario, List.of());
     }
 }

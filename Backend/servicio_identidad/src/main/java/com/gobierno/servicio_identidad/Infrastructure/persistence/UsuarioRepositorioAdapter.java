@@ -17,11 +17,13 @@ public class UsuarioRepositorioAdapter implements UsuarioRepositorioPort {
         this.jpaRepository = jpaRepository;
     }
 
+    @SuppressWarnings("null")
     @Override
     public Usuario guardar(Usuario usuario) {
         return jpaRepository.save(usuario);
     }
 
+    @SuppressWarnings("null")
     @Override
     public Optional<Usuario> buscarPorId(Long id) {
         return jpaRepository.findById(id);

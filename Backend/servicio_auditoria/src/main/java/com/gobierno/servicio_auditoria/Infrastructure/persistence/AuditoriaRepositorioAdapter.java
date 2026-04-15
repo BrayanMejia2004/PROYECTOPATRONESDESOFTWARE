@@ -15,6 +15,7 @@ public class AuditoriaRepositorioAdapter implements RegistroAuditoriaPort {
         this.auditoriaJpaRepository = auditoriaJpaRepository;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void registrarAccion(Auditoria auditoria) {
         auditoriaJpaRepository.save(auditoria);

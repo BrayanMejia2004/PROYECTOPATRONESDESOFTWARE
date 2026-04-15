@@ -2,30 +2,19 @@ package com.gobierno.servicio_identidad.infrastructure.adapter.dto;
 
 public class PerfilResponse {
 
-    private Integer id;
-    private Integer usuarioId;
     private String nombre;
     private String apellido;
     private String telefono;
+    private String email;
 
     public PerfilResponse() {
     }
 
-    public PerfilResponse(Integer id, Integer usuarioId, String nombre, 
-            String apellido, String telefono) {
-        this.id = id;
-        this.usuarioId = usuarioId;
+    public PerfilResponse(String nombre, String apellido, String telefono, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getUsuarioId() {
-        return usuarioId;
+        this.email = email;
     }
 
     public String getNombre() {
@@ -38,5 +27,9 @@ public class PerfilResponse {
 
     public String getTelefono() {
         return telefono;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

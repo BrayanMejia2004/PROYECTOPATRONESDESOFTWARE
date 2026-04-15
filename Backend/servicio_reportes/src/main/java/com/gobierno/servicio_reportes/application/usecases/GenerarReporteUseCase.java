@@ -1,18 +1,21 @@
 package com.gobierno.servicio_reportes.application.usecases;
 
+import java.sql.Timestamp;
+import java.util.Base64;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.gobierno.servicio_reportes.domain.entities.Reporte;
 import com.gobierno.servicio_reportes.domain.ports.in.GenerarReportePort;
 import com.gobierno.servicio_reportes.domain.ports.out.ReporteDataProviderPort;
 import com.gobierno.servicio_reportes.domain.ports.out.ReporteRepositoryPort;
 import com.gobierno.servicio_reportes.domain.services.CsvDecorator;
 import com.gobierno.servicio_reportes.domain.services.PdfDecorator;
-import com.gobierno.servicio_reportes.domain.services.ReporteConcreteComponent;
 import com.gobierno.servicio_reportes.domain.services.ReporteComponent;
+import com.gobierno.servicio_reportes.domain.services.ReporteConcreteComponent;
 import com.gobierno.servicio_reportes.domain.services.ZipDecorator;
 import com.gobierno.servicio_reportes.domain.valueobjects.ReporteData;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.Base64;
 
 @Service
 public class GenerarReporteUseCase implements GenerarReportePort {
@@ -30,10 +33,29 @@ public class GenerarReporteUseCase implements GenerarReportePort {
     @Override
     @Transactional
     public byte[] generarReporte(String tipo, String formato, String usuarioSolicitante) {
-        ReporteData datos = dataProvider.obtenerDatos(tipo);
+        return generarReporte(tipo, formato, usuarioSolicitante, null, null, null, null, null);
+    }
+    
+    @Override
+    @Transactional
+    public byte[] generarReporte(String tipo, String formato, String usuarioSolicitante,
+                                  Integer usuarioId, Timestamp fechaDesde, Timestamp fechaHasta,
+                                  String accion, String tipoAuditoria) {
+        ReporteData datos = obtenerDatosConFiltros(tipo, usuarioId, fechaDesde, fechaHasta, accion, tipoAuditoria);
         byte[] contenido = generarContenido(datos, formato, tipo);
         guardarReporte(tipo, datos.getTitulo(), datos.getDescripcion(), contenido, formato, usuarioSolicitante);
         return contenido;
+    }
+    
+    private ReporteData obtenerDatosConFiltros(String tipo, Integer usuarioId, Timestamp fechaDesde, 
+                                                Timestamp fechaHasta, String accion, String tipoAuditoria) {
+        if ("AUDITORIA".equalsIgnoreCase(tipo)) {
+            if (usuarioId != null || fechaDesde != null || fechaHasta != null || 
+                (accion != null && !accion.isBlank()) || (tipoAuditoria != null && !tipoAuditoria.isBlank())) {
+                return dataProvider.obtenerDatosAuditoriaFiltrado(usuarioId, fechaDesde, fechaHasta, tipoAuditoria, accion);
+            }
+        }
+        return dataProvider.obtenerDatos(tipo);
     }
     
     @Override
