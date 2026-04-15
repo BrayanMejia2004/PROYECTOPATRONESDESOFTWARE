@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/usuarios/registro").permitAll()
                         .requestMatchers("/usuarios/login").permitAll()
                         .requestMatchers("/usuarios/lista").permitAll()
+                        .requestMatchers("/usuarios/*/id").permitAll()
                         .anyRequest().authenticated())
 
                 .addFilterBefore(filtroJwtAdapter, UsernamePasswordAuthenticationFilter.class);

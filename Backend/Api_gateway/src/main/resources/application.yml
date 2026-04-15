@@ -28,10 +28,17 @@ spring:
           filters:
             - StripPrefix=1
         
-        - id: servicio-autorizacion
+        - id: servicio-autorizacion-roles
           uri: http://localhost:8083
           predicates:
             - Path=/api/roles/**
+          filters:
+            - StripPrefix=1
+
+        - id: servicio-autorizacion-permisos
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/permisos/**
           filters:
             - StripPrefix=1
         

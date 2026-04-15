@@ -20,12 +20,16 @@ public class CrearRolUseCase {
         this.creators = creators;
     }
 
-    public Rol ejecutar(String tipoRol) {
-        AbstractRolCreator creator = creators.get(tipoRol.toUpperCase());
-        if (creator == null) {
-            throw new IllegalArgumentException("Tipo de rol invalido");
+    public Rol ejecutar(String nombreRol, String descripcion) {
+        AbstractRolCreator creator = creators.get(nombreRol.toUpperCase());
+        
+        Rol rol;
+        if (creator != null) {
+            rol = creator.crearRol();
+        } else {
+            rol = new Rol(nombreRol.toUpperCase(), descripcion);
         }
-        Rol rol = creator.crearRol();
+        
         return rolRepositoryPort.guardar(rol);
     }
     

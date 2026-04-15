@@ -1,14 +1,8 @@
 package com.gobierno.servicio_autorizacion.domain.entities;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+public class UserRol {
 
-@Entity
-@DiscriminatorValue("USER")
-public class UserRol extends Rol {
-
-    public UserRol() {
-       super("USER", "Usuario Estandar Del Sistema");
+    public static Rol crear() {
+        return new Rol("USER", "Usuario Estandar Del Sistema");
     }
-     
 }

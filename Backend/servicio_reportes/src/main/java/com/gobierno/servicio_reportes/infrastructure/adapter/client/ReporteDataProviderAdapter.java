@@ -1,14 +1,19 @@
 package com.gobierno.servicio_reportes.infrastructure.adapter.client;
 
-import com.gobierno.servicio_reportes.domain.ports.out.ReporteDataProviderPort;
-import com.gobierno.servicio_reportes.domain.valueobjects.ReporteData;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
-import java.util.List;
-import java.util.Map;
+
+import com.gobierno.servicio_reportes.domain.ports.out.ReporteDataProviderPort;
+import com.gobierno.servicio_reportes.domain.valueobjects.ReporteData;
 
 @Component
 public class ReporteDataProviderAdapter implements ReporteDataProviderPort {
@@ -30,8 +35,40 @@ public class ReporteDataProviderAdapter implements ReporteDataProviderPort {
     
     @Override
     public ReporteData obtenerDatosAuditoria() {
+        return obtenerDatosAuditoriaFiltrado(null, null, null, null, null);
+    }
+    
+    @Override
+    public ReporteData obtenerDatosAuditoriaFiltrado(
+            Integer usuarioId,
+            Timestamp fechaDesde,
+            Timestamp fechaHasta,
+            String tipo,
+            String accion) {
         try {
-            String url = auditoriaUrl + "/auditoria/lista";
+            StringBuilder urlBuilder = new StringBuilder(auditoriaUrl + "/auditoria/lista?");
+            
+            if (usuarioId != null) {
+                urlBuilder.append("usuarioId=").append(usuarioId).append("&");
+            }
+            if (fechaDesde != null) {
+                urlBuilder.append("fechaDesde=").append(URLEncoder.encode(fechaDesde.toString(), StandardCharsets.UTF_8)).append("&");
+            }
+            if (fechaHasta != null) {
+                urlBuilder.append("fechaHasta=").append(URLEncoder.encode(fechaHasta.toString(), StandardCharsets.UTF_8)).append("&");
+            }
+            if (tipo != null && !tipo.isBlank()) {
+                urlBuilder.append("tipo=").append(URLEncoder.encode(tipo, StandardCharsets.UTF_8)).append("&");
+            }
+            if (accion != null && !accion.isBlank()) {
+                urlBuilder.append("accion=").append(URLEncoder.encode(accion, StandardCharsets.UTF_8)).append("&");
+            }
+            
+            String url = urlBuilder.toString();
+            if (url.endsWith("&")) {
+                url = url.substring(0, url.length() - 1);
+            }
+            
             @SuppressWarnings("null")
             ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
                 url,

@@ -17,6 +17,7 @@ public class PerfilUsuarioRepositoryAdapter implements PerfilUsuarioRepositoryPo
         this.jpaRepository = jpaRepository;
     }
 
+    @SuppressWarnings("null")
     @Override
     public PerfilUsuario guardar(PerfilUsuario perfil) {
         return jpaRepository.save(perfil);
@@ -32,6 +33,7 @@ public class PerfilUsuarioRepositoryAdapter implements PerfilUsuarioRepositoryPo
         return jpaRepository.existsByUsuarioId(usuarioId);
     }
 
+    @SuppressWarnings("null")
     @Override
     public PerfilUsuario actualizar(PerfilUsuario perfil) {
         return jpaRepository.save(perfil);
