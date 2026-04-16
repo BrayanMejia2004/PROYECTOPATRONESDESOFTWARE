@@ -10,7 +10,7 @@ public interface GenerarReportePort {
     
     byte[] generarReporte(String tipo, String formato, String usuarioSolicitante,
                           Integer usuarioId, Timestamp fechaDesde, Timestamp fechaHasta,
-                          String accion, String tipoAuditoria);
+                          String accion, String tipoAuditoria, String secciones);
     
     Reporte guardarReporte(String tipo, String titulo, String descripcion, 
                            byte[] contenido, String formato, String usuarioSolicitante);

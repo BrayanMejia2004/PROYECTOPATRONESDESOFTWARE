@@ -7,6 +7,7 @@ public class ReporteData {
     private String[] headers;
     private String[][] filas;
     private String descripcion;
+    private String usuarioSolicitante;
     
     public ReporteData() {}
     
@@ -27,6 +28,8 @@ public class ReporteData {
     public void setFilas(String[][] filas) { this.filas = filas; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getUsuarioSolicitante() { return usuarioSolicitante; }
+    public void setUsuarioSolicitante(String usuarioSolicitante) { this.usuarioSolicitante = usuarioSolicitante; }
     
     @Override
     public String toString() {
