@@ -12,6 +12,12 @@ const Auditoria = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loadingReportes, setLoadingReportes] = useState(false);
+  const [secciones, setSecciones] = useState({
+    encabezado: true,
+    resumen: true,
+    detalle: true,
+    pie: true
+  });
   const [filtros, setFiltros] = useState({
     usuarioId: '',
     fechaDesde: '',
@@ -74,6 +80,10 @@ const Auditoria = () => {
     setFiltros(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSeccionChange = (seccion) => {
+    setSecciones(prev => ({ ...prev, [seccion]: !prev[seccion] }));
+  };
+
   const limpiarFiltros = () => {
     setFiltros({
       usuarioId: '',
@@ -88,7 +98,12 @@ const Auditoria = () => {
     setLoadingReportes(true);
     setError(null);
 
-    const result = await reportesService.generarReporte('AUDITORIA', formato, filtros, token);
+    const seccionesParam = Object.entries(secciones)
+      .filter(([_, selected]) => selected)
+      .map(([nombre]) => nombre.toUpperCase())
+      .join(',');
+
+    const result = await reportesService.generarReporte('AUDITORIA', formato, filtros, token, seccionesParam);
 
     if (result.success) {
       let extension;
@@ -250,6 +265,41 @@ const Auditoria = () => {
 
         <div className="reportes-section">
           <h3>Generar Reportes</h3>
+          <div className="secciones-checklist">
+            <span className="secciones-label">Secciones:</span>
+            <label className="seccion-checkbox">
+              <input
+                type="checkbox"
+                checked={secciones.encabezado}
+                onChange={() => handleSeccionChange('encabezado')}
+              />
+              <span>Encabezado</span>
+            </label>
+            <label className="seccion-checkbox">
+              <input
+                type="checkbox"
+                checked={secciones.resumen}
+                onChange={() => handleSeccionChange('resumen')}
+              />
+              <span>Resumen</span>
+            </label>
+            <label className="seccion-checkbox">
+              <input
+                type="checkbox"
+                checked={secciones.detalle}
+                onChange={() => handleSeccionChange('detalle')}
+              />
+              <span>Detalle</span>
+            </label>
+            <label className="seccion-checkbox">
+              <input
+                type="checkbox"
+                checked={secciones.pie}
+                onChange={() => handleSeccionChange('pie')}
+              />
+              <span>Pie</span>
+            </label>
+          </div>
           <div className="reportes-buttons">
             <select
               id="formato-select"

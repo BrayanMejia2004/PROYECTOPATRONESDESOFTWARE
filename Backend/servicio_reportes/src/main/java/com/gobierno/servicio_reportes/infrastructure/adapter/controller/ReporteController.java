@@ -40,7 +40,8 @@ public class ReporteController {
             @RequestParam(required = false) String fechaDesde,
             @RequestParam(required = false) String fechaHasta,
             @RequestParam(required = false) String accion,
-            @RequestParam(required = false) String tipoAuditoria) {
+            @RequestParam(required = false) String tipoAuditoria,
+            @RequestParam(required = false) String secciones) {
         
         String usuarioSolicitante = (usuario != null && !usuario.isBlank()) ? usuario : "SYSTEM";
         
@@ -51,9 +52,10 @@ public class ReporteController {
         if (usuarioId != null || fechaDesdeParsed != null || fechaHastaParsed != null || 
             (accion != null && !accion.isBlank()) || (tipoAuditoria != null && !tipoAuditoria.isBlank())) {
             contenido = generarReportePort.generarReporte(tipo, formato, usuarioSolicitante,
-                    usuarioId, fechaDesdeParsed, fechaHastaParsed, accion, tipoAuditoria);
+                    usuarioId, fechaDesdeParsed, fechaHastaParsed, accion, tipoAuditoria, secciones);
         } else {
-            contenido = generarReportePort.generarReporte(tipo, formato, usuarioSolicitante);
+            contenido = generarReportePort.generarReporte(tipo, formato, usuarioSolicitante,
+                    null, null, null, null, null, secciones);
         }
         
         String extension;

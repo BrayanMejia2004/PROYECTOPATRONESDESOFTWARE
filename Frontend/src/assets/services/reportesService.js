@@ -1,7 +1,7 @@
 import axiosInstance from '../../Api/axiosConfig';
 
 const reportesService = {
-  generarReporte: async (tipo, formato, filtros, token) => {
+  generarReporte: async (tipo, formato, filtros, token, secciones) => {
     try {
       const params = new URLSearchParams();
       params.append('formato', formato);
@@ -13,6 +13,10 @@ const reportesService = {
         if (filtros.fechaHasta) params.append('fechaHasta', filtros.fechaHasta);
         if (filtros.tipo) params.append('tipoAuditoria', filtros.tipo);
         if (filtros.accion) params.append('accion', filtros.accion);
+      }
+      
+      if (secciones) {
+        params.append('secciones', secciones);
       }
       
       const response = await axiosInstance.get(

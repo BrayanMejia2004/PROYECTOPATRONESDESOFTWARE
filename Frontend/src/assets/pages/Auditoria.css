@@ -162,6 +162,51 @@
   color: #e7e9ea;
 }
 
+.secciones-checklist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.secciones-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #8899a6;
+  margin-right: 0.5rem;
+}
+
+.seccion-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+  color: #e7e9ea;
+}
+
+.seccion-checkbox:hover {
+  background: rgba(212, 168, 83, 0.1);
+}
+
+.seccion-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #d4a853;
+  cursor: pointer;
+}
+
+.seccion-checkbox span {
+  user-select: none;
+}
+
 .filtros-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
