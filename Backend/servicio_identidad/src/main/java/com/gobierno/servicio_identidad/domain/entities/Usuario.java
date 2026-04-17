@@ -36,6 +36,7 @@ public class Usuario {
     }
 
     private Usuario(Builder builder) {
+        this.id = builder.id;
         this.username = builder.username;
         this.password = builder.password;
         this.email = builder.email;
@@ -44,11 +45,17 @@ public class Usuario {
     }
 
     public static class Builder {
+        private Long id;
         private String username;
         private String password;
         private String email;
         private Boolean estado;
         private java.sql.Timestamp fechaCreacion;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder username(String username) {
             this.username = username;
@@ -82,6 +89,10 @@ public class Usuario {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
