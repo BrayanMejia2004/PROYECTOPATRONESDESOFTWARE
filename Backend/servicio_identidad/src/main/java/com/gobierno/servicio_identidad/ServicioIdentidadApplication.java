@@ -6,10 +6,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
-public class ServicioIdentidadApplication {
+public class ServicioIdentidadApplication { // Clase principal del servicio de identidad
 
-	public static void main(String[] args) {
-		SpringApplication.run(ServicioIdentidadApplication.class, args);
-
+	public static void main(String[] args) { // Método main - punto de entrada de la aplicación
+		SpringApplication.run(ServicioIdentidadApplication.class, args); // Inicia la aplicación Spring Boot
 	}
 }

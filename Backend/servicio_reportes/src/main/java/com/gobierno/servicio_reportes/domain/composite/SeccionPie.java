@@ -6,10 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Sección de pie de reporte.
- * Muestra marca de fin, timestamp y total de registros.
- */
 public class SeccionPie extends SeccionSimple {
     
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

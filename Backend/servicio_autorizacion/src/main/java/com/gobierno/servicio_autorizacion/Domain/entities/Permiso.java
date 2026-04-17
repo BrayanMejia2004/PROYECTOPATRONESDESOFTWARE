@@ -9,64 +9,64 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "permisos")
-public class Permiso {
+public class Permiso { // Entidad que representa un permiso en el sistema
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // Define este campo como clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento en PostgreSQL
+    private Long id; // ID único del permiso (PK)
 
-    @Column(unique = true, nullable = false)
-    private String nombre;
+    @Column(unique = true, nullable = false) // Columna nombre, único y obligatorio
+    private String nombre; // Nombre del permiso (ej: "LEER_USUARIOS")
 
-    private String descripcion;
+    private String descripcion; // Descripción del permiso
 
-    private String recurso;
+    private String recurso; // Recurso al que se aplica el permiso (ej: "usuarios")
 
-    private String accion;
+    private String accion; // Acción que permite el permiso (ej: "READ", "WRITE")
 
     public Permiso() {
+    } // Constructor vacío para JPA
+
+    public Permiso(String nombre, String descripcion, String recurso, String accion) { // Constructor con parámetros
+        this.nombre = nombre; // Asigna el nombre
+        this.descripcion = descripcion; // Asigna la descripción
+        this.recurso = recurso; // Asigna el recurso
+        this.accion = accion; // Asigna la acción
     }
 
-    public Permiso(String nombre, String descripcion, String recurso, String accion) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.recurso = recurso;
-        this.accion = accion;
-    }
-
-    public Long getId() {
+    public Long getId() { // Getter para obtener el ID
         return id;
     }
 
-    public String getNombre() {
+    public String getNombre() { // Getter para obtener el nombre
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    public void setNombre(String nombre) { // Setter para modificar el nombre
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
+    public String getDescripcion() { // Getter para obtener la descripción
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(String descripcion) { // Setter para modificar la descripción
         this.descripcion = descripcion;
     }
 
-    public String getRecurso() {
+    public String getRecurso() { // Getter para obtener el recurso
         return recurso;
     }
 
-    public void setRecurso(String recurso) {
+    public void setRecurso(String recurso) { // Setter para modificar el recurso
         this.recurso = recurso;
     }
 
-    public String getAccion() {
+    public String getAccion() { // Getter para obtener la acción
         return accion;
     }
 
-    public void setAccion(String accion) {
+    public void setAccion(String accion) { // Setter para modificar la acción
         this.accion = accion;
     }
 }

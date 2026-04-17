@@ -9,44 +9,43 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "roles")
-public class Rol {
+public class Rol { // Entidad que representa un rol en el sistema
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // Define este campo como clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento en PostgreSQL
+    private Long id; // ID único del rol (PK)
 
-    @Column(name = "nombre", nullable = false, unique = true)
-    private String nombre;
+    @Column(name = "nombre", nullable = false, unique = true) // Columna nombre, obligatorio y único
+    private String nombre; // Nombre del rol (ADMIN, USER, AUDITOR)
 
-    @Column(name = "descripcion")
-    private String descripcion;
+    @Column(name = "descripcion") // Columna para descripción del rol
+    private String descripcion; // Descripción del rol
 
     public Rol() {
+    } // Constructor vacío para JPA
 
+    public Rol(String nombre, String descripcion) { // Constructor con parámetros
+        this.nombre = nombre; // Asigna el nombre
+        this.descripcion = descripcion; // Asigna la descripción
     }
 
-    public Rol(String nombre, String descripcion) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-    }
-
-    public Long getId() {
+    public Long getId() { // Getter para obtener el ID
         return id;
     }
 
-    public String getNombre() {
+    public String getNombre() { // Getter para obtener el nombre
         return nombre;
     }
 
-    public String getDescripcion() {
+    public String getDescripcion() { // Getter para obtener la descripción
         return descripcion;
     }
 
-    public void setNombre(String nombre) {
+    public void setNombre(String nombre) { // Setter para modificar el nombre
         this.nombre = nombre;
     }
 
-    public void setDescripcion(String descripcion) {
+    public void setDescripcion(String descripcion) { // Setter para modificar la descripción
         this.descripcion = descripcion;
     }
 }

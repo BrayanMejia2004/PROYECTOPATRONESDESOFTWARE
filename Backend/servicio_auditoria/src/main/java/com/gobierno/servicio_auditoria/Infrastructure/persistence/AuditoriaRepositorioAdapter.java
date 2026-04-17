@@ -1,15 +1,14 @@
 package com.gobierno.servicio_auditoria.infrastructure.persistence;
 
 import org.springframework.stereotype.Repository;
-
 import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
 import com.gobierno.servicio_auditoria.domain.ports.out.RegistroAuditoriaPort;
 import com.gobierno.servicio_auditoria.infrastructure.persistence.repository.AuditoriaJpaRepository;
 
 @Repository
-public class AuditoriaRepositorioAdapter implements RegistroAuditoriaPort {
+public class AuditoriaRepositorioAdapter implements RegistroAuditoriaPort {  // Adapter que implementa el puerto
 
-    private final AuditoriaJpaRepository auditoriaJpaRepository;
+    private final AuditoriaJpaRepository auditoriaJpaRepository;  // Repositorio JPA
 
     public AuditoriaRepositorioAdapter(AuditoriaJpaRepository auditoriaJpaRepository) {
         this.auditoriaJpaRepository = auditoriaJpaRepository;
@@ -17,7 +16,7 @@ public class AuditoriaRepositorioAdapter implements RegistroAuditoriaPort {
 
     @SuppressWarnings("null")
     @Override
-    public void registrarAccion(Auditoria auditoria) {
+    public void registrarAccion(Auditoria auditoria) {  // Persiste la auditoría
         auditoriaJpaRepository.save(auditoria);
     }
 }

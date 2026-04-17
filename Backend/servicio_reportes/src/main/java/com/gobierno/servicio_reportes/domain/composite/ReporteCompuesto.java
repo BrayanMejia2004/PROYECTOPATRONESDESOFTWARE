@@ -9,10 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Composite del patrón Composite.
- * Gestiona colección de secciones y las integra con Decorator (ReporteComponent).
- */
 public class ReporteCompuesto implements SeccionComponent, ReporteComponent {
     
     private final String nombre;
@@ -23,18 +19,15 @@ public class ReporteCompuesto implements SeccionComponent, ReporteComponent {
         this.secciones = new ArrayList<>();
     }
     
-    // Añade sección y reordena por prioridad
     public void agregarSeccion(SeccionComponent seccion) {
         secciones.add(seccion);
         ordenarSecciones();
     }
     
-    // Elimina sección específica
     public void quitarSeccion(SeccionComponent seccion) {
         secciones.remove(seccion);
     }
     
-    // Elimina todas las secciones de un tipo
     public void quitarSeccionPorTipo(String tipo) {
         secciones.removeIf(s -> s.getTipo().equalsIgnoreCase(tipo));
     }
@@ -43,23 +36,19 @@ public class ReporteCompuesto implements SeccionComponent, ReporteComponent {
         return new ArrayList<>(secciones);
     }
     
-    // Ordena secciones por su campo 'orden'
     private void ordenarSecciones() {
         secciones.sort(Comparator.comparingInt(SeccionComponent::getOrden));
     }
     
-    // Genera contenido secuencial de secciones habilitadas
     @Override
     public byte[] generar(ReporteData datos) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
-        // Filtra y ordena secciones habilitadas
         List<SeccionComponent> seccionesHabilitadas = secciones.stream()
                 .filter(SeccionComponent::estaHabilitada)
                 .sorted(Comparator.comparingInt(SeccionComponent::getOrden))
                 .collect(Collectors.toList());
         
-        // Concatena salida de cada sección
         for (SeccionComponent seccion : seccionesHabilitadas) {
             byte[] contenido = seccion.generar(datos);
             if (contenido != null && contenido.length > 0) {

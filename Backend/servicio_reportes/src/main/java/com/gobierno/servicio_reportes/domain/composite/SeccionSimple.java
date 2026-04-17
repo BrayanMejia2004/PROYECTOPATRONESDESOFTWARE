@@ -1,14 +1,10 @@
 package com.gobierno.servicio_reportes.domain.composite;
 
-/**
- * Clase base abstracta para secciones Leaf del Composite.
- * Implementa comportamiento común (tipo, habilitación, orden).
- */
 public abstract class SeccionSimple implements SeccionComponent {
     
-    protected String tipo;      // Identificador de la sección
-    protected boolean habilitada;  // Si está activa para generar
-    protected int orden;           // Posición en el reporte
+    protected String tipo;
+    protected boolean habilitada;
+    protected int orden;
     
     protected SeccionSimple(String tipo, int orden) {
         this.tipo = tipo;
@@ -31,12 +27,10 @@ public abstract class SeccionSimple implements SeccionComponent {
         return orden;
     }
     
-    // Activa/desactiva la sección
     public void setHabilitada(boolean habilitada) {
         this.habilitada = habilitada;
     }
     
-    // Trunca texto largo y agrega "..." si supera el ancho
     protected String formatearLinea(String texto, int ancho) {
         if (texto == null) texto = "";
         if (texto.length() > ancho) {
@@ -45,7 +39,6 @@ public abstract class SeccionSimple implements SeccionComponent {
         return texto;
     }
     
-    // Genera una cadena de caracteres repetidos
     protected String repetirCaracter(char c, int veces) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < veces; i++) {

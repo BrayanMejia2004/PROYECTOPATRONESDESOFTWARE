@@ -9,48 +9,49 @@ import com.gobierno.servicio_identidad.domain.ports.out.UsuarioRepositorioPort;
 import com.gobierno.servicio_identidad.infrastructure.persistence.repository.UsuarioJpaRepository;
 
 @Repository
-public class UsuarioRepositorioAdapter implements UsuarioRepositorioPort {
-    
-    private final UsuarioJpaRepository jpaRepository;
+public class UsuarioRepositorioAdapter implements UsuarioRepositorioPort { // Adapter que implementa el puerto del
+                                                                           // dominio
 
-    public UsuarioRepositorioAdapter(UsuarioJpaRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
+    private final UsuarioJpaRepository jpaRepository; // Repositorio JPA de usuarios
+
+    public UsuarioRepositorioAdapter(UsuarioJpaRepository jpaRepository) { // Constructor con inyección
+        this.jpaRepository = jpaRepository; // Asigna el repositorio JPA
     }
 
-    @SuppressWarnings("null")
-    @Override
-    public Usuario guardar(Usuario usuario) {
-        return jpaRepository.save(usuario);
+    @SuppressWarnings("null") // Suprime warning de posible null
+    @Override // Sobrescribe el método de la interfaz
+    public Usuario guardar(Usuario usuario) { // Persiste un usuario (create o update)
+        return jpaRepository.save(usuario); // Delegal la operación al repositorio JPA
     }
 
-    @SuppressWarnings("null")
-    @Override
-    public Optional<Usuario> buscarPorId(Long id) {
-        return jpaRepository.findById(id);
+    @SuppressWarnings("null") // Suprime warning de posible null
+    @Override // Sobrescribe el método de la interfaz
+    public Optional<Usuario> buscarPorId(Long id) { // Busca un usuario por su ID
+        return jpaRepository.findById(id); // Delegal la operación al repositorio JPA
     }
 
-    @Override
-    public Optional<Usuario> buscarPorUsername(String username) {
-        return jpaRepository.findByUsername(username);
+    @Override // Sobrescribe el método de la interfaz
+    public Optional<Usuario> buscarPorUsername(String username) { // Busca un usuario por username
+        return jpaRepository.findByUsername(username); // Delegal la operación al repositorio JPA
     }
 
-    @Override
-    public Optional<Usuario> buscarPorEmail(String email) {
-        return jpaRepository.findByEmail(email);
+    @Override // Sobrescribe el método de la interfaz
+    public Optional<Usuario> buscarPorEmail(String email) { // Busca un usuario por email
+        return jpaRepository.findByEmail(email); // Delegal la operación al repositorio JPA
     }
 
-    @Override
-    public boolean existePorUsername(String username) {
-        return jpaRepository.existsByUsername(username);
+    @Override // Sobrescribe el método de la interfaz
+    public boolean existePorUsername(String username) { // Verifica si existe un usuario con el username
+        return jpaRepository.existsByUsername(username); // Delegal la operación al repositorio JPA
     }
 
-    @Override
-    public boolean existePorEmail(String email) {
-        return jpaRepository.existsByEmail(email);
+    @Override // Sobrescribe el método de la interfaz
+    public boolean existePorEmail(String email) { // Verifica si existe un usuario con el email
+        return jpaRepository.existsByEmail(email); // Delegal la operación al repositorio JPA
     }
 
-    @Override
-    public void eliminarPorUsername(String username) {
-        jpaRepository.deleteByUsername(username);
+    @Override // Sobrescribe el método de la interfaz
+    public void eliminarPorUsername(String username) { // Elimina un usuario por su username
+        jpaRepository.deleteByUsername(username); // Delegal la operación al repositorio JPA
     }
 }

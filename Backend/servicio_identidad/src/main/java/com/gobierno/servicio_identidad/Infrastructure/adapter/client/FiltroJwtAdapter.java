@@ -14,43 +14,47 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
-public class FiltroJwtAdapter extends OncePerRequestFilter {
+public class FiltroJwtAdapter extends OncePerRequestFilter { // Filtro para validar JWT en cada petición
 
-    private final ValidadorJwtAdapter validadorJwtAdapter;
+    private final ValidadorJwtAdapter validadorJwtAdapter; // Adapter para validar tokens
 
-    public FiltroJwtAdapter(ValidadorJwtAdapter validadorJwtAdapter) {
-        this.validadorJwtAdapter = validadorJwtAdapter;
+    public FiltroJwtAdapter(ValidadorJwtAdapter validadorJwtAdapter) { // Constructor con inyección
+        this.validadorJwtAdapter = validadorJwtAdapter; // Asigna el validador
     }
 
-    @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request,
-            @SuppressWarnings("null") HttpServletResponse response,
-            @SuppressWarnings("null") FilterChain filterChain)
-            throws ServletException, IOException {
+    @Override // Sobrescribe el método de la clase padre
+    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request, // Petición HTTP
+            @SuppressWarnings("null") HttpServletResponse response, // Respuesta HTTP
+            @SuppressWarnings("null") FilterChain filterChain) // Cadena de filtros
+            throws ServletException, IOException { // Excepciones de Servlet
 
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization"); // Obtiene el header Authorization
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+        if (header != null && header.startsWith("Bearer ")) { // Si existe el header y empieza con "Bearer "
+            String token = header.substring(7); // Extrae el token (sin "Bearer ")
 
-            try {
-                Claims claims = validadorJwtAdapter.validarToken(token);
+            try { // Try-catch para manejar errores de validación
+                Claims claims = validadorJwtAdapter.validarToken(token); // Valida el token
 
-                String username = claims.getSubject();
+                String username = claims.getSubject(); // Obtiene el username del token
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        Collections.emptyList());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken( // Crea
+                                                                                                              // token
+                                                                                                              // de
+                                                                                                              // autenticación
+                        username, // Principal (username)
+                        null, // Credentials (no hay password)
+                        Collections.emptyList()); // Authorities (roles vacíos)
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication); // Establece la autenticación en
+                                                                                      // el contexto
 
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+            } catch (Exception e) { // Si el token es inválido
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Retorna 401 Unauthorized
+                return; // Termina la ejecución del filtro
             }
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); // Continúa con la cadena de filtros
     }
 }
