@@ -25,205 +25,209 @@ import com.gobierno.servicio_autorizacion.domain.ports.out.UsuariosRolesPort;
 
 @RestController
 @RequestMapping("/roles")
-public class RolController {
+public class RolController { // Controlador REST para gestionar roles
 
-    private static final List<String> ROLES_FIJOS = Arrays.asList("ADMIN", "USER", "AUDITOR");
+    private static final List<String> ROLES_FIJOS = Arrays.asList("ADMIN", "USER", "AUDITOR"); // Roles que no se pueden
+                                                                                               // eliminar/editar
 
-    private final CrearRolConPermisosUseCase crearRolConPermisosUseCase;
-    private final RolJpaRepository rolJpaRepository;
-    private final RolesPermisosPort rolesPermisosPort;
-    private final UsuariosRolesPort usuariosRolesPort;
-    private final AuditoriaClient auditoriaClient;
-    private final IdentidadClient identidadClient;
+    private final CrearRolConPermisosUseCase crearRolConPermisosUseCase; // Caso de uso para crear rol
+    private final RolJpaRepository rolJpaRepository; // Repositorio JPA de roles
+    private final RolesPermisosPort rolesPermisosPort; // Puerto de roles-permisos
+    private final UsuariosRolesPort usuariosRolesPort; // Puerto de usuarios-roles
+    private final AuditoriaClient auditoriaClient; // Cliente de auditoría
+    private final IdentidadClient identidadClient; // Cliente de identidad
 
-    public RolController(CrearRolConPermisosUseCase crearRolConPermisosUseCase,
-                        RolJpaRepository rolJpaRepository,
-                        RolesPermisosPort rolesPermisosPort,
-                        UsuariosRolesPort usuariosRolesPort,
-                        AuditoriaClient auditoriaClient,
-                        IdentidadClient identidadClient) {
-        this.crearRolConPermisosUseCase = crearRolConPermisosUseCase;
-        this.rolJpaRepository = rolJpaRepository;
-        this.rolesPermisosPort = rolesPermisosPort;
-        this.usuariosRolesPort = usuariosRolesPort;
-        this.auditoriaClient = auditoriaClient;
-        this.identidadClient = identidadClient;
+    public RolController(CrearRolConPermisosUseCase crearRolConPermisosUseCase, // Constructor con inyección
+            RolJpaRepository rolJpaRepository, // Constructor con inyección
+            RolesPermisosPort rolesPermisosPort, // Constructor con inyección
+            UsuariosRolesPort usuariosRolesPort, // Constructor con inyección
+            AuditoriaClient auditoriaClient, // Constructor con inyección
+            IdentidadClient identidadClient) { // Constructor con inyección
+        this.crearRolConPermisosUseCase = crearRolConPermisosUseCase; // Asigna el caso de uso
+        this.rolJpaRepository = rolJpaRepository; // Asigna el repositorio
+        this.rolesPermisosPort = rolesPermisosPort; // Asigna el puerto
+        this.usuariosRolesPort = usuariosRolesPort; // Asigna el puerto
+        this.auditoriaClient = auditoriaClient; // Asigna el cliente
+        this.identidadClient = identidadClient; // Asigna el cliente
     }
 
-    @PostMapping("/crear/{tipoRol}")
-    public ResponseEntity<?> crearRol(@PathVariable String tipoRol,
-                                     @RequestBody(required = false) RolRequest request,
-                                     @RequestHeader(value = "X-Usuario", required = false) String usuarioAdmin) {
-        String nombre = tipoRol.toUpperCase();
-        String descripcion = (request != null && request.getDescripcion() != null)
-                ? request.getDescripcion()
-                : "Rol personalizado";
+    @PostMapping("/crear/{tipoRol}") // Endpoint: POST /roles/crear/{tipoRol}
+    public ResponseEntity<?> crearRol(@PathVariable String tipoRol, // Tipo de rol a crear
+            @RequestBody(required = false) RolRequest request, // Datos opcionales del rol
+            @RequestHeader(value = "X-Usuario", required = false) String usuarioAdmin) { // Username del admin
+        String nombre = tipoRol.toUpperCase(); // Convierte el nombre a mayúsculas
+        String descripcion = (request != null && request.getDescripcion() != null) // Si hay descripción
+                ? request.getDescripcion() // Usa la descripción del request
+                : "Rol personalizado"; // Si no, usa una por defecto
 
-        if (rolJpaRepository.existsByNombre(nombre)) {
-            return ResponseEntity.badRequest().body("El rol " + nombre + " ya existe");
+        if (rolJpaRepository.existsByNombre(nombre)) { // Si el rol ya existe
+            return ResponseEntity.badRequest().body("El rol " + nombre + " ya existe"); // Retorna error 400
         }
 
-        List<String> permisos = (request != null) ? request.getPermisos() : null;
-        Rol rol = crearRolConPermisosUseCase.ejecutar(nombre, descripcion, permisos);
+        List<String> permisos = (request != null) ? request.getPermisos() : null; // Obtiene los permisos del request
+        Rol rol = crearRolConPermisosUseCase.ejecutar(nombre, descripcion, permisos); // Ejecuta el caso de uso
 
-        Integer adminId = identidadClient.obtenerIdPorUsername(usuarioAdmin);
-        auditoriaClient.registrarAuditoria(
-            adminId,
-            "CREAR_ROL",
-            "Admin " + usuarioAdmin + " cre\u00f3 rol " + nombre,
-            "COMPLETA"
+        Integer adminId = identidadClient.obtenerIdPorUsername(usuarioAdmin); // Obtiene el ID del admin
+        auditoriaClient.registrarAuditoria( // Registra la auditoría de creación de rol
+                adminId, // ID del admin
+                "CREAR_ROL", // Acción realizada
+                "Admin " + usuarioAdmin + " cre\u00f3 rol " + nombre, // Descripción
+                "COMPLETA" // Tipo de auditoría
         );
 
-        return ResponseEntity.ok(new RolResponse(rol.getId(), rol.getNombre(), rol.getDescripcion()));
+        return ResponseEntity.ok(new RolResponse(rol.getId(), rol.getNombre(), rol.getDescripcion())); // Retorna el rol
+                                                                                                       // creado
     }
 
-    @GetMapping("/lista")
-    public ResponseEntity<List<RolResponse>> obtenerListaRoles() {
-        List<RolResponse> roles = rolJpaRepository.findAll().stream()
-                .map(r -> new RolResponse(r.getId(), r.getNombre(), r.getDescripcion()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(roles);
+    @GetMapping("/lista") // Endpoint: GET /roles/lista
+    public ResponseEntity<List<RolResponse>> obtenerListaRoles() { // Lista todos los roles
+        List<RolResponse> roles = rolJpaRepository.findAll().stream() // Obtiene todos los roles de la BD
+                .map(r -> new RolResponse(r.getId(), r.getNombre(), r.getDescripcion())) // Convierte a DTO
+                .collect(Collectors.toList()); // Recolecta en una lista
+        return ResponseEntity.ok(roles); // Retorna la lista de roles
     }
 
-    @PutMapping("/{nombreRol}")
-    public ResponseEntity<?> actualizarRol(@PathVariable String nombreRol,
-                                           @RequestBody RolUpdateRequest request,
-                                           @RequestHeader(value = "X-Usuario", required = false) String usuarioAdmin) {
-        String nombreActual = nombreRol.toUpperCase();
+    @PutMapping("/{nombreRol}") // Endpoint: PUT /roles/{nombreRol}
+    public ResponseEntity<?> actualizarRol(@PathVariable String nombreRol, // Nombre del rol a actualizar
+            @RequestBody RolUpdateRequest request, // Datos a actualizar
+            @RequestHeader(value = "X-Usuario", required = false) String usuarioAdmin) { // Username del admin
+        String nombreActual = nombreRol.toUpperCase(); // Convierte el nombre a mayúsculas
 
-        if (ROLES_FIJOS.contains(nombreActual)) {
-            return ResponseEntity.badRequest()
-                    .body("No se puede editar un rol protegido");
+        if (ROLES_FIJOS.contains(nombreActual)) { // Si es un rol protegido
+            return ResponseEntity.badRequest() // Retorna error 400
+                    .body("No se puede editar un rol protegido"); // Mensaje de error
         }
 
-        Rol rol = rolJpaRepository.findByNombre(nombreActual)
-                .orElse(null);
+        Rol rol = rolJpaRepository.findByNombre(nombreActual) // Busca el rol por nombre
+                .orElse(null); // Si no existe, retorna null
 
-        if (rol == null) {
-            return ResponseEntity.notFound().build();
+        if (rol == null) { // Si el rol no existe
+            return ResponseEntity.notFound().build(); // Retorna 404
         }
 
-        String nuevoNombre = request.getNuevoNombre();
-        if (nuevoNombre != null && !nuevoNombre.isEmpty()) {
-            nuevoNombre = nuevoNombre.toUpperCase();
-            if (!nuevoNombre.equals(nombreActual) &&
-                rolJpaRepository.existsByNombre(nuevoNombre)) {
-                return ResponseEntity.badRequest()
-                        .body("Ya existe un rol con el nombre: " + nuevoNombre);
+        String nuevoNombre = request.getNuevoNombre(); // Obtiene el nuevo nombre
+        if (nuevoNombre != null && !nuevoNombre.isEmpty()) { // Si hay nuevo nombre
+            nuevoNombre = nuevoNombre.toUpperCase(); // Convierte a mayúsculas
+            if (!nuevoNombre.equals(nombreActual) && // Si el nombre cambió
+                    rolJpaRepository.existsByNombre(nuevoNombre)) { // Y ya existe otro rol con ese nombre
+                return ResponseEntity.badRequest() // Retorna error 400
+                        .body("Ya existe un rol con el nombre: " + nuevoNombre); // Mensaje de error
             }
-            rol.setNombre(nuevoNombre);
+            rol.setNombre(nuevoNombre); // Actualiza el nombre del rol
         }
 
-        if (request.getDescripcion() != null) {
-            rol.setDescripcion(request.getDescripcion());
+        if (request.getDescripcion() != null) { // Si hay nueva descripción
+            rol.setDescripcion(request.getDescripcion()); // Actualiza la descripción
         }
 
-        rolJpaRepository.save(rol);
+        rolJpaRepository.save(rol); // Persiste los cambios
 
-        Integer adminId = identidadClient.obtenerIdPorUsername(usuarioAdmin);
-        auditoriaClient.registrarAuditoria(
-            adminId,
-            "ACTUALIZAR_ROL",
-            "Admin " + usuarioAdmin + " actualiz\u00f3 rol " + nombreActual,
-            "COMPLETA"
+        Integer adminId = identidadClient.obtenerIdPorUsername(usuarioAdmin); // Obtiene el ID del admin
+        auditoriaClient.registrarAuditoria( // Registra la auditoría de actualización
+                adminId, // ID del admin
+                "ACTUALIZAR_ROL", // Acción realizada
+                "Admin " + usuarioAdmin + " actualiz\u00f3 rol " + nombreActual, // Descripción
+                "COMPLETA" // Tipo de auditoría
         );
 
-        return ResponseEntity.ok(new RolResponse(rol.getId(), rol.getNombre(), rol.getDescripcion()));
+        return ResponseEntity.ok(new RolResponse(rol.getId(), rol.getNombre(), rol.getDescripcion())); // Retorna el rol
+                                                                                                       // actualizado
     }
 
-    @DeleteMapping("/{nombreRol}")
-    public ResponseEntity<?> eliminarRol(@PathVariable String nombreRol,
-                                         @RequestHeader(value = "X-Usuario", required = false) String usuarioAdmin) {
-        String nombre = nombreRol.toUpperCase();
+    @DeleteMapping("/{nombreRol}") // Endpoint: DELETE /roles/{nombreRol}
+    public ResponseEntity<?> eliminarRol(@PathVariable String nombreRol, // Nombre del rol a eliminar
+            @RequestHeader(value = "X-Usuario", required = false) String usuarioAdmin) { // Username del admin
+        String nombre = nombreRol.toUpperCase(); // Convierte el nombre a mayúsculas
 
-        if (ROLES_FIJOS.contains(nombre)) {
-            return ResponseEntity.badRequest().body("No se puede eliminar un rol protegido: " + nombre);
+        if (ROLES_FIJOS.contains(nombre)) { // Si es un rol protegido
+            return ResponseEntity.badRequest().body("No se puede eliminar un rol protegido: " + nombre); // Retorna
+                                                                                                         // error 400
         }
 
-        Rol rol = rolJpaRepository.findByNombre(nombre)
-                .orElse(null);
+        Rol rol = rolJpaRepository.findByNombre(nombre) // Busca el rol por nombre
+                .orElse(null); // Si no existe, retorna null
 
-        if (rol == null) {
-            return ResponseEntity.notFound().build();
+        if (rol == null) { // Si el rol no existe
+            return ResponseEntity.notFound().build(); // Retorna 404
         }
 
-        usuariosRolesPort.eliminarPorRol(rol);
-        rolesPermisosPort.eliminarPorRol(rol);
-        rolJpaRepository.delete(rol);
+        usuariosRolesPort.eliminarPorRol(rol); // Elimina el rol de todos los usuarios
+        rolesPermisosPort.eliminarPorRol(rol); // Elimina los permisos del rol
+        rolJpaRepository.delete(rol); // Elimina el rol de la BD
 
-        Integer adminId = identidadClient.obtenerIdPorUsername(usuarioAdmin);
-        auditoriaClient.registrarAuditoria(
-            adminId,
-            "ELIMINAR_ROL",
-            "Admin " + usuarioAdmin + " elimin\u00f3 rol " + nombre,
-            "SEGURIDAD"
+        Integer adminId = identidadClient.obtenerIdPorUsername(usuarioAdmin); // Obtiene el ID del admin
+        auditoriaClient.registrarAuditoria( // Registra la auditoría de eliminación
+                adminId, // ID del admin
+                "ELIMINAR_ROL", // Acción realizada
+                "Admin " + usuarioAdmin + " elimin\u00f3 rol " + nombre, // Descripción
+                "SEGURIDAD" // Tipo de auditoría
         );
 
-        return ResponseEntity.ok("Rol " + nombre + " eliminado exitosamente");
+        return ResponseEntity.ok("Rol " + nombre + " eliminado exitosamente"); // Retorna mensaje de éxito
     }
 
-    public static class RolRequest {
-        private String descripcion;
-        private List<String> permisos;
+    public static class RolRequest { // Clase interna para solicitud de creación de rol
+        private String descripcion; // Descripción del rol
+        private List<String> permisos; // Lista de permisos del rol
 
-        public String getDescripcion() {
+        public String getDescripcion() { // Getter para descripción
             return descripcion;
         }
 
-        public void setDescripcion(String descripcion) {
+        public void setDescripcion(String descripcion) { // Setter para descripción
             this.descripcion = descripcion;
         }
 
-        public List<String> getPermisos() {
+        public List<String> getPermisos() { // Getter para permisos
             return permisos;
         }
 
-        public void setPermisos(List<String> permisos) {
+        public void setPermisos(List<String> permisos) { // Setter para permisos
             this.permisos = permisos;
         }
     }
 
-    public static class RolUpdateRequest {
-        private String nuevoNombre;
-        private String descripcion;
+    public static class RolUpdateRequest { // Clase interna para solicitud de actualización de rol
+        private String nuevoNombre; // Nuevo nombre del rol
+        private String descripcion; // Nueva descripción del rol
 
-        public String getNuevoNombre() {
+        public String getNuevoNombre() { // Getter para nuevo nombre
             return nuevoNombre;
         }
 
-        public void setNuevoNombre(String nuevoNombre) {
+        public void setNuevoNombre(String nuevoNombre) { // Setter para nuevo nombre
             this.nuevoNombre = nuevoNombre;
         }
 
-        public String getDescripcion() {
+        public String getDescripcion() { // Getter para descripción
             return descripcion;
         }
 
-        public void setDescripcion(String descripcion) {
+        public void setDescripcion(String descripcion) { // Setter para descripción
             this.descripcion = descripcion;
         }
     }
 
-    public static class RolResponse {
-        private Long id;
-        private String nombre;
-        private String descripcion;
+    public static class RolResponse { // Clase interna para respuesta de rol
+        private Long id; // ID del rol
+        private String nombre; // Nombre del rol
+        private String descripcion; // Descripción del rol
 
-        public RolResponse(Long id, String nombre, String descripcion) {
-            this.id = id;
-            this.nombre = nombre;
-            this.descripcion = descripcion;
+        public RolResponse(Long id, String nombre, String descripcion) { // Constructor con parámetros
+            this.id = id; // Asigna el ID
+            this.nombre = nombre; // Asigna el nombre
+            this.descripcion = descripcion; // Asigna la descripción
         }
 
-        public Long getId() {
+        public Long getId() { // Getter para ID
             return id;
         }
 
-        public String getNombre() {
+        public String getNombre() { // Getter para nombre
             return nombre;
         }
 
-        public String getDescripcion() {
+        public String getDescripcion() { // Getter para descripción
             return descripcion;
         }
     }

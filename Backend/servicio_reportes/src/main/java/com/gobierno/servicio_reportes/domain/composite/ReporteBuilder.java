@@ -1,9 +1,5 @@
 package com.gobierno.servicio_reportes.domain.composite;
 
-/**
- * Builder para construcción fluida de ReporteCompuesto.
- * Permite agregar/quitar secciones con métodos encadenados.
- */
 public class ReporteBuilder {
     
     private final ReporteCompuesto reporte;
@@ -12,7 +8,6 @@ public class ReporteBuilder {
         this.reporte = new ReporteCompuesto(nombre);
     }
     
-    // Punto de entrada del builder
     public static ReporteBuilder crear(String nombre) {
         return new ReporteBuilder(nombre);
     }
@@ -57,18 +52,15 @@ public class ReporteBuilder {
         return this;
     }
     
-    // Agrega sección personalizada
     public ReporteBuilder agregarSeccion(SeccionComponent seccion) {
         reporte.agregarSeccion(seccion);
         return this;
     }
     
-    // Finaliza construcción
     public ReporteCompuesto construir() {
         return reporte;
     }
     
-    // Fábrica: reporte con encabezado, detalle y pie
     public static ReporteCompuesto reporteEstandar() {
         return crear("Reporte Estandar")
                 .conEncabezado()
@@ -77,7 +69,6 @@ public class ReporteBuilder {
                 .construir();
     }
     
-    // Fábrica: reporte completo con resumen estadístico
     public static ReporteCompuesto reporteConResumen() {
         return crear("Reporte con Resumen")
                 .conEncabezado()
@@ -87,7 +78,6 @@ public class ReporteBuilder {
                 .construir();
     }
     
-    // Fábrica: solo detalle sin adornos
     public static ReporteCompuesto reporteSimple() {
         return crear("Reporte Simple")
                 .conDetalle()

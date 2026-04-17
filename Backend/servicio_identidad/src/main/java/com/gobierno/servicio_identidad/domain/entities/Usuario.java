@@ -13,125 +13,125 @@ import jakarta.persistence.Table;
 @Table(name = "usuarios")
 public class Usuario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id // Define este campo como clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento en PostgreSQL
+    private Long id; // ID único del usuario (PK)
 
-    @Column(name = "username", nullable = false, unique = true, length = 50)
-    private String username;
+    @Column(name = "username", nullable = false, unique = true, length = 50) // Columna username, obligatorio y único
+    private String username; // Nombre de usuario para login
 
-    @Column(name = "password", nullable = false, length = 255)
-    private String password;
+    @Column(name = "password", nullable = false, length = 255) // Columna password, obligatorio
+    private String password; // Contraseña encriptada con BCrypt
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
-    private String email;
+    @Column(name = "email", nullable = false, unique = true, length = 100) // Columna email, obligatorio y único
+    private String email; // Correo electrónico único del usuario
 
-    @Column(name = "estado")
-    private Boolean estado;
+    @Column(name = "estado") // Columna para estado activo/inactivo
+    private Boolean estado; // true = activo, false = inactivo
 
-    @Column(name = "fecha_creacion")
-    private Timestamp fechaCreacion;
+    @Column(name = "fecha_creacion") // Columna para fecha de registro
+    private Timestamp fechaCreacion; // Fecha y hora de creación del usuario
 
     protected Usuario() {
+    } // Constructor protegido para que JPA pueda instanciar la entidad
+
+    private Usuario(Builder builder) { // Constructor privado que recibe el Builder
+        this.id = builder.id; // Asigna el ID desde el builder
+        this.username = builder.username; // Asigna el username desde el builder
+        this.password = builder.password; // Asigna el password desde el builder
+        this.email = builder.email; // Asigna el email desde el builder
+        this.estado = builder.estado; // Asigna el estado desde el builder
+        this.fechaCreacion = builder.fechaCreacion; // Asigna la fecha desde el builder
     }
 
-    private Usuario(Builder builder) {
-        this.id = builder.id;
-        this.username = builder.username;
-        this.password = builder.password;
-        this.email = builder.email;
-        this.estado = builder.estado;
-        this.fechaCreacion = builder.fechaCreacion;
-    }
+    public static class Builder { // Clase interna para patrón Builder
+        private Long id; // Campo opcional para ID
+        private String username; // Campo obligatorio para username
+        private String password; // Campo obligatorio para password
+        private String email; // Campo obligatorio para email
+        private Boolean estado; // Campo opcional para estado
+        private java.sql.Timestamp fechaCreacion; // Campo opcional para fecha
 
-    public static class Builder {
-        private Long id;
-        private String username;
-        private String password;
-        private String email;
-        private Boolean estado;
-        private java.sql.Timestamp fechaCreacion;
-
-        public Builder id(Long id) {
+        public Builder id(Long id) { // Setter fluent para ID
             this.id = id;
-            return this;
+            return this; // Retorna this para encadenar llamadas
         }
 
-        public Builder username(String username) {
+        public Builder username(String username) { // Setter fluent para username
             this.username = username;
             return this;
         }
 
-        public Builder password(String password) {
+        public Builder password(String password) { // Setter fluent para password
             this.password = password;
             return this;
         }
 
-        public Builder email(String email) {
+        public Builder email(String email) { // Setter fluent para email
             this.email = email;
             return this;
         }
 
-        public Builder estado(Boolean estado) {
+        public Builder estado(Boolean estado) { // Setter fluent para estado
             this.estado = estado;
             return this;
         }
 
-        public Builder fechaCreacion(java.sql.Timestamp fechaCreacion) {
+        public Builder fechaCreacion(java.sql.Timestamp fechaCreacion) { // Setter fluent para fecha
             this.fechaCreacion = fechaCreacion;
             return this;
         }
 
-        public Usuario build() {
-            return new Usuario(this);
+        public Usuario build() { // Método que construye el objeto Usuario
+            return new Usuario(this); // Crea una nueva instancia con los datos del builder
         }
     }
 
-    public Long getId() {
+    public Long getId() { // Getter para obtener el ID
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Long id) { // Setter para modificar el ID
         this.id = id;
     }
 
-    public String getUsername() {
+    public String getUsername() { // Getter para obtener el username
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(String username) { // Setter para modificar el username
         this.username = username;
     }
 
-    public String getPassword() {
+    public String getPassword() { // Getter para obtener el password (encriptado)
         return password;
     }
 
-    public String getEmail() {
+    public String getEmail() { // Getter para obtener el email
         return email;
     }
 
-    public Boolean getEstado() {
+    public Boolean getEstado() { // Getter para obtener el estado
         return estado;
     }
 
-    public Timestamp getFechaCreacion() {
+    public Timestamp getFechaCreacion() { // Getter para obtener la fecha de creación
         return fechaCreacion;
     }
 
-    public void activar() {
-        this.estado = true;
+    public void activar() { // Método para activar al usuario
+        this.estado = true; // Cambia el estado a activo
     }
 
-    public void desactivar() {
-        this.estado = false;
+    public void desactivar() { // Método para desactivar al usuario
+        this.estado = false; // Cambia el estado a inactivo
     }
 
-    public void actualizarEmail(String nuevoEmail) {
-        this.email = nuevoEmail;
+    public void actualizarEmail(String nuevoEmail) { // Método para actualizar el email
+        this.email = nuevoEmail; // Asigna el nuevo email
     }
 
-    public void actualizarPassword(String nuevaPasswordEncriptada) {
-        this.password = nuevaPasswordEncriptada;
+    public void actualizarPassword(String nuevaPasswordEncriptada) { // Método para actualizar password
+        this.password = nuevaPasswordEncriptada; // Asigna la nueva contraseña encriptada
     }
 }

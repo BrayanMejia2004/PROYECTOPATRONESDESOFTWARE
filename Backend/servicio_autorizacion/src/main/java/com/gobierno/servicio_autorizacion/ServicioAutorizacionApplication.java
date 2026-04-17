@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
-public class ServicioAutorizacionApplication {
+public class ServicioAutorizacionApplication { // Clase principal del servicio de autorización
 
-	public static void main(String[] args) {
-		SpringApplication.run(ServicioAutorizacionApplication.class, args);
+	public static void main(String[] args) { // Método main - punto de entrada de la aplicación
+		SpringApplication.run(ServicioAutorizacionApplication.class, args); // Inicia la aplicación Spring Boot
 	}
 
 }

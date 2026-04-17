@@ -52,7 +52,6 @@ public class PdfDecorator extends ReporteBaseDecorator {
 
             for (String linea : lineas) {
 
-                // Salto de página seguro
                 if (yPosition < MARGIN + LINE_HEIGHT) {
                     agregarFooter(contentStream, numeroPagina++);
                     contentStream.close();
@@ -60,7 +59,6 @@ public class PdfDecorator extends ReporteBaseDecorator {
                     page = new PDPage(PDRectangle.A4);
                     document.addPage(page);
                     contentStream = new PDPageContentStream(document, page);
-
                     yPosition = PAGE_HEIGHT - MARGIN;
                 }
 
@@ -102,15 +100,9 @@ public class PdfDecorator extends ReporteBaseDecorator {
         }
     }
 
-    // ===========================
-    // 🔹 TEXTO MULTILINEA
-    // ===========================
-    private float dibujarTextoMultilinea(PDPageContentStream contentStream,
-                                         String texto,
-                                         PDType1Font font,
-                                         float fontSize,
+    private float dibujarTextoMultilinea(PDPageContentStream contentStream, String texto,
+                                         PDType1Font font, float fontSize,
                                          float yPosition) throws IOException {
-
         float maxWidth = PAGE_WIDTH - 2 * MARGIN;
         List<String> lineas = dividirTexto(texto, font, fontSize, maxWidth);
 
@@ -120,23 +112,19 @@ public class PdfDecorator extends ReporteBaseDecorator {
             contentStream.newLineAtOffset(MARGIN, yPosition);
             contentStream.showText(linea);
             contentStream.endText();
-
             yPosition -= LINE_HEIGHT;
         }
-
         return yPosition;
     }
 
     private List<String> dividirTexto(String texto, PDType1Font font, float fontSize, float maxWidth) throws IOException {
         List<String> resultado = new ArrayList<>();
         String[] palabras = texto.split(" ");
-
         StringBuilder lineaActual = new StringBuilder();
 
         for (String palabra : palabras) {
             String prueba = lineaActual.length() == 0 ? palabra : lineaActual + " " + palabra;
             float ancho = font.getStringWidth(prueba) / 1000 * fontSize;
-
             if (ancho <= maxWidth) {
                 lineaActual = new StringBuilder(prueba);
             } else {
@@ -144,65 +132,44 @@ public class PdfDecorator extends ReporteBaseDecorator {
                 lineaActual = new StringBuilder(palabra);
             }
         }
-
         if (!lineaActual.isEmpty()) {
             resultado.add(lineaActual.toString());
         }
-
         return resultado;
     }
 
-    // ===========================
-    // 🔹 TABLAS
-    // ===========================
     private float dibujarTabla(PDPageContentStream contentStream, String linea, float yPosition) throws IOException {
-
         String[] columnas = linea.split("\\|");
         float anchoTotal = PAGE_WIDTH - 2 * MARGIN;
         float anchoColumna = anchoTotal / (columnas.length - 1);
-
         float x = MARGIN;
 
         for (int i = 1; i < columnas.length; i++) {
-
             List<String> lineasCelda = dividirTexto(columnas[i].trim(), fontNormal, BODY_SIZE, anchoColumna - 5);
             float yTemp = yPosition;
-
             for (String l : lineasCelda) {
                 contentStream.beginText();
                 contentStream.setFont(fontNormal, BODY_SIZE);
                 contentStream.newLineAtOffset(x, yTemp);
                 contentStream.showText(l);
                 contentStream.endText();
-
                 yTemp -= LINE_HEIGHT;
             }
-
             x += anchoColumna;
         }
-
         return yPosition - LINE_HEIGHT;
     }
 
-    // ===========================
-    // 🔹 SEPARADOR
-    // ===========================
     private float dibujarSeparador(PDPageContentStream contentStream, float yPosition) throws IOException {
-
         String linea = "------------------------------------------------------------";
-
         contentStream.beginText();
         contentStream.setFont(fontNormal, BODY_SIZE);
         contentStream.newLineAtOffset(MARGIN, yPosition);
         contentStream.showText(linea);
         contentStream.endText();
-
         return yPosition - LINE_HEIGHT;
     }
 
-    // ===========================
-    // 🔹 FOOTER
-    // ===========================
     private void agregarFooter(PDPageContentStream contentStream, int pagina) throws IOException {
         contentStream.beginText();
         contentStream.setFont(fontItalic, 7);

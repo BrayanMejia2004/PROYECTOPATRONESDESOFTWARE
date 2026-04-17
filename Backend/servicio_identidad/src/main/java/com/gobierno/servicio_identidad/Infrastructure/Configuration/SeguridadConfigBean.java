@@ -4,10 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class SeguridadConfigBean {
+public class SeguridadConfigBean { // Clase de configuración para inyectar el enum SeguridadConfig
 
-    @Bean
-    public SeguridadConfig seguridadConfig() {
-        return SeguridadConfig.INSTANCE;
+    @Bean // Define este método como un bean de Spring
+    public SeguridadConfig seguridadConfig() { // Método que retorna la instancia singleton de SeguridadConfig
+        return SeguridadConfig.INSTANCE; // Retorna la instancia única del enum
     }
 }

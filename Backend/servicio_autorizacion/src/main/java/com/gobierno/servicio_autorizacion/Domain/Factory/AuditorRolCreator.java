@@ -6,11 +6,11 @@ import com.gobierno.servicio_autorizacion.domain.entities.Rol;
 import com.gobierno.servicio_autorizacion.domain.entities.AuditorRol;
 
 @Component("AUDITOR")
-public class AuditorRolCreator extends AbstractRolCreator {
+public class AuditorRolCreator extends AbstractRolCreator { // Concrete Creator para rol AUDITOR
 
-    @Override
-    public Rol crearRol() {
-        return AuditorRol.crear();
+    @Override // Sobrescribe el método de la clase abstracta
+    public Rol crearRol() { // Crea un rol de tipo AUDITOR
+        return AuditorRol.crear(); // Delega la creación a la entidad AuditorRol
     }
-    
+
 }

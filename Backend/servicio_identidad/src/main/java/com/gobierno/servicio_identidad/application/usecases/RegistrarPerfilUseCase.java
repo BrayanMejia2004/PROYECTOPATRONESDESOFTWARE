@@ -7,53 +7,54 @@ import com.gobierno.servicio_identidad.domain.ports.out.PerfilUsuarioRepositoryP
 import com.gobierno.servicio_identidad.domain.ports.out.UsuarioRepositorioPort;
 
 @Service
-public class RegistrarPerfilUseCase {
+public class RegistrarPerfilUseCase { // Caso de uso para registrar el perfil de un usuario
 
-    private final PerfilUsuarioRepositoryPort perfilRepositoryPort;
-    private final UsuarioRepositorioPort usuarioRepositoryPort;
+    private final PerfilUsuarioRepositoryPort perfilRepositoryPort; // Puerto de repositorio de perfiles
+    private final UsuarioRepositorioPort usuarioRepositoryPort; // Puerto de repositorio de usuarios
 
-    public RegistrarPerfilUseCase(PerfilUsuarioRepositoryPort perfilRepositoryPort,
-            UsuarioRepositorioPort usuarioRepositoryPort) {
-        this.perfilRepositoryPort = perfilRepositoryPort;
-        this.usuarioRepositoryPort = usuarioRepositoryPort;
+    public RegistrarPerfilUseCase(PerfilUsuarioRepositoryPort perfilRepositoryPort, // Constructor
+            UsuarioRepositorioPort usuarioRepositoryPort) { // Constructor con inyección de dependencias
+        this.perfilRepositoryPort = perfilRepositoryPort; // Asigna el repositorio de perfiles
+        this.usuarioRepositoryPort = usuarioRepositoryPort; // Asigna el repositorio de usuarios
     }
 
-    public PerfilUsuario ejecutar(Integer usuarioId, String nombre, 
-            String apellido, String telefono) {
+    public PerfilUsuario ejecutar(Integer usuarioId, String nombre, // Método principal para registrar perfil
+            String apellido, String telefono) { // Parámetros del perfil a registrar
 
-        if (usuarioRepositoryPort.buscarPorId(usuarioId.longValue()).isEmpty()) {
-            throw new IllegalArgumentException("El usuario no existe");
+        if (usuarioRepositoryPort.buscarPorId(usuarioId.longValue()).isEmpty()) { // Si el usuario no existe
+            throw new IllegalArgumentException("El usuario no existe"); // Lanza excepción
         }
 
-        if (perfilRepositoryPort.existePorUsuarioId(usuarioId)) {
-            throw new IllegalArgumentException("El usuario ya tiene un perfil registrado");
+        if (perfilRepositoryPort.existePorUsuarioId(usuarioId)) { // Si el usuario ya tiene perfil
+            throw new IllegalArgumentException("El usuario ya tiene un perfil registrado"); // Lanza excepción
         }
 
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException("El nombre es obligatorio");
+        if (nombre == null || nombre.isBlank()) { // Si el nombre está vacío
+            throw new IllegalArgumentException("El nombre es obligatorio"); // Lanza excepción
         }
 
-        if (apellido == null || apellido.isBlank()) {
-            throw new IllegalArgumentException("El apellido es obligatorio");
+        if (apellido == null || apellido.isBlank()) { // Si el apellido está vacío
+            throw new IllegalArgumentException("El apellido es obligatorio"); // Lanza excepción
         }
 
-        if (telefono == null || telefono.isBlank()) {
-            throw new IllegalArgumentException("El telefono es obligatorio");
+        if (telefono == null || telefono.isBlank()) { // Si el teléfono está vacío
+            throw new IllegalArgumentException("El telefono es obligatorio"); // Lanza excepción
         }
 
-        PerfilUsuario perfil = new PerfilUsuario.Builder()
-                .usuarioId(usuarioId)
-                .nombre(nombre)
-                .apellido(apellido)
-                .telefono(telefono)
-                .build();
+        PerfilUsuario perfil = new PerfilUsuario.Builder() // Crea el perfil usando el patrón Builder
+                .usuarioId(usuarioId) // Asigna el ID del usuario
+                .nombre(nombre) // Asigna el nombre
+                .apellido(apellido) // Asigna el apellido
+                .telefono(telefono) // Asigna el teléfono
+                .build(); // Construye el objeto PerfilUsuario
 
-        return perfilRepositoryPort.guardar(perfil);
+        return perfilRepositoryPort.guardar(perfil); // Persiste el perfil y lo retorna
     }
 
-    public PerfilUsuario obtenerPerfilPorUsername(String username) {
-        return usuarioRepositoryPort.buscarPorUsername(username)
-                .flatMap(usuario -> perfilRepositoryPort.buscarPorUsuarioId(usuario.getId().intValue()))
-                .orElse(null);
+    public PerfilUsuario obtenerPerfilPorUsername(String username) { // Método para obtener perfil por username
+        return usuarioRepositoryPort.buscarPorUsername(username) // Busca el usuario por username
+                .flatMap(usuario -> perfilRepositoryPort.buscarPorUsuarioId(usuario.getId().intValue())) // Luego busca
+                                                                                                         // el perfil
+                .orElse(null); // Retorna null si no encuentra nada
     }
 }
