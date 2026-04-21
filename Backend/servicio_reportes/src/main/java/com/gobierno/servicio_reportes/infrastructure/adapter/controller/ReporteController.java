@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gobierno.servicio_reportes.domain.entities.Reporte;
 import com.gobierno.servicio_reportes.domain.ports.in.ConsultarReportesPort;
 import com.gobierno.servicio_reportes.domain.ports.in.GenerarReportePort;
+import com.gobierno.servicio_reportes.domain.ports.out.ReporteCachePort;
 
 @RestController
 @RequestMapping("/reportes")
@@ -23,12 +24,15 @@ public class ReporteController {
     
     private final GenerarReportePort generarReportePort;
     private final ConsultarReportesPort consultarReportesPort;
+    private final ReporteCachePort reporteCachePort;
     
     public ReporteController(
             GenerarReportePort generarReportePort,
-            ConsultarReportesPort consultarReportesPort) {
+            ConsultarReportesPort consultarReportesPort,
+            ReporteCachePort reporteCachePort) {
         this.generarReportePort = generarReportePort;
         this.consultarReportesPort = consultarReportesPort;
+        this.reporteCachePort = reporteCachePort;
     }
     
     @GetMapping("/{tipo}")
@@ -105,5 +109,16 @@ public class ReporteController {
             reportes = consultarReportesPort.obtenerHistorial();
         }
         return ResponseEntity.ok(reportes);
+    }
+    
+    @GetMapping("/cache/limpiar")
+    public ResponseEntity<String> limpiarCache() {
+        reporteCachePort.limpiar();
+        return ResponseEntity.ok("Cache limpiado");
+    }
+    
+    @GetMapping("/cache/tamaño")
+    public ResponseEntity<Integer> tamañoCache() {
+        return ResponseEntity.ok(reporteCachePort.tamaño());
     }
 }
