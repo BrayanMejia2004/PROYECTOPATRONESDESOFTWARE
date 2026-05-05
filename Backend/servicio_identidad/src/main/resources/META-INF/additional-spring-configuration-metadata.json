@@ -9,6 +9,11 @@
       "name": "app.jwt.expiracion",
       "type": "java.lang.Long",
       "description": "Tiempo de expiración del JWT en milisegundos."
+    },
+    {
+      "name": "servicio.auditoria.url",
+      "type": "java.lang.String",
+      "description": "A description for 'servicio.auditoria.url'"
     }
   ]
 }
