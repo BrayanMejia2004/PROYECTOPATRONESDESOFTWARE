@@ -16,10 +16,14 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
 
 # Variables de entorno
 .env
 .env.local
+
+# Scripts de inicio (Windows)
+*.bat
 
 # IDEs
 .idea/

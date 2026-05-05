@@ -18,7 +18,6 @@ public class PerfilUsuarioRepositoryAdapter implements PerfilUsuarioRepositoryPo
         this.jpaRepository = jpaRepository; // Asigna el repositorio JPA
     }
 
-    @SuppressWarnings("null") // Suprime warning de posible null
     @Override // Sobrescribe el método de la interfaz
     public PerfilUsuario guardar(PerfilUsuario perfil) { // Persiste un perfil (create o update)
         return jpaRepository.save(perfil); // Delega la operación al repositorio JPA
@@ -34,7 +33,6 @@ public class PerfilUsuarioRepositoryAdapter implements PerfilUsuarioRepositoryPo
         return jpaRepository.existsByUsuarioId(usuarioId); // Delega la operación al repositorio JPA
     }
 
-    @SuppressWarnings("null") // Suprime warning de posible null
     @Override // Sobrescribe el método de la interfaz
     public PerfilUsuario actualizar(PerfilUsuario perfil) { // Actualiza un perfil existente
         return jpaRepository.save(perfil); // Delega la operación al repositorio JPA (save funciona para update)

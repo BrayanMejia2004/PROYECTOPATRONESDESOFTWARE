@@ -16,7 +16,6 @@ public class RolRepositorioAdapter implements RolRepositoryPort { // Adapter que
         this.rolJpaRepository = rolJpaRepository;
     }
 
-    @SuppressWarnings("null")
     @Override
     @Transactional // Método transaccional
     public Rol guardar(Rol rol) { // Persiste un rol (create o update)
