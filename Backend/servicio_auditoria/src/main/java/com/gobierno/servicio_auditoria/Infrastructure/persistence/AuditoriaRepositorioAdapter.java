@@ -6,17 +6,16 @@ import com.gobierno.servicio_auditoria.domain.ports.out.RegistroAuditoriaPort;
 import com.gobierno.servicio_auditoria.infrastructure.persistence.repository.AuditoriaJpaRepository;
 
 @Repository
-public class AuditoriaRepositorioAdapter implements RegistroAuditoriaPort {  // Adapter que implementa el puerto
+public class AuditoriaRepositorioAdapter implements RegistroAuditoriaPort { // Adapter que implementa el puerto
 
-    private final AuditoriaJpaRepository auditoriaJpaRepository;  // Repositorio JPA
+    private final AuditoriaJpaRepository auditoriaJpaRepository; // Repositorio JPA
 
     public AuditoriaRepositorioAdapter(AuditoriaJpaRepository auditoriaJpaRepository) {
         this.auditoriaJpaRepository = auditoriaJpaRepository;
     }
 
-    @SuppressWarnings("null")
     @Override
-    public void registrarAccion(Auditoria auditoria) {  // Persiste la auditoría
+    public void registrarAccion(Auditoria auditoria) { // Persiste la auditoría
         auditoriaJpaRepository.save(auditoria);
     }
 }

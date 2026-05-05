@@ -18,14 +18,12 @@ public class PermisoRepositorioAdapter implements PermisoRepositoryPort { // Ada
         this.permisoJpaRepository = permisoJpaRepository;
     }
 
-    @SuppressWarnings("null")
     @Override
     @Transactional
     public Permiso guardar(Permiso permiso) { // Persiste un permiso
         return permisoJpaRepository.save(permiso);
     }
 
-    @SuppressWarnings("null")
     @Override
     public Optional<Permiso> buscarPorId(Long id) { // Busca un permiso por ID
         return permisoJpaRepository.findById(id);

@@ -18,13 +18,11 @@ public class UsuarioRepositorioAdapter implements UsuarioRepositorioPort { // Ad
         this.jpaRepository = jpaRepository; // Asigna el repositorio JPA
     }
 
-    @SuppressWarnings("null") // Suprime warning de posible null
     @Override // Sobrescribe el método de la interfaz
     public Usuario guardar(Usuario usuario) { // Persiste un usuario (create o update)
         return jpaRepository.save(usuario); // Delegal la operación al repositorio JPA
     }
 
-    @SuppressWarnings("null") // Suprime warning de posible null
     @Override // Sobrescribe el método de la interfaz
     public Optional<Usuario> buscarPorId(Long id) { // Busca un usuario por su ID
         return jpaRepository.findById(id); // Delegal la operación al repositorio JPA
