@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import adminService from '../Services/adminService';
 import './GestionRoles.css';
@@ -7,8 +6,7 @@ import './GestionRoles.css';
 const ROLES_FIJOS = ['ADMIN', 'USER', 'AUDITOR'];
 
 const GestionRoles = () => {
-  const navigate = useNavigate();
-  const { user, perfil, token, logout, isAdmin } = useAuth();
+  const { token, isAdmin } = useAuth();
   const [roles, setRoles] = useState([]);
   const [rolesData, setRolesData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -37,23 +35,7 @@ const GestionRoles = () => {
     );
   };
 
-  const getDisplayName = () => {
-    if (perfil?.nombre && perfil?.apellido) {
-      return `${perfil.nombre} ${perfil.apellido}`;
-    }
-    return user?.username || 'Administrador';
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   useEffect(() => {
-    if (!isAdmin()) {
-      navigate('/dashboard');
-      return;
-    }
     cargarDatos();
   }, []);
 
@@ -257,42 +239,6 @@ const GestionRoles = () => {
 
   return (
     <div className="gestion-container">
-      <header className="gestion-header">
-        <div className="gestion-header-content">
-          <div className="gestion-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-            <span>Portal Gubernamental</span>
-          </div>
-          <div className="gestion-nav">
-            <Link to="/admin" className="nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-              Panel Admin
-            </Link>
-            <Link to="/mi-perfil" className="nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              Mi Perfil
-            </Link>
-            <button onClick={handleLogout} className="logout-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
-
       <main className="gestion-main">
         <div className="gestion-title">
           <div className="title-row">

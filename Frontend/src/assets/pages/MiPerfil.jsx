@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import { validateForm, validators } from '../Utils/validators';
 import './MiPerfil.css';
@@ -7,7 +7,7 @@ import './MiPerfil.css';
 const MiPerfil = () => {
   const navigate = useNavigate();
   const { user, perfil, actualizarPerfil, loading } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -63,7 +63,7 @@ const MiPerfil = () => {
       };
 
       const result = await actualizarPerfil(perfilData);
-      
+
       if (result.success) {
         setSuccessMessage('Perfil actualizado exitosamente');
         setTimeout(() => setSuccessMessage(''), 3000);
@@ -96,14 +96,6 @@ const MiPerfil = () => {
   return (
     <div className="miperfil-page">
       <div className="miperfil-container">
-        <Link to="/dashboard" className="miperfil-back">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5" />
-            <path d="M12 19l-7-7 7-7" />
-          </svg>
-          Volver al Dashboard
-        </Link>
-
         <div className="miperfil-header">
           <div className="miperfil-avatar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

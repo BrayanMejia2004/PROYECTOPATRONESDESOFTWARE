@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import Login from '../Pages/Login';
 import Registro from '../Pages/Registro';
@@ -9,6 +9,7 @@ import AdminDashboard from '../Pages/AdminDashboard';
 import GestionUsuarios from '../Pages/GestionUsuarios';
 import GestionRoles from '../Pages/GestionRoles';
 import Auditoria from '../Pages/Auditoria';
+import Layout from '../Components/Layout';
 
 const LoadingScreen = () => (
   <div style={{
@@ -130,54 +131,56 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-      <Route
-        path="/mi-perfil"
-        element={
-          <PrivateRoute requireProfile={true}>
-            <MiPerfil />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute requireProfile={true}>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin/usuarios"
-        element={
-          <AdminRoute>
-            <GestionUsuarios />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin/roles"
-        element={
-          <AdminRoute>
-            <GestionRoles />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/auditoria"
-        element={
-          <AuditorRoute>
-            <Auditoria />
-          </AuditorRoute>
-        }
-      />
+       <Route element={<Layout />}>
+         <Route
+           path="/mi-perfil"
+           element={
+             <PrivateRoute requireProfile={true}>
+               <MiPerfil />
+             </PrivateRoute>
+           }
+         />
+         <Route
+           path="/dashboard"
+           element={
+             <PrivateRoute requireProfile={true}>
+               <Dashboard />
+             </PrivateRoute>
+           }
+         />
+         <Route
+           path="/admin"
+           element={
+             <AdminRoute>
+               <AdminDashboard />
+             </AdminRoute>
+           }
+         />
+         <Route
+           path="/admin/usuarios"
+           element={
+             <AdminRoute>
+               <GestionUsuarios />
+             </AdminRoute>
+           }
+         />
+         <Route
+           path="/admin/roles"
+           element={
+             <AdminRoute>
+               <GestionRoles />
+             </AdminRoute>
+           }
+         />
+         <Route
+           path="/auditoria"
+           element={
+             <AuditorRoute>
+               <Auditoria />
+             </AuditorRoute>
+           }
+         />
+       </Route>
       <Route path="/" element={
         isAuthenticated ? (
           hasPerfilCompleto ? <Navigate to="/dashboard" replace /> : <Navigate to="/completar-perfil" replace />
