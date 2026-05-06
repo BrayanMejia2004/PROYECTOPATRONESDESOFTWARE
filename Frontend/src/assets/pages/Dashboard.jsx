@@ -13,6 +13,15 @@ const Dashboard = () => {
     return user?.username || 'Usuario';
   };
 
+  const getShortDisplayName = () => {
+    if (perfil?.nombre && perfil?.apellido) {
+      const primerNombre = perfil.nombre.split(' ')[0];
+      const primerApellido = perfil.apellido.split(' ')[0];
+      return `${primerNombre} ${primerApellido}`;
+    }
+    return user?.username || 'Usuario';
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -31,7 +40,7 @@ const Dashboard = () => {
             <span>Portal Gubernamental</span>
           </div>
           <div className="dashboard-user">
-            <span className="user-name">Bienvenido, {getDisplayName()}</span>
+
             <Link to="/mi-perfil" className="profile-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -53,23 +62,11 @@ const Dashboard = () => {
 
       <main className="dashboard-main">
         <div className="dashboard-welcome">
-          <h1>Bienvenido, {perfil?.nombre || user?.username}</h1>
+          <h1>Bienvenido, {getShortDisplayName()}</h1>
           <p>Has iniciado sesión correctamente en el Portal Gubernamental.</p>
         </div>
 
         <div className="dashboard-cards">
-          <Link to="/mi-perfil" className="dashboard-card-link">
-            <div className="dashboard-card">
-              <div className="card-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <h3>Mi Perfil</h3>
-              <p>Gestiona tu información personal y datos de contacto</p>
-            </div>
-          </Link>
 
           {isAdmin() && (
             <Link to="/admin" className="dashboard-card-link">

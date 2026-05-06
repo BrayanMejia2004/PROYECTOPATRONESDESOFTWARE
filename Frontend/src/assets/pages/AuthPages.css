@@ -55,15 +55,22 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: 
+  background:
     radial-gradient(circle at 20% 30%, rgba(212, 168, 83, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(212, 168, 83, 0.05) 0%, transparent 40%);
   animation: authFloat 20s ease-in-out infinite;
 }
 
 @keyframes authFloat {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(2%, 2%) rotate(1deg); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(2%, 2%) rotate(1deg);
+  }
 }
 
 .auth-panel-content {
@@ -78,6 +85,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -94,8 +102,17 @@ body {
 }
 
 @keyframes authPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.9; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
 }
 
 .auth-panel-content h1 {
@@ -131,9 +148,17 @@ body {
   animation: authSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-.auth-feature:nth-child(1) { animation-delay: 0.1s; }
-.auth-feature:nth-child(2) { animation-delay: 0.2s; }
-.auth-feature:nth-child(3) { animation-delay: 0.3s; }
+.auth-feature:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.auth-feature:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.auth-feature:nth-child(3) {
+  animation-delay: 0.3s;
+}
 
 .auth-feature:hover {
   background: rgba(212, 168, 83, 0.08);
@@ -206,9 +231,26 @@ body {
 }
 
 @keyframes authShake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-  20%, 40%, 60%, 80% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 .auth-error {
@@ -250,24 +292,23 @@ body {
 }
 
 .input-wrapper {
-  position: relative;
   display: flex;
   align-items: center;
+  gap: 0.75rem;
 }
 
 .input-wrapper svg {
-  position: absolute;
-  left: 1rem;
   width: 20px;
   height: 20px;
   color: var(--auth-text-muted);
   transition: color 0.3s ease;
   pointer-events: none;
+  flex-shrink: 0;
 }
 
 .input-wrapper input {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 3rem;
+  padding: 0.875rem 1rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--auth-border);
   border-radius: 10px;
@@ -293,7 +334,7 @@ body {
   box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.1);
 }
 
-.input-wrapper input:focus + svg,
+.input-wrapper input:focus+svg,
 .input-wrapper:focus-within svg {
   color: var(--auth-accent);
 }
@@ -378,7 +419,9 @@ body {
 }
 
 @keyframes authSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .auth-form-footer {
