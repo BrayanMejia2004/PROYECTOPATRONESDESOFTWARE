@@ -1,4 +1,5 @@
 import { useAuth } from '../Context/AuthContext';
+import EstadisticasPanel from '../Components/EstadisticasPanel';
 import './Dashboard.css';
 
 const AdminDashboard = () => {
@@ -15,6 +16,8 @@ const AdminDashboard = () => {
           <h1>Panel de Administración</h1>
           <p>Gestiona usuarios, roles y permisos del sistema.</p>
         </div>
+
+        <EstadisticasPanel />
       </main>
     </div>
   );

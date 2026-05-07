@@ -197,9 +197,15 @@
   color: #ffffff;
 }
 
+.menu-user-email {
+  font-size: 0.75rem;
+  color: #8899a6;
+  line-height: 1.2;
+}
+
 .menu-user-role {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #d4a853;
 }
 
 .menu-items {

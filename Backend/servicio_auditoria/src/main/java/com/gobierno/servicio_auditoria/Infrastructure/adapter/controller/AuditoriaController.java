@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gobierno.servicio_auditoria.application.usecases.RegistrarAuditoriaUseCase;
 import com.gobierno.servicio_auditoria.application.usecases.ObtenerTimelineUseCase;
 import com.gobierno.servicio_auditoria.application.usecases.ObtenerMapaCalorUseCase;
+import com.gobierno.servicio_auditoria.application.usecases.ObtenerEstadisticasUseCase;
 import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
+import com.gobierno.servicio_auditoria.domain.model.EstadisticasDTO;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.AuditoriaResponse;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.IpDetalleEventoDTO;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.IpEstadisticaDTO;
@@ -33,15 +35,18 @@ public class AuditoriaController {  // Controlador REST para gestionar auditorí
     private final AuditoriaJpaRepository auditoriaJpaRepository;
     private final ObtenerTimelineUseCase obtenerTimelineUseCase;
     private final ObtenerMapaCalorUseCase obtenerMapaCalorUseCase;
+    private final ObtenerEstadisticasUseCase obtenerEstadisticasUseCase;
     
     public AuditoriaController(RegistrarAuditoriaUseCase registrarAuditoriaUseCase,
             AuditoriaJpaRepository auditoriaJpaRepository,
             ObtenerTimelineUseCase obtenerTimelineUseCase,
-            ObtenerMapaCalorUseCase obtenerMapaCalorUseCase) {
+            ObtenerMapaCalorUseCase obtenerMapaCalorUseCase,
+            ObtenerEstadisticasUseCase obtenerEstadisticasUseCase) {
         this.registrarAuditoriaUseCase = registrarAuditoriaUseCase;
         this.auditoriaJpaRepository = auditoriaJpaRepository;
         this.obtenerTimelineUseCase = obtenerTimelineUseCase;
         this.obtenerMapaCalorUseCase = obtenerMapaCalorUseCase;
+        this.obtenerEstadisticasUseCase = obtenerEstadisticasUseCase;
     }
     
     @PostMapping("/registrar/{tipo}")  // POST /auditoria/registrar/{tipo}
@@ -132,5 +137,10 @@ public class AuditoriaController {  // Controlador REST para gestionar auditorí
             @RequestParam(required = false, defaultValue = "20") Integer limite) {
         List<IpDetalleEventoDTO> detalle = obtenerMapaCalorUseCase.obtenerDetalleDeIp(ip, limite);
         return ResponseEntity.ok(detalle);
+    }
+
+    @GetMapping("/estadisticas")
+    public ResponseEntity<EstadisticasDTO> obtenerEstadisticas() {
+        return ResponseEntity.ok(obtenerEstadisticasUseCase.obtenerEstadisticas());
     }
 }

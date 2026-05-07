@@ -4,7 +4,7 @@ import Login from '../Pages/Login';
 import Registro from '../Pages/Registro';
 import CompletarPerfil from '../Pages/CompletarPerfil';
 import MiPerfil from '../Pages/MiPerfil';
-import Dashboard from '../Pages/Dashboard';
+import MapaCalor from '../Pages/Dashboard';
 import AdminDashboard from '../Pages/AdminDashboard';
 import GestionUsuarios from '../Pages/GestionUsuarios';
 import GestionRoles from '../Pages/GestionRoles';
@@ -140,22 +140,22 @@ const AppRoutes = () => {
              </PrivateRoute>
            }
          />
-         <Route
-           path="/dashboard"
-           element={
-             <PrivateRoute requireProfile={true}>
-               <Dashboard />
-             </PrivateRoute>
-           }
-         />
-         <Route
-           path="/admin"
-           element={
-             <AdminRoute>
-               <AdminDashboard />
-             </AdminRoute>
-           }
-         />
+          <Route
+            path="/mapadecalor"
+            element={
+              <PrivateRoute requireProfile={true}>
+                <MapaCalor />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute requireProfile={true}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
          <Route
            path="/admin/usuarios"
            element={
