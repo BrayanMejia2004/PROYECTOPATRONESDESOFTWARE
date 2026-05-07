@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.gobierno.servicio_auditoria.application.usecases.RegistrarAuditoriaUseCase;
+import com.gobierno.servicio_auditoria.application.usecases.ObtenerTimelineUseCase;
 import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.AuditoriaResponse;
+import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.TimelineEventoDTO;
 import com.gobierno.servicio_auditoria.infrastructure.persistence.repository.AuditoriaJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,11 +27,14 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AuditoriaController {  // Controlador REST para gestionar auditorías
     private final RegistrarAuditoriaUseCase registrarAuditoriaUseCase;  // Caso de uso para registrar auditorías
     private final AuditoriaJpaRepository auditoriaJpaRepository;  // Repositorio JPA de auditorías
+    private final ObtenerTimelineUseCase obtenerTimelineUseCase;  // Caso de uso para timeline
     
     public AuditoriaController(RegistrarAuditoriaUseCase registrarAuditoriaUseCase,
-            AuditoriaJpaRepository auditoriaJpaRepository) {
+            AuditoriaJpaRepository auditoriaJpaRepository,
+            ObtenerTimelineUseCase obtenerTimelineUseCase) {
         this.registrarAuditoriaUseCase = registrarAuditoriaUseCase;
         this.auditoriaJpaRepository = auditoriaJpaRepository;
+        this.obtenerTimelineUseCase = obtenerTimelineUseCase;
     }
     
     @PostMapping("/registrar/{tipo}")  // POST /auditoria/registrar/{tipo}
@@ -93,5 +98,14 @@ public class AuditoriaController {  // Controlador REST para gestionar auditorí
         }
         
         return ResponseEntity.ok(auditorias);  // Retorna la lista de auditorías
+    }
+
+    @GetMapping("/usuario/{usuarioId}/timeline")  // GET /auditoria/usuario/{usuarioId}/timeline
+    public ResponseEntity<List<TimelineEventoDTO>> obtenerTimelineUsuario(
+            @PathVariable Long usuarioId,
+            @RequestParam(required = false) Integer limite) {
+        
+        List<TimelineEventoDTO> timeline = obtenerTimelineUseCase.obtenerTimelinePorUsuario(usuarioId, limite);
+        return ResponseEntity.ok(timeline);
     }
 }

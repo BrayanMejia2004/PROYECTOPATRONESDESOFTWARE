@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../Context/AuthContext';
 import adminService from '../Services/adminService';
+import TimelinePanel from '../Components/TimelinePanel';
 import './GestionUsuarios.css';
-
-const ROLES_DISPONIBLES = ['ADMIN', 'USER', 'AUDITOR'];
 
 const GestionUsuarios = () => {
   const { user, token, isAdmin } = useAuth();
@@ -19,24 +18,48 @@ const GestionUsuarios = () => {
   const [editarUsername, setEditarUsername] = useState('');
   const [editarEmail, setEditarEmail] = useState('');
   const [editarPassword, setEditarPassword] = useState('');
+  const [usuarioSeleccionadoTimeline, setUsuarioSeleccionadoTimeline] = useState(null);
+  const [pagina, setPagina] = useState(0);
+  const [totalPaginas, setTotalPaginas] = useState(0);
+  const [rolesDisponibles, setRolesDisponibles] = useState([]);
+  const itemsPorPagina = 5;
 
   useEffect(() => {
     cargarUsuarios();
   }, []);
 
-  const cargarUsuarios = async () => {
+  const cargarUsuarios = async (nuevaPagina) => {
+    const pageToLoad = nuevaPagina !== undefined ? nuevaPagina : pagina;
     setLoading(true);
     setError(null);
-    const result = await adminService.obtenerUsuarios(token);
-    if (result.success) {
-      setUsuarios(result.data || []);
-      result.data?.forEach((u) => {
+    setUserRoles({});
+    const [usuariosResult, rolesResult] = await Promise.all([
+      adminService.obtenerUsuarios(token, pageToLoad, itemsPorPagina),
+      adminService.obtenerRoles(token),
+    ]);
+    if (usuariosResult.success) {
+      setUsuarios(usuariosResult.data || []);
+      setTotalPaginas(usuariosResult.totalPages);
+      setPagina(pageToLoad);
+      usuariosResult.data?.forEach((u) => {
         cargarRolesDeUsuario(u.username);
       });
     } else {
-      setError(result.message || 'Error al cargar usuarios');
+      setError(usuariosResult.message || 'Error al cargar usuarios');
+    }
+    if (rolesResult.success) {
+      const roles = rolesResult.data || [];
+      setRolesDisponibles(roles.map(r => (typeof r === 'string' ? r : r.nombre)));
+    } else {
+      setRolesDisponibles(['ADMIN', 'USER', 'AUDITOR']);
     }
     setLoading(false);
+  };
+
+  const irPagina = (n) => {
+    if (n >= 0 && n < totalPaginas) {
+      cargarUsuarios(n);
+    }
   };
 
   const cargarRolesDeUsuario = async (username) => {
@@ -79,7 +102,7 @@ const GestionUsuarios = () => {
 
   const getRolesDisponibles = (username) => {
     const rolesActuales = userRoles[username] || [];
-    return ROLES_DISPONIBLES.filter((rol) => !rolesActuales.includes(rol));
+    return rolesDisponibles.filter((rol) => !rolesActuales.includes(rol));
   };
 
   const handleEditarUsuario = (usuario) => {
@@ -170,20 +193,21 @@ const GestionUsuarios = () => {
             <p>Cargando usuarios...</p>
           </div>
         ) : (
-          <div className="usuarios-table-container">
+          <>
             <table className="usuarios-table">
               <thead>
                 <tr>
                   <th>Usuario</th>
                   <th>Email</th>
                   <th>Roles Actuales</th>
+                  <th>Timeline</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {usuarios.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="empty-message">
+                    <td colSpan="5" className="empty-message">
                       No hay usuarios registrados
                     </td>
                   </tr>
@@ -235,6 +259,18 @@ const GestionUsuarios = () => {
                         </div>
                       </td>
                       <td>
+                        <button
+                          onClick={() => setUsuarioSeleccionadoTimeline(usuario.id)}
+                          className="action-btn timeline"
+                          title="Ver timeline"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                          </svg>
+                        </button>
+                      </td>
+                      <td>
                         <div className="actions-cell">
                           <button
                             onClick={() => handleEditarUsuario(usuario)}
@@ -275,7 +311,34 @@ const GestionUsuarios = () => {
                 )}
               </tbody>
             </table>
-          </div>
+          {totalPaginas > 1 && (
+            <div className="pagination">
+              <button onClick={() => irPagina(0)} disabled={pagina === 0} title="Primera página">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="11 17 6 12 11 7" />
+                  <polyline points="18 17 13 12 18 7" />
+                </svg>
+              </button>
+              <button onClick={() => irPagina(pagina - 1)} disabled={pagina === 0} title="Anterior">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+              <span className="pagina-info">Página {pagina + 1} de {totalPaginas}</span>
+              <button onClick={() => irPagina(pagina + 1)} disabled={pagina >= totalPaginas - 1} title="Siguiente">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+              <button onClick={() => irPagina(totalPaginas - 1)} disabled={pagina >= totalPaginas - 1} title="Última página">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="13 17 18 12 13 7" />
+                  <polyline points="6 17 11 12 6 7" />
+                </svg>
+              </button>
+            </div>
+          )}
+          </>
         )}
       </main>
 
@@ -332,6 +395,13 @@ const GestionUsuarios = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {usuarioSeleccionadoTimeline && (
+        <TimelinePanel
+          usuarioId={usuarioSeleccionadoTimeline}
+          onCerrar={() => setUsuarioSeleccionadoTimeline(null)}
+        />
       )}
     </div>
   );

@@ -100,7 +100,7 @@ class GestionUsuarioFacadeAdminTest {
     void asignarRol_usuarioValido_asignaRolCorrectamente() {
         doNothing().when(autorizacionClient).asignarRolAUsuario("testuser", "ADMIN");
 
-        facade.asignarRol("testuser", "ADMIN");
+        facade.asignarRol("admin", "testuser", "ADMIN");
 
         verify(autorizacionClient).asignarRolAUsuario("testuser", "ADMIN");
     }
@@ -110,7 +110,7 @@ class GestionUsuarioFacadeAdminTest {
     void quitarRol_usuarioConRol_quitaRolExitosamente() {
         doNothing().when(autorizacionClient).quitarRolAUsuario("testuser", "ADMIN");
 
-        facade.quitarRol("testuser", "ADMIN");
+        facade.quitarRol("admin", "testuser", "ADMIN");
 
         verify(autorizacionClient).quitarRolAUsuario("testuser", "ADMIN");
     }

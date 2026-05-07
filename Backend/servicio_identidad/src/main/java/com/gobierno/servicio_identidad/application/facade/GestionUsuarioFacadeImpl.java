@@ -192,15 +192,13 @@ public class GestionUsuarioFacadeImpl implements GestionUsuarioFacade { // Imple
 
     @Override // Sobrescribe el método de la interfaz
     public void eliminarUsuarioAdmin(String adminUsername, String username) { // Admin elimina un usuario
-        Usuario usuario = usuarioRepositorioPort.buscarPorUsername(username).orElse(null); // Busca el usuario a
-                                                                                           // eliminar
-        Integer usuarioId = (usuario != null) ? usuario.getId().intValue() : 0; // Obtiene el ID del usuario o 0 si no
-                                                                                // existe
+        Usuario adminUsuario = usuarioRepositorioPort.buscarPorUsername(adminUsername).orElse(null); // Busca el admin
+        Integer adminId = (adminUsuario != null) ? adminUsuario.getId().intValue() : 0; // Obtiene el ID del admin
 
-        auditoriaClient.registrarAuditoria( // Registra la auditoría de eliminación por admin
-                usuarioId, // ID del usuario eliminado
+        auditoriaClient.registrarAuditoria( // Registra la auditoría con el ID del admin
+                adminId, // ID del admin que ejecutó la acción
                 "ELIMINAR_USUARIO", // Acción realizada
-                "Admin " + adminUsername + " elimin\u00f3 usuario " + username, // Descripción
+                adminUsername + " elimin\u00f3 usuario " + username, // Descripción
                 "SEGURIDAD" // Tipo de auditoría
         );
 
@@ -209,13 +207,29 @@ public class GestionUsuarioFacadeImpl implements GestionUsuarioFacade { // Imple
     }
 
     @Override // Sobrescribe el método de la interfaz
-    public void asignarRol(String username, String tipoRol) { // Asigna un rol a un usuario
+    public void asignarRol(String adminUsername, String username, String tipoRol) { // Admin asigna un rol
+        Usuario admin = usuarioRepositorioPort.buscarPorUsername(adminUsername).orElse(null); // Busca el admin
+        Integer adminId = (admin != null) ? admin.getId().intValue() : 0; // Obtiene el ID del admin
         autorizacionClient.asignarRolAUsuario(username, tipoRol); // Llama al servicio de autorización
+        auditoriaClient.registrarAuditoria( // Registra la auditoría de asignación de rol
+                adminId, // ID del admin que ejecutó la acción
+                "CREAR_ROL", // Acción realizada
+                adminUsername + " asign\u00f3 rol " + tipoRol + " a " + username, // Descripción
+                "BASICA" // Tipo de auditoría
+        );
     }
 
     @Override // Sobrescribe el método de la interfaz
-    public void quitarRol(String username, String tipoRol) { // Quita un rol a un usuario
+    public void quitarRol(String adminUsername, String username, String tipoRol) { // Admin quita un rol
+        Usuario admin = usuarioRepositorioPort.buscarPorUsername(adminUsername).orElse(null); // Busca el admin
+        Integer adminId = (admin != null) ? admin.getId().intValue() : 0; // Obtiene el ID del admin
         autorizacionClient.quitarRolAUsuario(username, tipoRol); // Llama al servicio de autorización
+        auditoriaClient.registrarAuditoria( // Registra la auditoría de eliminación de rol
+                adminId, // ID del admin que ejecutó la acción
+                "ELIMINAR_ROL", // Acción realizada
+                adminUsername + " quit\u00f3 rol " + tipoRol + " a " + username, // Descripción
+                "SEGURIDAD" // Tipo de auditoría
+        );
     }
 
     @Override // Sobrescribe el método de la interfaz
@@ -263,8 +277,17 @@ public class GestionUsuarioFacadeImpl implements GestionUsuarioFacade { // Imple
 
         usuarioRepositorioPort.guardar(usuario); // Persiste los cambios en la base de datos
 
+        Usuario admin = usuarioRepositorioPort.buscarPorUsername(adminUsername).orElse(null); // Busca el admin
+        Integer adminId = (admin != null) ? admin.getId().intValue() : 0; // Obtiene el ID del admin
+        auditoriaClient.registrarAuditoria( // Registra la auditoría de edición por admin
+                adminId, // ID del admin que ejecutó la acción
+                "EDITAR_USUARIO", // Acción realizada
+                adminUsername + " edit\u00f3 usuario " + username, // Descripción
+                "BASICA" // Tipo de auditoría
+        );
+
         return new UsuarioListaResponse(usuario.getId(), usuario.getUsername(), usuario.getEmail()); // Retorna los
-                                                                                                     // datos
-                                                                                                     // actualizados
+                                                                                                      // datos
+                                                                                                      // actualizados
     }
 }

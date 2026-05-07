@@ -1,16 +1,19 @@
 import axiosInstance from '../../Api/axiosConfig';
 
 const adminService = {
-  obtenerUsuarios: async (token) => {
+  obtenerUsuarios: async (token, page = 0, size = 5) => {
     try {
-      const response = await axiosInstance.get('/api/usuarios/lista', {
+      const response = await axiosInstance.get(`/api/usuarios/lista?page=${page}&size=${size}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       return {
         success: true,
-        data: response.data,
+        data: response.data.content,
+        totalPages: response.data.totalPages,
+        totalElements: response.data.totalElements,
+        currentPage: response.data.number,
       };
     } catch (error) {
       return {
