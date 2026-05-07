@@ -5,7 +5,7 @@ import Registro from '../Pages/Registro';
 import CompletarPerfil from '../Pages/CompletarPerfil';
 import MiPerfil from '../Pages/MiPerfil';
 import MapaCalor from '../Pages/Dashboard';
-import AdminDashboard from '../Pages/AdminDashboard';
+import DashboardRouter from '../Components/DashboardRouter';
 import GestionUsuarios from '../Pages/GestionUsuarios';
 import GestionRoles from '../Pages/GestionRoles';
 import Auditoria from '../Pages/Auditoria';
@@ -152,7 +152,7 @@ const AppRoutes = () => {
             path="/dashboard"
             element={
               <PrivateRoute requireProfile={true}>
-                <AdminDashboard />
+                <DashboardRouter />
               </PrivateRoute>
             }
           />
@@ -172,15 +172,15 @@ const AppRoutes = () => {
              </AdminRoute>
            }
          />
-         <Route
-           path="/auditoria"
-           element={
-             <AuditorRoute>
-               <Auditoria />
-             </AuditorRoute>
-           }
-         />
-       </Route>
+          <Route
+            path="/auditoria"
+            element={
+              <AuditorRoute>
+                <Auditoria />
+              </AuditorRoute>
+            }
+          />
+        </Route>
       <Route path="/" element={
         isAuthenticated ? (
           hasPerfilCompleto ? <Navigate to="/dashboard" replace /> : <Navigate to="/completar-perfil" replace />
