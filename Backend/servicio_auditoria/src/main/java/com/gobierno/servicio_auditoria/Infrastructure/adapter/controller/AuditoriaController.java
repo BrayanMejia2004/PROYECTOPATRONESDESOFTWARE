@@ -1,6 +1,7 @@
 package com.gobierno.servicio_auditoria.infrastructure.adapter.controller;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.gobierno.servicio_auditoria.application.usecases.RegistrarAuditoriaUseCase;
 import com.gobierno.servicio_auditoria.application.usecases.ObtenerTimelineUseCase;
+import com.gobierno.servicio_auditoria.application.usecases.ObtenerMapaCalorUseCase;
 import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.AuditoriaResponse;
+import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.IpDetalleEventoDTO;
+import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.IpEstadisticaDTO;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.TimelineEventoDTO;
 import com.gobierno.servicio_auditoria.infrastructure.persistence.repository.AuditoriaJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,16 +29,19 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/auditoria")
 public class AuditoriaController {  // Controlador REST para gestionar auditorías
-    private final RegistrarAuditoriaUseCase registrarAuditoriaUseCase;  // Caso de uso para registrar auditorías
-    private final AuditoriaJpaRepository auditoriaJpaRepository;  // Repositorio JPA de auditorías
-    private final ObtenerTimelineUseCase obtenerTimelineUseCase;  // Caso de uso para timeline
+    private final RegistrarAuditoriaUseCase registrarAuditoriaUseCase;
+    private final AuditoriaJpaRepository auditoriaJpaRepository;
+    private final ObtenerTimelineUseCase obtenerTimelineUseCase;
+    private final ObtenerMapaCalorUseCase obtenerMapaCalorUseCase;
     
     public AuditoriaController(RegistrarAuditoriaUseCase registrarAuditoriaUseCase,
             AuditoriaJpaRepository auditoriaJpaRepository,
-            ObtenerTimelineUseCase obtenerTimelineUseCase) {
+            ObtenerTimelineUseCase obtenerTimelineUseCase,
+            ObtenerMapaCalorUseCase obtenerMapaCalorUseCase) {
         this.registrarAuditoriaUseCase = registrarAuditoriaUseCase;
         this.auditoriaJpaRepository = auditoriaJpaRepository;
         this.obtenerTimelineUseCase = obtenerTimelineUseCase;
+        this.obtenerMapaCalorUseCase = obtenerMapaCalorUseCase;
     }
     
     @PostMapping("/registrar/{tipo}")  // POST /auditoria/registrar/{tipo}
@@ -107,5 +114,23 @@ public class AuditoriaController {  // Controlador REST para gestionar auditorí
         
         List<TimelineEventoDTO> timeline = obtenerTimelineUseCase.obtenerTimelinePorUsuario(usuarioId, limite);
         return ResponseEntity.ok(timeline);
+    }
+
+    @GetMapping("/estadisticas/ips")
+    public ResponseEntity<List<IpEstadisticaDTO>> obtenerEstadisticasPorIp(
+            @RequestParam(required = false) String desde,
+            @RequestParam(required = false) String hasta) {
+        LocalDate desdeDate = (desde != null && !desde.isBlank()) ? LocalDate.parse(desde) : null;
+        LocalDate hastaDate = (hasta != null && !hasta.isBlank()) ? LocalDate.parse(hasta) : null;
+        List<IpEstadisticaDTO> estadisticas = obtenerMapaCalorUseCase.obtenerEstadisticasPorIp(desdeDate, hastaDate);
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    @GetMapping("/estadisticas/ips/{ip}/detalle")
+    public ResponseEntity<List<IpDetalleEventoDTO>> obtenerDetalleDeIp(
+            @PathVariable String ip,
+            @RequestParam(required = false, defaultValue = "20") Integer limite) {
+        List<IpDetalleEventoDTO> detalle = obtenerMapaCalorUseCase.obtenerDetalleDeIp(ip, limite);
+        return ResponseEntity.ok(detalle);
     }
 }

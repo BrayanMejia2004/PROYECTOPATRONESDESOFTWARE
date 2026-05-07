@@ -23,14 +23,21 @@ const Auditoria = () => {
     tipo: '',
     accion: ''
   });
+  const [pagina, setPagina] = useState(0);
+  const itemsPorPagina = 10;
 
   useEffect(() => {
     cargarAuditorias();
   }, []);
 
+  const irPagina = (p) => {
+    setPagina(Math.max(0, Math.min(p, totalPaginas - 1)));
+  };
+
   const cargarAuditorias = async () => {
     setLoading(true);
     setError(null);
+    setPagina(0);
 
     try {
       const params = new URLSearchParams();
@@ -74,6 +81,7 @@ const Auditoria = () => {
       tipo: '',
       accion: ''
     });
+    setPagina(0);
   };
 
   const generarReporte = async (formato) => {
@@ -111,6 +119,9 @@ const Auditoria = () => {
     const date = new Date(fecha);
     return date.toLocaleString('es-ES');
   };
+
+  const totalPaginas = Math.max(1, Math.ceil(auditorias.length / itemsPorPagina));
+  const auditoriasPagina = auditorias.slice(pagina * itemsPorPagina, (pagina + 1) * itemsPorPagina);
 
   if (!isAuditor()) {
     return null;
@@ -306,7 +317,7 @@ const Auditoria = () => {
                     </td>
                   </tr>
                 ) : (
-                  auditorias.map((aud) => (
+                  auditoriasPagina.map((aud) => (
                     <tr key={aud.id}>
                       <td>{aud.id}</td>
                       <td>{aud.usuario_id}</td>
@@ -331,8 +342,38 @@ const Auditoria = () => {
               </tbody>
             </table>
             <div className="table-footer">
-              <span>Total: {auditorias.length} registros</span>
+              <span>
+                Mostrando {auditorias.length === 0 ? 0 : pagina * itemsPorPagina + 1}-
+                {Math.min((pagina + 1) * itemsPorPagina, auditorias.length)} de {auditorias.length} registros
+              </span>
             </div>
+            {totalPaginas > 1 && (
+              <div className="pagination">
+                <button onClick={() => irPagina(0)} disabled={pagina === 0} title="Primera página">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="11 17 6 12 11 7" />
+                    <polyline points="18 17 13 12 18 7" />
+                  </svg>
+                </button>
+                <button onClick={() => irPagina(pagina - 1)} disabled={pagina === 0} title="Anterior">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <span className="pagina-info">Página {pagina + 1} de {totalPaginas}</span>
+                <button onClick={() => irPagina(pagina + 1)} disabled={pagina >= totalPaginas - 1} title="Siguiente">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+                <button onClick={() => irPagina(totalPaginas - 1)} disabled={pagina >= totalPaginas - 1} title="Última página">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="13 17 18 12 13 7" />
+                    <polyline points="6 17 11 12 6 7" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
