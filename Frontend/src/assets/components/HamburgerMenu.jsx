@@ -73,6 +73,7 @@ const HamburgerMenu = ({ isOpen, onClose }) => {
             <span className="menu-user-role">
               {isAdmin() ? 'Administrador' : isAuditor() ? 'Auditor' : 'Usuario'}
             </span>
+            <span className="menu-user-email">{perfil?.email || ''}</span>
           </div>
         </div>
 
@@ -86,6 +87,19 @@ const HamburgerMenu = ({ isOpen, onClose }) => {
               <span>Dashboard</span>
             </Link>
           </li>
+
+          {(isAdmin() || isAuditor()) && (
+            <li>
+              <Link to="/mapadecalor" className="menu-item" onClick={handleLinkClick}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+                <span>Mapa de Calor</span>
+              </Link>
+            </li>
+          )}
 
           <li>
             <Link to="/mi-perfil" className="menu-item" onClick={handleLinkClick}>
