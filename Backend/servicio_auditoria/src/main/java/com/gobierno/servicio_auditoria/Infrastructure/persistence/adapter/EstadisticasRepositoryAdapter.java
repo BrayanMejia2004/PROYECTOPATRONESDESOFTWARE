@@ -20,12 +20,12 @@ public class EstadisticasRepositoryAdapter implements EstadisticasRepositoryPort
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, Long> contarEventosPorTipo() {
         Map<String, Long> resultado = new HashMap<>();
         Query query = entityManager.createNativeQuery(
                 "SELECT tipo, COUNT(*) AS total FROM auditoria GROUP BY tipo ORDER BY total DESC");
-        List<Object[]> rows = query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = (List<Object[]>) (List<?>) query.getResultList();
         for (Object[] row : rows) {
             String tipo = (String) row[0];
             Long total = ((Number) row[1]).longValue();
@@ -35,13 +35,13 @@ public class EstadisticasRepositoryAdapter implements EstadisticasRepositoryPort
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<Integer, Long> contarEventosPorHora() {
         Map<Integer, Long> resultado = new HashMap<>();
         Query query = entityManager.createNativeQuery(
                 "SELECT EXTRACT(HOUR FROM fecha) AS hora, COUNT(*) AS total FROM auditoria " +
                 "GROUP BY hora ORDER BY hora ASC");
-        List<Object[]> rows = query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Object[]> rows = (List<Object[]>) (List<?>) query.getResultList();
         for (Object[] row : rows) {
             if (row[0] == null) continue;
             Integer hora = ((Number) row[0]).intValue();
@@ -52,12 +52,13 @@ public class EstadisticasRepositoryAdapter implements EstadisticasRepositoryPort
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Object[]> obtenerTop5Activos() {
         Query query = entityManager.createNativeQuery(
                 "SELECT usuario_id, COUNT(*) AS total_acciones FROM auditoria " +
                 "GROUP BY usuario_id ORDER BY total_acciones DESC LIMIT 5");
-        return query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = (List<Object[]>) (List<?>) query.getResultList();
+        return result;
     }
 
     @Override
