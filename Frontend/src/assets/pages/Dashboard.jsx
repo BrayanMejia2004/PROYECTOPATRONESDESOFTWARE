@@ -1,25 +1,22 @@
 import { useAuth } from '../Context/AuthContext';
+import MapaCalorIP from '../Components/MapaCalorIP';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { perfil, user } = useAuth();
-
-  const getShortDisplayName = () => {
-    if (perfil?.nombre && perfil?.apellido) {
-      const primerNombre = perfil.nombre.split(' ')[0];
-      const primerApellido = perfil.apellido.split(' ')[0];
-      return `${primerNombre} ${primerApellido}`;
-    }
-    return user?.username || 'Usuario';
-  };
+  const { isAdmin, isAuditor } = useAuth();
 
   return (
     <div className="dashboard">
       <main className="dashboard-main">
-        <div className="dashboard-welcome">
-          <h1>Bienvenido, {getShortDisplayName()}</h1>
-          <p>Has iniciado sesión correctamente en el Portal Gubernamental.</p>
-        </div>
+        {(isAdmin() || isAuditor()) && (
+          <section className="dashboard-mapa-section">
+            <div className="dashboard-mapa-header">
+              <h1>Mapa de Calor por IP</h1>
+              <p>Análisis de actividad agrupada por dirección IP de origen</p>
+            </div>
+            <MapaCalorIP />
+          </section>
+        )}
       </main>
     </div>
   );

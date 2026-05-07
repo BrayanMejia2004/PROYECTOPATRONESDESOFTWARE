@@ -60,6 +60,23 @@
   flex: 1;
 }
 
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e7e9ea;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+
+.header-user svg {
+  width: 18px;
+  height: 18px;
+  color: #d4a853;
+}
+
 .app-main {
   padding-top: 60px;
   min-height: 100vh;
