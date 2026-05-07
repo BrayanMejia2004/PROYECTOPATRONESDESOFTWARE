@@ -26,9 +26,9 @@ public interface GestionUsuarioFacade { // Interfaz del Facade para gestión de 
 
     void eliminarUsuarioAdmin(String adminUsername, String username); // Admin elimina un usuario
 
-    void asignarRol(String username, String tipoRol); // Asigna un rol a un usuario
+    void asignarRol(String adminUsername, String username, String tipoRol); // Admin asigna un rol a un usuario
 
-    void quitarRol(String username, String tipoRol); // Quita un rol a un usuario
+    void quitarRol(String adminUsername, String username, String tipoRol); // Admin quita un rol a un usuario
 
     List<String> obtenerRoles(String username); // Obtiene los roles de un usuario
 

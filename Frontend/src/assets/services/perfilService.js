@@ -1,13 +1,9 @@
 import axiosInstance from '../../Api/axiosConfig';
 
 const perfilService = {
-  getPerfil: async (token) => {
+  getPerfil: async () => {
     try {
-      const response = await axiosInstance.get('/api/usuarios/perfil', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get('/api/usuarios/perfil');
       return {
         success: true,
         data: response.data,
@@ -30,13 +26,9 @@ const perfilService = {
     }
   },
 
-  crearPerfil: async (perfilData, token) => {
+  crearPerfil: async (perfilData) => {
     try {
-      const response = await axiosInstance.post('/api/usuarios/perfil', perfilData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.post('/api/usuarios/perfil', perfilData);
       return {
         success: true,
         data: response.data,
@@ -55,13 +47,9 @@ const perfilService = {
     }
   },
 
-  actualizarPerfil: async (perfilData, token) => {
+  actualizarPerfil: async (perfilData) => {
     try {
-      const response = await axiosInstance.put('/api/usuarios/perfil', perfilData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.put('/api/usuarios/perfil', perfilData);
       return {
         success: true,
         data: response.data,

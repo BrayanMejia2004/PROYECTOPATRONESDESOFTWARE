@@ -1,7 +1,13 @@
 package com.gobierno.servicio_identidad.infrastructure.adapter.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,10 +18,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gobierno.servicio_identidad.application.facade.AutenticacionFacade;
 import com.gobierno.servicio_identidad.application.facade.GestionUsuarioFacade;
+import com.gobierno.servicio_identidad.domain.entities.PerfilUsuario;
 import com.gobierno.servicio_identidad.domain.entities.Usuario;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.ActualizarUsuarioRequest;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.LoginRequest;
@@ -25,23 +33,27 @@ import com.gobierno.servicio_identidad.infrastructure.adapter.dto.RegistroUsuari
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.UsuarioCompletoResponse;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.UsuarioListaResponse;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.UsuarioResponse;
+import com.gobierno.servicio_identidad.infrastructure.persistence.repository.PerfilUsuarioJpaRepository;
 import com.gobierno.servicio_identidad.infrastructure.persistence.repository.UsuarioJpaRepository;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController { // Controlador REST para gestionar usuarios
 
-    private final AutenticacionFacade autenticacionFacade; // Facade de autenticación
-    private final GestionUsuarioFacade gestionUsuarioFacade; // Facade de gestión de usuarios
-    private final UsuarioJpaRepository usuarioJpaRepository; // Repositorio JPA de usuarios
+    private final AutenticacionFacade autenticacionFacade;  // Facade de autenticación
+    private final GestionUsuarioFacade gestionUsuarioFacade;  // Facade de gestión de usuarios
+    private final UsuarioJpaRepository usuarioJpaRepository;  // Repositorio JPA de usuarios
+    private final PerfilUsuarioJpaRepository perfilUsuarioJpaRepository;  // Repositorio JPA de perfiles
 
-    public UsuarioController( // Constructor con inyección de dependencias
-            AutenticacionFacade autenticacionFacade, // Inyecta el facade de autenticación
-            GestionUsuarioFacade gestionUsuarioFacade, // Inyecta el facade de gestión de usuarios
-            UsuarioJpaRepository usuarioJpaRepository) { // Inyecta el repositorio JPA
-        this.autenticacionFacade = autenticacionFacade; // Asigna el facade de autenticación
-        this.gestionUsuarioFacade = gestionUsuarioFacade; // Asigna el facade de gestión de usuarios
-        this.usuarioJpaRepository = usuarioJpaRepository; // Asigna el repositorio JPA
+    public UsuarioController(  // Constructor con inyección de dependencias
+            AutenticacionFacade autenticacionFacade,  // Inyecta el facade de autenticación
+            GestionUsuarioFacade gestionUsuarioFacade,  // Inyecta el facade de gestión de usuarios
+            UsuarioJpaRepository usuarioJpaRepository,  // Inyecta el repositorio JPA
+            PerfilUsuarioJpaRepository perfilUsuarioJpaRepository) {  // Inyecta el repositorio JPA de perfiles
+        this.autenticacionFacade = autenticacionFacade;  // Asigna el facade de autenticación
+        this.gestionUsuarioFacade = gestionUsuarioFacade;  // Asigna el facade de gestión de usuarios
+        this.usuarioJpaRepository = usuarioJpaRepository;  // Asigna el repositorio JPA
+        this.perfilUsuarioJpaRepository = perfilUsuarioJpaRepository;  // Asigna el repositorio JPA de perfiles
     }
 
     @PostMapping("/login") // Endpoint: POST /usuarios/login
@@ -128,12 +140,13 @@ public class UsuarioController { // Controlador REST para gestionar usuarios
     }
 
     @GetMapping("/lista") // Endpoint: GET /usuarios/lista
-    public ResponseEntity<?> obtenerListaUsuarios() { // Lista todos los usuarios (público)
-        List<UsuarioListaResponse> usuarios = usuarioJpaRepository.findAll().stream() // Obtiene todos los usuarios de
-                                                                                      // BD
-                .map(u -> new UsuarioListaResponse(u.getId(), u.getUsername(), u.getEmail())) // Convierte a DTO
-                .toList(); // Recolecta en una lista
-        return ResponseEntity.ok(usuarios); // Retorna la lista de usuarios
+    public ResponseEntity<Page<UsuarioListaResponse>> obtenerListaUsuarios( // Lista usuarios paginados
+            @RequestParam(defaultValue = "0") int page, // Número de página (0 por defecto)
+            @RequestParam(defaultValue = "5") int size) { // Tamaño de página (5 por defecto)
+        Pageable pageable = PageRequest.of(page, size); // Crea el objeto de paginación
+        Page<UsuarioListaResponse> usuarios = usuarioJpaRepository.findAll(pageable) // Obtiene usuarios paginados
+                .map(u -> new UsuarioListaResponse(u.getId(), u.getUsername(), u.getEmail())); // Convierte a DTO
+        return ResponseEntity.ok(usuarios); // Retorna la página de usuarios
     }
 
     @GetMapping("/{username}/id") // Endpoint: GET /usuarios/{username}/id
@@ -146,16 +159,18 @@ public class UsuarioController { // Controlador REST para gestionar usuarios
     }
 
     @PostMapping("/{username}/roles/{tipoRol}") // Endpoint: POST /usuarios/{username}/roles/{tipoRol}
-    public ResponseEntity<String> asignarRol(@PathVariable String username, @PathVariable String tipoRol) { // Asigna un
-                                                                                                            // rol
-        gestionUsuarioFacade.asignarRol(username, tipoRol); // Llama al facade para asignar rol
+    public ResponseEntity<String> asignarRol(@PathVariable String username, @PathVariable String tipoRol, // Asigna un
+                                                                                                             // rol
+            Authentication authentication) { // Contexto de seguridad (debe ser admin)
+        gestionUsuarioFacade.asignarRol(authentication.getName(), username, tipoRol); // Llama al facade para asignar rol
         return ResponseEntity.ok("Rol " + tipoRol + " asignado a " + username + " exitosamente"); // Retorna mensaje
     }
 
     @DeleteMapping("/{username}/roles/{tipoRol}") // Endpoint: DELETE /usuarios/{username}/roles/{tipoRol}
-    public ResponseEntity<String> quitarRol(@PathVariable String username, @PathVariable String tipoRol) { // Quita un
-                                                                                                           // rol
-        gestionUsuarioFacade.quitarRol(username, tipoRol); // Llama al facade para quitar rol
+    public ResponseEntity<String> quitarRol(@PathVariable String username, @PathVariable String tipoRol, // Quita un
+                                                                                                            // rol
+            Authentication authentication) { // Contexto de seguridad (debe ser admin)
+        gestionUsuarioFacade.quitarRol(authentication.getName(), username, tipoRol); // Llama al facade para quitar rol
         return ResponseEntity.ok("Rol " + tipoRol + " removido de " + username + " exitosamente"); // Retorna mensaje
     }
 
@@ -204,6 +219,39 @@ public class UsuarioController { // Controlador REST para gestionar usuarios
 
         gestionUsuarioFacade.eliminarUsuarioAdmin(authentication.getName(), username); // Llama al facade para eliminar
         return ResponseEntity.ok("Usuario " + username + " eliminado exitosamente"); // Retorna mensaje de éxito
+    }
+
+    @GetMapping("/{id}/resumen") // GET /usuarios/{id}/resumen
+    public ResponseEntity<?> obtenerResumenUsuario(@PathVariable Long id) {
+        Optional<Usuario> usuarioOpt = usuarioJpaRepository.findById(id);
+        
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        Usuario usuario = usuarioOpt.get();
+        
+        Optional<PerfilUsuario> perfilOpt = perfilUsuarioJpaRepository.findByUsuarioId(usuario.getId().intValue());
+        
+        Map<String, Object> resumen = new HashMap<>();
+        resumen.put("id", usuario.getId());
+        resumen.put("username", usuario.getUsername());
+        resumen.put("email", usuario.getEmail());
+        resumen.put("estado", usuario.getEstado());
+        resumen.put("fechaCreacion", usuario.getFechaCreacion());
+        
+        if (perfilOpt.isPresent()) {
+            PerfilUsuario perfil = perfilOpt.get();
+            resumen.put("nombre", perfil.getNombre());
+            resumen.put("apellido", perfil.getApellido());
+            resumen.put("telefono", perfil.getTelefono());
+        } else {
+            resumen.put("nombre", null);
+            resumen.put("apellido", null);
+            resumen.put("telefono", null);
+        }
+        
+        return ResponseEntity.ok(resumen);
     }
 
     public static class ActualizarUsuarioAdminRequest { // Clase interna para DTO de actualización por admin

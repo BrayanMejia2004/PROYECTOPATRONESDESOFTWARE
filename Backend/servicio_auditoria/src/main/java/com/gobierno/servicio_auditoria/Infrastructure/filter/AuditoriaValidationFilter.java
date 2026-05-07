@@ -27,9 +27,10 @@ public class AuditoriaValidationFilter extends HttpFilter { // Filtro Servlet qu
 
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
-        
-        // Excluir GET /auditoria/lista de la validación
-        if ("GET".equals(method) && requestURI.endsWith("/lista")) {
+
+        // Excluir GET /auditoria/lista, GET /auditoria/usuario/*/timeline y POST /auditoria/registrar/** de la validación
+        if (("GET".equals(method) && (requestURI.endsWith("/lista") || requestURI.contains("/usuario/") && requestURI.contains("/timeline"))) ||
+            ("POST".equals(method) && requestURI.contains("/registrar/"))) {
             chain.doFilter(request, response);  // Continuar sin validación
             return;
         }

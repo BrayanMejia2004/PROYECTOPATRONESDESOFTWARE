@@ -6,7 +6,7 @@ import './GestionRoles.css';
 const ROLES_FIJOS = ['ADMIN', 'USER', 'AUDITOR'];
 
 const GestionRoles = () => {
-  const { token, isAdmin } = useAuth();
+  const { token, isAdmin, user } = useAuth();
   const [roles, setRoles] = useState([]);
   const [rolesData, setRolesData] = useState({});
   const [loading, setLoading] = useState(true);

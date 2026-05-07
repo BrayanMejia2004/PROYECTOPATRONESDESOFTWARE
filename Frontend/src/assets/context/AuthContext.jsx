@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     if (!token) return;
     
     setPerfilLoading(true);
-    const result = await perfilService.getPerfil(token);
+    const result = await perfilService.getPerfil();
     setPerfilLoading(false);
     
     if (result.success) {
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   const crearPerfil = async (perfilData) => {
     if (!token) return { success: false, message: 'No autenticado' };
     
-    const result = await perfilService.crearPerfil(perfilData, token);
+    const result = await perfilService.crearPerfil(perfilData);
     
     if (result.success) {
       setPerfil(result.data);
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   const actualizarPerfil = async (perfilData) => {
     if (!token) return { success: false, message: 'No autenticado' };
     
-    const result = await perfilService.actualizarPerfil(perfilData, token);
+    const result = await perfilService.actualizarPerfil(perfilData);
     
     if (result.success) {
       setPerfil(result.data);
