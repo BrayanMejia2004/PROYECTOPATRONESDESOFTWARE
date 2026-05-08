@@ -85,4 +85,19 @@ public class IdentidadClient implements IdentidadClientPort {
             return new HashMap<>();
         }
     }
+
+    @Override
+    public Map<String, List<String>> obtenerRolesPorUsuario() {
+        String url = servicioIdentidadUrl + "/usuarios/todos-roles";
+        try {
+            ResponseEntity<Map<String, List<String>>> response = restTemplate.exchange(
+                    url, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<Map<String, List<String>>>() {});
+            Map<String, List<String>> body = response.getBody();
+            return body != null ? body : new HashMap<>();
+        } catch (Exception e) {
+            log.warn("Error al obtener roles desde identidad: {}", e.getMessage());
+            return new HashMap<>();
+        }
+    }
 }

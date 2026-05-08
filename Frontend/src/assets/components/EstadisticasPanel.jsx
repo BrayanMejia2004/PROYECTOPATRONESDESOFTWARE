@@ -181,15 +181,20 @@ const EstadisticasPanel = () => {
                 <p className="empty-text">Todos los usuarios han tenido actividad</p>
               ) : (
                 <div className="inactive-list">
-                  {usuariosSinActividad.map((id) => (
-                    <span key={id} className="inactive-badge">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="15" y1="9" x2="9" y2="15" />
-                        <line x1="9" y1="9" x2="15" y2="15" />
-                      </svg>
-                      ID: {id}
-                    </span>
+                  {usuariosSinActividad.map((u) => (
+                    <div key={u.id} className="inactive-item">
+                      <div className="inactive-avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="2" y="3" width="20" height="14" rx="2" />
+                          <line x1="8" y1="21" x2="16" y2="21" />
+                          <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
+                      </div>
+                      <div className="inactive-info">
+                        <span className="inactive-username">{u.username}</span>
+                        <span className="inactive-rol">{u.roles?.[0] || 'Sin rol'}</span>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}

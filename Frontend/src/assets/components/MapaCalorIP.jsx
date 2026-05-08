@@ -27,7 +27,7 @@ const formatearFecha = (fecha) => {
   return date.toLocaleString('es-ES');
 };
 
-const MapaCalorIP = () => {
+const MapaCalorIP = ({ onMetricasUpdate }) => {
   const [ips, setIps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -87,6 +87,22 @@ const MapaCalorIP = () => {
   const inicio = pagina * ITEMS_POR_PAGINA;
   const ipsPagina = ips.slice(inicio, inicio + ITEMS_POR_PAGINA);
   const totalSospechosas = ips.filter((i) => i.esSospechosa).length;
+
+  const metricas = {
+    totalEventos: ips.reduce((s, i) => s + (i.totalEventos || 0), 0),
+    ipsAltaActividad: ips.filter((i) => i.nivelIntensidad >= 7).length,
+    ipsCriticas: ips.filter((i) => i.nivelIntensidad === 10).length,
+    totalUsuarios: ips.reduce((s, i) => s + (i.totalUsuariosDistintos || 0), 0),
+    promedioEventos: ips.length > 0
+      ? Math.round((ips.reduce((s, i) => s + (i.totalEventos || 0), 0) / ips.length) * 10) / 10
+      : 0,
+  };
+
+  useEffect(() => {
+    if (onMetricasUpdate) {
+      onMetricasUpdate(metricas);
+    }
+  }, [metricas, onMetricasUpdate]);
 
   const irPagina = (n) => {
     if (n >= 0 && n < totalPaginas) {

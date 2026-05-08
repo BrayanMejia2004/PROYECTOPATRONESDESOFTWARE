@@ -17,4 +17,17 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 });
 
+// Interceptor para redirigir al login si el token fue revocado o expiró
+axiosInstance.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401 && !window.location.pathname.includes('/login')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('perfil');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;

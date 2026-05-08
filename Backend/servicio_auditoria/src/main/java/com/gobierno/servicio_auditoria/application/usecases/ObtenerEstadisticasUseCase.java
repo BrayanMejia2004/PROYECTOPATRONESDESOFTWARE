@@ -2,6 +2,7 @@ package com.gobierno.servicio_auditoria.application.usecases;
 
 import com.gobierno.servicio_auditoria.domain.model.EstadisticasDTO;
 import com.gobierno.servicio_auditoria.domain.model.UsuarioActivoDTO;
+import com.gobierno.servicio_auditoria.domain.model.UsuarioInactivoDTO;
 import com.gobierno.servicio_auditoria.domain.ports.in.ObtenerEstadisticasPort;
 import com.gobierno.servicio_auditoria.domain.ports.out.EstadisticasRepositoryPort;
 import com.gobierno.servicio_auditoria.domain.ports.out.IdentidadClientPort;
@@ -47,12 +48,12 @@ public class ObtenerEstadisticasUseCase implements ObtenerEstadisticasPort {
             }
         }
 
-        List<Long> usuariosSinActividad = calcularUsuariosSinActividad();
+        List<UsuarioInactivoDTO> usuariosSinActividad = calcularUsuariosSinActividad();
 
         return new EstadisticasDTO(eventosPorTipo, actividadPorHora, top5, usuariosSinActividad);
     }
 
-    private List<Long> calcularUsuariosSinActividad() {
+    private List<UsuarioInactivoDTO> calcularUsuariosSinActividad() {
         try {
             List<Long> todosLosIds = identidadClientPort.obtenerTodosLosUsuarioIds();
             if (todosLosIds == null || todosLosIds.isEmpty()) {
@@ -67,9 +68,26 @@ public class ObtenerEstadisticasUseCase implements ObtenerEstadisticasPort {
                 }
             }
 
-            return todosLosIds.stream()
+            List<Long> idsSinActividad = todosLosIds.stream()
                     .filter(id -> !idsConActividadSet.contains(id))
                     .collect(Collectors.toList());
+
+            if (idsSinActividad.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            Map<Long, String> mapaUsuarios = identidadClientPort.obtenerMapaUsuarios();
+            Map<String, List<String>> rolesPorUsuario = identidadClientPort.obtenerRolesPorUsuario();
+
+            List<UsuarioInactivoDTO> resultado = new ArrayList<>();
+            for (Long id : idsSinActividad) {
+                String username = mapaUsuarios.get(id);
+                if (username == null) continue;
+                List<String> roles = rolesPorUsuario.getOrDefault(username, List.of());
+                resultado.add(new UsuarioInactivoDTO(id, username, roles));
+            }
+
+            return resultado;
         } catch (Exception e) {
             log.warn("No se pudieron calcular usuarios sin actividad: {}", e.getMessage());
             return new ArrayList<>();

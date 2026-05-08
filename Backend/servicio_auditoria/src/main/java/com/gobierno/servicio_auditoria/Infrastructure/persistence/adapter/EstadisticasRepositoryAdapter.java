@@ -64,7 +64,7 @@ public class EstadisticasRepositoryAdapter implements EstadisticasRepositoryPort
     @Override
     public List<Integer> obtenerTodosLosUsuarioIds() {
         Query query = entityManager.createNativeQuery(
-                "SELECT DISTINCT usuario_id FROM auditoria WHERE usuario_id IS NOT NULL");
+                "SELECT DISTINCT usuario_id FROM auditoria WHERE accion = 'LOGIN' AND usuario_id IS NOT NULL");
         List<?> result = query.getResultList();
         List<Integer> ids = new ArrayList<>();
         for (Object obj : result) {

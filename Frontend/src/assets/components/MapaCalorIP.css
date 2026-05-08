@@ -311,3 +311,96 @@
   color: #8899a6;
   padding: 1.5rem;
 }
+
+.mapa-calor-metricas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.metrica-card {
+  background: rgba(15, 20, 25, 0.5);
+  border: 1px solid rgba(231, 233, 234, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.metrica-card:hover {
+  border-color: rgba(212, 168, 83, 0.3);
+  transform: translateY(-1px);
+}
+
+.metrica-icono {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metrica-icono svg {
+  width: 20px;
+  height: 20px;
+}
+
+.metrica-icono-eventos {
+  background: rgba(212, 168, 83, 0.12);
+  color: #d4a853;
+}
+
+.metrica-icono-alta {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.metrica-icono-promedio {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.metrica-icono-usuarios {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+}
+
+.metrica-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.metrica-valor {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #e7e9ea;
+  font-family: 'Courier New', monospace;
+  line-height: 1.2;
+}
+
+.metrica-etiqueta {
+  font-size: 0.75rem;
+  color: #8899a6;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .mapa-calor-metricas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .mapa-calor-metricas {
+    grid-template-columns: 1fr;
+  }
+}

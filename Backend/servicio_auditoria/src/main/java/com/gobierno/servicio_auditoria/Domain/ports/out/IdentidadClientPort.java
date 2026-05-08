@@ -6,4 +6,5 @@ import java.util.Map;
 public interface IdentidadClientPort {
     List<Long> obtenerTodosLosUsuarioIds();
     Map<Long, String> obtenerMapaUsuarios();
+    Map<String, List<String>> obtenerRolesPorUsuario();
 }

@@ -8,6 +8,7 @@ import MapaCalor from '../Pages/Dashboard';
 import DashboardRouter from '../Components/DashboardRouter';
 import GestionUsuarios from '../Pages/GestionUsuarios';
 import GestionRoles from '../Pages/GestionRoles';
+import SesionesActivas from '../Pages/SesionesActivas';
 import Auditoria from '../Pages/Auditoria';
 import Layout from '../Components/Layout';
 
@@ -164,14 +165,22 @@ const AppRoutes = () => {
              </AdminRoute>
            }
          />
-         <Route
-           path="/admin/roles"
-           element={
-             <AdminRoute>
-               <GestionRoles />
-             </AdminRoute>
-           }
-         />
+          <Route
+            path="/admin/roles"
+            element={
+              <AdminRoute>
+                <GestionRoles />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/sesiones"
+            element={
+              <AdminRoute>
+                <SesionesActivas />
+              </AdminRoute>
+            }
+          />
           <Route
             path="/auditoria"
             element={
