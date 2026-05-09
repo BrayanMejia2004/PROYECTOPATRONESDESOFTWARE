@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import ipEstadisticasService from '../Services/ipEstadisticasService';
 import MapaCalorGrafico from './MapaCalorGrafico';
 import './MapaCalorIP.css';
@@ -83,12 +83,12 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
     }
   };
 
-  const totalPaginas = Math.max(1, Math.ceil(ips.length / ITEMS_POR_PAGINA));
+  const totalPaginas = useMemo(() => Math.max(1, Math.ceil(ips.length / ITEMS_POR_PAGINA)), [ips.length]);
   const inicio = pagina * ITEMS_POR_PAGINA;
-  const ipsPagina = ips.slice(inicio, inicio + ITEMS_POR_PAGINA);
-  const totalSospechosas = ips.filter((i) => i.esSospechosa).length;
+  const ipsPagina = useMemo(() => ips.slice(inicio, inicio + ITEMS_POR_PAGINA), [ips, inicio]);
+  const totalSospechosas = useMemo(() => ips.filter((i) => i.esSospechosa).length, [ips]);
 
-  const metricas = {
+  const metricas = useMemo(() => ({
     totalEventos: ips.reduce((s, i) => s + (i.totalEventos || 0), 0),
     ipsAltaActividad: ips.filter((i) => i.nivelIntensidad >= 7).length,
     ipsCriticas: ips.filter((i) => i.nivelIntensidad === 10).length,
@@ -96,7 +96,7 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
     promedioEventos: ips.length > 0
       ? Math.round((ips.reduce((s, i) => s + (i.totalEventos || 0), 0) / ips.length) * 10) / 10
       : 0,
-  };
+  }), [ips]);
 
   useEffect(() => {
     if (onMetricasUpdate) {
@@ -252,7 +252,7 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
                 </table>
               </div>
             ) : (
-              <MapaCalorGrafico ips={ipsPagina} onIpClick={toggleDetalle} />
+              <MapaCalorGrafico ips={ipsPagina} />
             )}
 
             {totalPaginas > 1 && (
