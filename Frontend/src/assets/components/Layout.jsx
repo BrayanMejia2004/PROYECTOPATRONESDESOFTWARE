@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import HamburgerMenu from './HamburgerMenu';
+import ThreatIndicator from './Observer/ThreatIndicator';
 import './Layout.css';
 
 const Layout = () => {
@@ -42,6 +43,9 @@ const Layout = () => {
         </div>
 
         <div className="header-spacer" />
+        <div className="header-threat-indicator">
+          <ThreatIndicator />
+        </div>
         <div className="header-user">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
