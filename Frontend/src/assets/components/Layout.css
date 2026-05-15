@@ -60,6 +60,13 @@
   flex: 1;
 }
 
+.header-threat-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 0.75rem;
+}
+
 .header-user {
   display: flex;
   align-items: center;
