@@ -36,7 +36,8 @@ logs/
 **/target/
 **/*.class
 
-# Frontend
+# Dependencias
+node_modules/
 Frontend/node_modules/
 Frontend/dist/
 Frontend/build/
