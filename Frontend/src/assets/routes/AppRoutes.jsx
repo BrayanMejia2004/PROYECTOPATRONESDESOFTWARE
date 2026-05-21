@@ -10,6 +10,7 @@ import GestionUsuarios from '../Pages/GestionUsuarios';
 import GestionRoles from '../Pages/GestionRoles';
 import SesionesActivas from '../Pages/SesionesActivas';
 import CentroAmenazas from '../Pages/CentroAmenazas';
+import MiActividad from '../Pages/MiActividad';
 import Auditoria from '../Pages/Auditoria';
 import Layout from '../Components/Layout';
 
@@ -142,6 +143,14 @@ const AppRoutes = () => {
              </PrivateRoute>
            }
          />
+          <Route
+            path="/mi-actividad"
+            element={
+              <PrivateRoute requireProfile={true}>
+                <MiActividad />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/mapadecalor"
             element={
