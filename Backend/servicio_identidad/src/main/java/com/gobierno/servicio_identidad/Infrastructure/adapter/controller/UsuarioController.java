@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gobierno.servicio_identidad.application.facade.AutenticacionFacade;
 import com.gobierno.servicio_identidad.application.facade.GestionUsuarioFacade;
+import com.gobierno.servicio_identidad.application.usecases.ObtenerMiActividadUseCase;
 import com.gobierno.servicio_identidad.domain.entities.PerfilUsuario;
 import com.gobierno.servicio_identidad.domain.entities.Usuario;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.ActualizarUsuarioRequest;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.LoginRequest;
+import com.gobierno.servicio_identidad.infrastructure.adapter.dto.MiActividadResponse;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.PerfilRequest;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.PerfilResponse;
 import com.gobierno.servicio_identidad.infrastructure.adapter.dto.RegistroUsuarioRequest;
@@ -40,20 +42,23 @@ import com.gobierno.servicio_identidad.infrastructure.persistence.repository.Usu
 @RequestMapping("/usuarios")
 public class UsuarioController { // Controlador REST para gestionar usuarios
 
-    private final AutenticacionFacade autenticacionFacade;  // Facade de autenticación
-    private final GestionUsuarioFacade gestionUsuarioFacade;  // Facade de gestión de usuarios
-    private final UsuarioJpaRepository usuarioJpaRepository;  // Repositorio JPA de usuarios
-    private final PerfilUsuarioJpaRepository perfilUsuarioJpaRepository;  // Repositorio JPA de perfiles
+    private final AutenticacionFacade autenticacionFacade;
+    private final GestionUsuarioFacade gestionUsuarioFacade;
+    private final UsuarioJpaRepository usuarioJpaRepository;
+    private final PerfilUsuarioJpaRepository perfilUsuarioJpaRepository;
+    private final ObtenerMiActividadUseCase obtenerMiActividadUseCase;
 
-    public UsuarioController(  // Constructor con inyección de dependencias
-            AutenticacionFacade autenticacionFacade,  // Inyecta el facade de autenticación
-            GestionUsuarioFacade gestionUsuarioFacade,  // Inyecta el facade de gestión de usuarios
-            UsuarioJpaRepository usuarioJpaRepository,  // Inyecta el repositorio JPA
-            PerfilUsuarioJpaRepository perfilUsuarioJpaRepository) {  // Inyecta el repositorio JPA de perfiles
-        this.autenticacionFacade = autenticacionFacade;  // Asigna el facade de autenticación
-        this.gestionUsuarioFacade = gestionUsuarioFacade;  // Asigna el facade de gestión de usuarios
-        this.usuarioJpaRepository = usuarioJpaRepository;  // Asigna el repositorio JPA
-        this.perfilUsuarioJpaRepository = perfilUsuarioJpaRepository;  // Asigna el repositorio JPA de perfiles
+    public UsuarioController(
+            AutenticacionFacade autenticacionFacade,
+            GestionUsuarioFacade gestionUsuarioFacade,
+            UsuarioJpaRepository usuarioJpaRepository,
+            PerfilUsuarioJpaRepository perfilUsuarioJpaRepository,
+            ObtenerMiActividadUseCase obtenerMiActividadUseCase) {
+        this.autenticacionFacade = autenticacionFacade;
+        this.gestionUsuarioFacade = gestionUsuarioFacade;
+        this.usuarioJpaRepository = usuarioJpaRepository;
+        this.perfilUsuarioJpaRepository = perfilUsuarioJpaRepository;
+        this.obtenerMiActividadUseCase = obtenerMiActividadUseCase;
     }
 
     @PostMapping("/login") // Endpoint: POST /usuarios/login
@@ -252,6 +257,16 @@ public class UsuarioController { // Controlador REST para gestionar usuarios
         }
         
         return ResponseEntity.ok(resumen);
+    }
+
+    @GetMapping("/mi-actividad")
+    public ResponseEntity<MiActividadResponse> obtenerMiActividad(Authentication authentication) {
+        String username = authentication.getName();
+        MiActividadResponse response = obtenerMiActividadUseCase.ejecutar(username);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
     public static class ActualizarUsuarioAdminRequest { // Clase interna para DTO de actualización por admin
