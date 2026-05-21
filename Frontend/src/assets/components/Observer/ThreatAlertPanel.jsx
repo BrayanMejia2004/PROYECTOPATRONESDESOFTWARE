@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import threatEventBus from './ThreatEventBus';
-import { resolverAmenaza } from '../../Services/threatService';
+import { resolverAmenaza } from '../../Services/amenazas/threatService';
 import './ObserverStyles.css';
 
 const SEVERIDAD_CONFIG = {

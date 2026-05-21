@@ -22,7 +22,7 @@ const { mockDatos, mockResolve } = vi.hoisted(() => {
   };
 });
 
-vi.mock('../../../Services/miActividadService', () => ({
+vi.mock('../../../Services/miActividad/miActividadService', () => ({
   obtenerMiActividad: mockResolve,
 }));
 

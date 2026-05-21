@@ -1,0 +1,30 @@
+.centro-amenazas {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.centro-amenazas-header {
+  margin-bottom: 2rem;
+}
+
+.centro-amenazas-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.centro-amenazas-title h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.centro-amenazas-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-left: 2.75rem;
+}

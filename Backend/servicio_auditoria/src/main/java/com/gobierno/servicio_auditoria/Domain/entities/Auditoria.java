@@ -34,6 +34,9 @@ public class Auditoria {  // Entidad que representa un registro de auditoría
     @Column(name = "tipo", length = 50)
     private String tipo;  // Tipo de auditoría (BASICA, COMPLETA, SEGURIDAD)
 
+    @Column(name = "simulacion_id", length = 50)
+    private String simulacion_id;  // ID de simulación para eventos generados por el simulador (PLUS_08)
+
     public Auditoria() {
     }  // Constructor vacío para JPA
 
@@ -104,6 +107,10 @@ public class Auditoria {  // Entidad que representa un registro de auditoría
 
     public String getTipo() { return tipo; }  // Getter para tipo
 
+    public String getSimulacion_id() { return simulacion_id; }  // Getter para ID de simulación
+
+    public void setSimulacion_id(String simulacion_id) { this.simulacion_id = simulacion_id; }  // Setter para ID de simulación
+
     public void setUsuario_id(Integer usuario_id) { this.usuario_id = usuario_id; }  // Setter para usuario ID
 
     public void setAccion(String accion) { this.accion = accion; }  // Setter para acción
@@ -125,6 +132,7 @@ public class Auditoria {  // Entidad que representa un registro de auditoría
         copia.fecha = this.fecha;  // Copia la fecha
         copia.ip_origen = this.ip_origen;  // Copia la IP
         copia.tipo = this.tipo;  // Copia el tipo
+        copia.simulacion_id = this.simulacion_id;  // Copia el ID de simulación
         return copia;  // Retorna la copia
     }
 }

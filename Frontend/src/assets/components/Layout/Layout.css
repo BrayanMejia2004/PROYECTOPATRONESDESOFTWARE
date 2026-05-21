@@ -1,0 +1,284 @@
+.app-layout {
+  min-height: 100vh;
+  background: #0f1419;
+  color: #ffffff;
+}
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: rgba(15, 20, 25, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 168, 83, 0.2);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  z-index: 100;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  color: #d4a853;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-btn:hover {
+  background: rgba(212, 168, 83, 0.1);
+}
+
+.hamburger-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: 1rem;
+  color: #d4a853;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.header-logo svg {
+  width: 28px;
+  height: 28px;
+}
+
+.header-spacer {
+  flex: 1;
+}
+
+.header-threat-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 0.75rem;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e7e9ea;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+
+.header-user svg {
+  width: 18px;
+  height: 18px;
+  color: #d4a853;
+}
+
+.app-main {
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+.hamburger-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.hamburger-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hamburger-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  background: #1a1f26;
+  border-right: 1px solid rgba(212, 168, 83, 0.2);
+  z-index: 201;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.hamburger-menu.open {
+  transform: translateX(0);
+}
+
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.1);
+}
+
+.menu-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #d4a853;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.menu-logo svg {
+  width: 24px;
+  height: 24px;
+}
+
+.menu-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.menu-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.menu-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.menu-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.1);
+}
+
+.menu-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d4a853 0%, #b8923f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #0f1419;
+}
+
+.menu-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.menu-user-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.menu-user-email {
+  font-size: 0.75rem;
+  color: #8899a6;
+  line-height: 1.2;
+}
+
+.menu-user-role {
+  font-size: 0.75rem;
+  color: #d4a853;
+}
+
+.menu-items {
+  list-style: none;
+  padding: 0.5rem;
+  margin: 0;
+  flex: 1;
+}
+
+.menu-divider {
+  padding: 0.75rem 1rem 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: #d1d5db;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.menu-item:hover {
+  background: rgba(212, 168, 83, 0.1);
+  color: #d4a853;
+}
+
+.menu-item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.menu-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(212, 168, 83, 0.1);
+}
+
+.menu-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.menu-logout:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.menu-logout svg {
+  width: 20px;
+  height: 20px;
+}
