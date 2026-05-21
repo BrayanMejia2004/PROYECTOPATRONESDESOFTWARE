@@ -13,6 +13,7 @@ import CentroAmenazas from '../Pages/Amenazas/CentroAmenazas';
 import SimuladorPage from '../Pages/Simulador/SimuladorPage';
 import MiActividad from '../Pages/MiActividad/MiActividad';
 import Auditoria from '../Pages/Auditoria/Auditoria';
+import AnalizadorPage from '../Pages/Analizador/AnalizadorPage';
 import Layout from '../Components/Layout/Layout';
 
 const LoadingScreen = () => (
@@ -224,6 +225,14 @@ const AppRoutes = () => {
               <AdminRoute>
                 <SimuladorPage />
               </AdminRoute>
+            }
+          />
+          <Route
+            path="/auditoria/analizador"
+            element={
+              <AuditorRoute>
+                <AnalizadorPage />
+              </AuditorRoute>
             }
           />
           <Route
