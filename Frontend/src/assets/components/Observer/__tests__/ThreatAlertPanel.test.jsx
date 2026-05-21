@@ -3,9 +3,9 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ThreatAlertPanel from '../ThreatAlertPanel';
 import threatEventBus from '../ThreatEventBus';
-import * as threatService from '../../../Services/threatService';
+import * as threatService from '../../../Services/amenazas/threatService';
 
-vi.mock('../../../Services/threatService', () => ({
+vi.mock('../../../Services/amenazas/threatService', () => ({
   resolverAmenaza: vi.fn().mockResolvedValue({ success: true }),
 }));
 

@@ -1,18 +1,19 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
-import Login from '../Pages/Login';
-import Registro from '../Pages/Registro';
-import CompletarPerfil from '../Pages/CompletarPerfil';
-import MiPerfil from '../Pages/MiPerfil';
-import MapaCalor from '../Pages/Dashboard';
-import DashboardRouter from '../Components/DashboardRouter';
-import GestionUsuarios from '../Pages/GestionUsuarios';
-import GestionRoles from '../Pages/GestionRoles';
-import SesionesActivas from '../Pages/SesionesActivas';
-import CentroAmenazas from '../Pages/CentroAmenazas';
-import MiActividad from '../Pages/MiActividad';
-import Auditoria from '../Pages/Auditoria';
-import Layout from '../Components/Layout';
+import Login from '../Pages/Auth/Login';
+import Registro from '../Pages/Auth/Registro';
+import CompletarPerfil from '../Pages/Perfil/CompletarPerfil';
+import MiPerfil from '../Pages/Perfil/MiPerfil';
+import MapaCalor from '../Pages/Dashboard/Dashboard';
+import DashboardRouter from '../Components/DashboardRouter/DashboardRouter';
+import GestionUsuarios from '../Pages/Admin/GestionUsuarios';
+import GestionRoles from '../Pages/Admin/GestionRoles';
+import SesionesActivas from '../Pages/Admin/SesionesActivas';
+import CentroAmenazas from '../Pages/Amenazas/CentroAmenazas';
+import SimuladorPage from '../Pages/Simulador/SimuladorPage';
+import MiActividad from '../Pages/MiActividad/MiActividad';
+import Auditoria from '../Pages/Auditoria/Auditoria';
+import Layout from '../Components/Layout/Layout';
 
 const LoadingScreen = () => (
   <div style={{
@@ -59,6 +60,24 @@ const AdminRoute = ({ children }) => {
   }
 
   if (!isAdmin()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
+const UserRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, isAuditor, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (isAdmin() || isAuditor()) {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -143,14 +162,14 @@ const AppRoutes = () => {
              </PrivateRoute>
            }
          />
-          <Route
-            path="/mi-actividad"
-            element={
-              <PrivateRoute requireProfile={true}>
-                <MiActividad />
-              </PrivateRoute>
-            }
-          />
+           <Route
+             path="/mi-actividad"
+             element={
+               <UserRoute>
+                 <MiActividad />
+               </UserRoute>
+             }
+           />
           <Route
             path="/mapadecalor"
             element={
@@ -196,6 +215,14 @@ const AppRoutes = () => {
             element={
               <AdminRoute>
                 <CentroAmenazas />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/simulador"
+            element={
+              <AdminRoute>
+                <SimuladorPage />
               </AdminRoute>
             }
           />

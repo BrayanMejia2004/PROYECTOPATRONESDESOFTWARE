@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { obtenerMiActividad } from '../../Services/miActividadService';
+import { obtenerMiActividad } from '../../Services/miActividad/miActividadService';
 import VistaEstadisticas from './VistaEstadisticas';
 import VistaAlertas from './VistaAlertas';
 import VistaRecomendaciones from './VistaRecomendaciones';

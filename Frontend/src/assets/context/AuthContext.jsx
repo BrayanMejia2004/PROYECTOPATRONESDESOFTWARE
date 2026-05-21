@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import authService from '../Services/authService';
-import perfilService from '../Services/perfilService';
+import authService from '../Services/auth/authService';
+import perfilService from '../Services/perfil/perfilService';
 import { getUserFromToken, isTokenExpired } from '../Utils/decodeToken';
 
 const AuthContext = createContext(null);
