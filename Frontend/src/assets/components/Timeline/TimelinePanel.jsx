@@ -1,25 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { obtenerTimeline, obtenerResumenUsuario } from '../../Services/timeline/timelineService';
+import { CronologicoIterador, InversoIterador } from './TimelineIterador';
 import './TimelinePanel.css';
 
 const TimelinePanel = ({ usuarioId, onCerrar }) => {
   const [resumen, setResumen] = useState(null);
-  const [timeline, setTimeline] = useState([]);
+  const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [limite, setLimite] = useState(50);
+  const [orden, setOrden] = useState('asc');
+  const iteradorRef = useRef(null);
+
+  const construirIterador = useCallback(() => {
+    return orden === 'asc'
+      ? new CronologicoIterador(usuarioId, obtenerTimeline)
+      : new InversoIterador(usuarioId, obtenerTimeline);
+  }, [usuarioId, orden]);
 
   useEffect(() => {
-    cargarDatos();
-  }, [usuarioId]);
+    const it = construirIterador();
+    iteradorRef.current = it;
+    cargarDatos(it);
+  }, [construirIterador]);
 
-  const cargarDatos = async () => {
+  const cargarDatos = async (it) => {
     setLoading(true);
     setError(null);
 
     const [resumenResult, timelineResult] = await Promise.all([
       obtenerResumenUsuario(usuarioId),
-      obtenerTimeline(usuarioId, limite)
+      it.cargar()
     ]);
 
     if (resumenResult.success) {
@@ -27,7 +37,7 @@ const TimelinePanel = ({ usuarioId, onCerrar }) => {
     }
 
     if (timelineResult.success) {
-      setTimeline(timelineResult.data || []);
+      setEventos(it.eventos);
     } else {
       setError(timelineResult.message || 'Error al cargar timeline');
     }
@@ -36,12 +46,9 @@ const TimelinePanel = ({ usuarioId, onCerrar }) => {
   };
 
   const cargarMas = async () => {
-    const nuevoLimite = limite + 50;
-    setLimite(nuevoLimite);
-    const result = await obtenerTimeline(usuarioId, nuevoLimite);
-    if (result.success) {
-      setTimeline(result.data || []);
-    }
+    const it = iteradorRef.current;
+    await it.cargarMas();
+    setEventos(it.eventos);
   };
 
   const formatearFecha = (fechaStr) => {
@@ -96,16 +103,25 @@ const TimelinePanel = ({ usuarioId, onCerrar }) => {
               </div>
             )}
 
+            <div className="timeline-controls">
+              <button
+                className={`btn-orden ${orden === 'asc' ? 'active' : ''}`}
+                onClick={() => setOrden(o => o === 'asc' ? 'desc' : 'asc')}
+              >
+                {orden === 'asc' ? '↓ Más antiguos' : '↑ Más recientes'}
+              </button>
+            </div>
+
             <div className="timeline-list">
-              {timeline.length === 0 ? (
+              {eventos.length === 0 ? (
                 <p className="no-events">No hay eventos registrados</p>
               ) : (
-                timeline.map((evento, index) => (
+                eventos.map((evento, index) => (
                   <div key={evento.id} className="timeline-item">
                     <div className="timeline-marker" style={{ backgroundColor: getColorPorTipo(evento.tipo) }}>
                       <span className="material-symbols-outlined timeline-icon">{getIconoPorTipo(evento.tipo)}</span>
                     </div>
-                    {index < timeline.length - 1 && <div className="timeline-line"></div>}
+                    {index < eventos.length - 1 && <div className="timeline-line"></div>}
                     <div className="timeline-content-item">
                       <div className="timeline-header-item">
                         <strong>{evento.accion}</strong>
@@ -121,7 +137,7 @@ const TimelinePanel = ({ usuarioId, onCerrar }) => {
               )}
             </div>
 
-            {timeline.length >= limite && (
+            {iteradorRef.current?.hayMas() && (
               <button className="btn-cargar-mas" onClick={cargarMas}>
                 Ver más
               </button>

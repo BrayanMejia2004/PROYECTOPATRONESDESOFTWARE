@@ -1,5 +1,14 @@
-.auditor-title {
+.auditor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.auditor-title {
+  margin-bottom: 0;
 }
 
 .auditor-title h1 {
@@ -15,6 +24,78 @@
 .auditor-title p {
   color: #8899a6;
   font-size: 1rem;
+}
+
+.auditor-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.ultima-act {
+  font-size: 0.75rem;
+  color: #8899a6;
+  white-space: nowrap;
+}
+
+.btn-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgba(212, 168, 83, 0.3);
+  border-radius: 8px;
+  background: rgba(212, 168, 83, 0.08);
+  color: #d4a853;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: rgba(212, 168, 83, 0.18);
+  border-color: #d4a853;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.refresh-icon.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  border: 1px solid rgba(244, 33, 46, 0.3);
+  border-radius: 8px;
+  background: rgba(244, 33, 46, 0.08);
+  color: #f4212e;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-retry:hover {
+  background: rgba(244, 33, 46, 0.18);
+}
+
+.alert-actions {
+  text-align: center;
+  margin-top: 0.5rem;
 }
 
 .auditor-cards {

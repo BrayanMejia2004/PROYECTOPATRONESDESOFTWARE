@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { obtenerEstadisticas } from '../../Services/dashboard/estadisticasService';
+import PlantillaSeccion from './PlantillaSeccion';
 import './EstadisticasPanel.css';
 
 const COLORS_TIPO = { BASICA: '#d4a853', COMPLETA: '#00ba7c', SEGURIDAD: '#f4212e' };
@@ -69,30 +70,20 @@ const EstadisticasPanel = () => {
     );
   }
 
-  const eventosPorTipo = estadisticas?.eventosPorTipo || {};
-  const actividadPorHora = estadisticas?.actividadPorHora || {};
-  const top5UsuariosActivos = estadisticas?.top5UsuariosActivos || [];
-  const usuariosSinActividad = estadisticas?.usuariosSinActividad || [];
-
-  const datosPie = Object.entries(eventosPorTipo).map(([name, value]) => ({ name, value }));
-  const datosBar = Array.from({ length: 24 }, (_, i) => ({
-    hora: `${String(i).padStart(2, '0')}:00`,
-    eventos: actividadPorHora[i] || 0,
-  }));
-
   return (
     <div className="estadisticas-panel">
       <section className="estadisticas-section">
         <div className="estadisticas-grid">
-          <div className="estadisticas-card">
-            <div className="card-header">
-              <h3>Eventos por Tipo</h3>
-            </div>
-            <div className="card-body">
+          <PlantillaSeccion
+            titulo="Eventos por Tipo"
+            datos={estadisticas}
+            extractor={d => d.eventosPorTipo || {}}
+            transformador={raw => Object.entries(raw).map(([name, value]) => ({ name, value }))}
+            render={data => (
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
                   <Pie
-                    data={datosPie}
+                    data={data}
                     cx="50%"
                     cy="50%"
                     innerRadius={55}
@@ -101,23 +92,27 @@ const EstadisticasPanel = () => {
                     dataKey="value"
                     label={({ name, value }) => `${name}: ${value}`}
                   >
-                    {datosPie.map((entry) => (
+                    {data.map(entry => (
                       <Cell key={entry.name} fill={COLORS_TIPO[entry.name] || '#8899a6'} />
                     ))}
                   </Pie>
                   <Tooltip content={<CustomTooltip />} />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
-          </div>
+            )}
+          />
 
-          <div className="estadisticas-card">
-            <div className="card-header">
-              <h3>Actividad por Hora</h3>
-            </div>
-            <div className="card-body">
+          <PlantillaSeccion
+            titulo="Actividad por Hora"
+            datos={estadisticas}
+            extractor={d => d.actividadPorHora || {}}
+            transformador={raw => Array.from({ length: 24 }, (_, i) => ({
+              hora: `${String(i).padStart(2, '0')}:00`,
+              eventos: raw[i] || 0,
+            }))}
+            render={data => (
               <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={datosBar}>
+                <BarChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(231,233,234,0.06)" />
                   <XAxis
                     dataKey="hora"
@@ -128,20 +123,20 @@ const EstadisticasPanel = () => {
                   <YAxis tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="eventos" radius={[3, 3, 0, 0]}>
-                    {datosBar.map((_, idx) => (
+                    {data.map((_, idx) => (
                       <Cell key={idx} fill={COLORES_GRAFICO[idx % COLORES_GRAFICO.length]} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-          </div>
+            )}
+          />
 
-          <div className="estadisticas-card">
-            <div className="card-header">
-              <h3>Top 5 Usuarios Más Activos</h3>
-            </div>
-            <div className="card-body">
+          <PlantillaSeccion
+            titulo="Top 5 Usuarios Más Activos"
+            datos={estadisticas}
+            extractor={d => d.top5UsuariosActivos || []}
+            render={data => (
               <table className="estadisticas-table">
                 <thead>
                   <tr>
@@ -151,12 +146,12 @@ const EstadisticasPanel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {top5UsuariosActivos.length === 0 ? (
+                  {data.length === 0 ? (
                     <tr>
                       <td colSpan="3" className="empty-message">Sin datos</td>
                     </tr>
                   ) : (
-                    top5UsuariosActivos.map((u, idx) => (
+                    data.map((u, idx) => (
                       <tr key={u.usuarioId}>
                         <td className="rank-cell">{idx + 1}</td>
                         <td>{u.username || `ID: ${u.usuarioId}`}</td>
@@ -166,22 +161,20 @@ const EstadisticasPanel = () => {
                   )}
                 </tbody>
               </table>
-            </div>
-          </div>
+            )}
+          />
 
-          <div className="estadisticas-card">
-            <div className="card-header">
-              <h3>Usuarios Sin Actividad</h3>
-              {usuariosSinActividad.length > 0 && (
-                <span className="badge-warning">{usuariosSinActividad.length}</span>
-              )}
-            </div>
-            <div className="card-body">
-              {usuariosSinActividad.length === 0 ? (
+          <PlantillaSeccion
+            titulo="Usuarios Sin Actividad"
+            badge={estadisticas?.usuariosSinActividad?.length}
+            datos={estadisticas}
+            extractor={d => d.usuariosSinActividad || []}
+            render={data =>
+              data.length === 0 ? (
                 <p className="empty-text">Todos los usuarios han tenido actividad</p>
               ) : (
                 <div className="inactive-list">
-                  {usuariosSinActividad.map((u) => (
+                  {data.map(u => (
                     <div key={u.id} className="inactive-item">
                       <div className="inactive-avatar">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -197,9 +190,9 @@ const EstadisticasPanel = () => {
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
-          </div>
+              )
+            }
+          />
         </div>
       </section>
     </div>

@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { obtenerDashboard } from '../../Services/dashboard/auditorDashboardService';
+import { DashboardOriginator, dashboardCaretaker } from './DashboardMemento';
 import './AuditorDashboard.css';
+
+const originator = new DashboardOriginator();
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -29,22 +32,48 @@ const AuditorDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ultimaAct, setUltimaAct] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const mountedRef = useRef(true);
 
-  useEffect(() => {
-    cargarDashboard();
-  }, []);
-
-  const cargarDashboard = async () => {
-    setLoading(true);
+  const cargarDashboard = async (silencioso = false) => {
+    if (!silencioso) setLoading(true);
+    else setRefreshing(true);
     setError(null);
     const result = await obtenerDashboard();
+    if (!mountedRef.current) return;
     if (result.success) {
       setData(result.data);
+      const ahora = Date.now();
+      setUltimaAct(ahora);
+      dashboardCaretaker.guardar(originator.guardar(result.data));
     } else {
-      setError(result.message || 'Error al cargar dashboard');
+      if (!silencioso) setError(result.message || 'Error al cargar dashboard');
     }
-    setLoading(false);
+    if (!silencioso) setLoading(false);
+    else setRefreshing(false);
   };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const memento = dashboardCaretaker.recuperar();
+    if (memento) {
+      const data = originator.restaurar(memento);
+      if (data) {
+        setData(data);
+        setUltimaAct(memento.getTimestamp());
+        if (dashboardCaretaker.hayMementoValido(30)) {
+          setLoading(false);
+        } else {
+          setLoading(false);
+          cargarDashboard(true);
+        }
+        return;
+      }
+    }
+    cargarDashboard();
+    return () => { mountedRef.current = false; };
+  }, []);
 
   if (loading) {
     return (
@@ -71,6 +100,11 @@ const AuditorDashboard = () => {
             </svg>
             {error}
           </div>
+          <div className="alert-actions">
+            <button className="btn-retry" onClick={() => cargarDashboard()}>
+              Reintentar
+            </button>
+          </div>
         </main>
       </div>
     );
@@ -87,9 +121,30 @@ const AuditorDashboard = () => {
   return (
     <div className="dashboard">
       <main className="dashboard-main">
-        <div className="auditor-title">
-          <h1>Dashboard de Auditoría</h1>
-          <p>Resumen de actividad y eventos del sistema</p>
+        <div className="auditor-header">
+          <div className="auditor-title">
+            <h1>Dashboard de Auditoría</h1>
+            <p>Resumen de actividad y eventos del sistema</p>
+          </div>
+          <div className="auditor-header-actions">
+            {ultimaAct && (
+              <span className="ultima-act">
+                Última actualización: {formatearFecha(ultimaAct)}
+              </span>
+            )}
+            <button
+              className="btn-refresh"
+              onClick={() => cargarDashboard(true)}
+              disabled={refreshing}
+            >
+              <svg className={`refresh-icon ${refreshing ? 'spin' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                <polyline points="23 4 23 10 17 10" />
+                <polyline points="1 20 1 14 7 14" />
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+              </svg>
+              {refreshing ? 'Actualizando...' : 'Actualizar'}
+            </button>
+          </div>
         </div>
 
         <div className="auditor-cards">

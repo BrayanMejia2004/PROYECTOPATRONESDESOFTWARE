@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { obtenerSesionesActivas, revocarSesion, obtenerMetricas } from '../../Services/sesiones/sesionesService';
+import { TiempoGard, AvatarGard, IpGard, RiesgoGard } from '../../Components/Gards/SesionGard';
 import './SesionesActivas.css';
 
 const SesionesActivas = () => {
@@ -10,13 +11,19 @@ const SesionesActivas = () => {
   const [contador, setContador] = useState(15);
   const [confirmModal, setConfirmModal] = useState({ show: false, id: null, username: '' });
 
+  const cadena = useMemo(() => {
+    const tiempo = new TiempoGard();
+    tiempo.setNext(new AvatarGard()).setNext(new IpGard()).setNext(new RiesgoGard());
+    return tiempo;
+  }, []);
+
   const cargarDatos = useCallback(async () => {
     const [sesionesRes, metricasRes] = await Promise.all([
       obtenerSesionesActivas(),
       obtenerMetricas(),
     ]);
     if (sesionesRes.success) {
-      setSesiones(sesionesRes.data);
+      setSesiones(sesionesRes.data.map(s => cadena.procesar(s)));
       setError(null);
     } else {
       setError(sesionesRes.message || 'Error al cargar sesiones');
@@ -25,7 +32,7 @@ const SesionesActivas = () => {
       setMetricas(metricasRes.data);
     }
     setLoading(false);
-  }, []);
+  }, [cadena]);
 
   useEffect(() => {
     cargarDatos();
@@ -51,16 +58,6 @@ const SesionesActivas = () => {
     } else {
       alert(result.message || 'Error al revocar sesión');
     }
-  };
-
-  const formatearTiempo = (minutos) => {
-    if (minutos < 1) return 'Ahora';
-    if (minutos < 60) return `Hace ${minutos} min`;
-    const horas = Math.floor(minutos / 60);
-    const mins = minutos % 60;
-    if (horas < 24) return `Hace ${horas}h ${mins}min`;
-    const dias = Math.floor(horas / 24);
-    return `Hace ${dias}d ${horas % 24}h`;
   };
 
   if (loading) {
@@ -178,18 +175,20 @@ const SesionesActivas = () => {
                   <td colSpan="4" className="empty-message">No hay sesiones activas</td>
                 </tr>
               ) : (
-                sesiones.map((s) => (
+                  sesiones.map((s) => (
                   <tr key={s.id}>
                     <td>
                       <div className="sesion-user">
-                        <div className="sesion-avatar">
-                          {s.username.charAt(0).toUpperCase()}
+                        <div className="sesion-avatar" style={{ backgroundColor: s.colorRiesgo + '20', color: s.colorRiesgo }}>
+                          {s.avatarLetra}
                         </div>
                         <span>{s.username}</span>
                       </div>
                     </td>
-                    <td><code className="ip-code">{s.ipOrigen || '-'}</code></td>
-                    <td>{formatearTiempo(s.minutosActivo)}</td>
+                    <td><code className="ip-code">{s.ipDisplay}</code></td>
+                    <td>
+                      <span style={{ color: s.colorRiesgo }}>{s.tiempoFormateado}</span>
+                    </td>
                     <td>
                       <button
                         className="btn-revocar"

@@ -200,6 +200,34 @@
   to { transform: rotate(360deg); }
 }
 
+.timeline-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.btn-orden {
+  padding: 0.4rem 0.8rem;
+  background: rgba(212, 168, 83, 0.08);
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  color: #9ca3af;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-orden:hover {
+  background: rgba(212, 168, 83, 0.15);
+  color: #e7e9ea;
+}
+
+.btn-orden.active {
+  background: rgba(212, 168, 83, 0.15);
+  color: #d4a853;
+  border-color: rgba(212, 168, 83, 0.4);
+}
+
 .btn-cargar-mas {
   width: 100%;
   padding: 0.75rem;

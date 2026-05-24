@@ -14,6 +14,7 @@ import SimuladorPage from '../Pages/Simulador/SimuladorPage';
 import MiActividad from '../Pages/MiActividad/MiActividad';
 import Auditoria from '../Pages/Auditoria/Auditoria';
 import AnalizadorPage from '../Pages/Analizador/AnalizadorPage';
+import VisorGlobalPage from '../Pages/VisorGlobal/VisorGlobalPage';
 import Layout from '../Components/Layout/Layout';
 
 const LoadingScreen = () => (
@@ -240,6 +241,14 @@ const AppRoutes = () => {
             element={
               <AuditorRoute>
                 <Auditoria />
+              </AuditorRoute>
+            }
+          />
+          <Route
+            path="/auditoria/visor-global"
+            element={
+              <AuditorRoute>
+                <VisorGlobalPage />
               </AuditorRoute>
             }
           />

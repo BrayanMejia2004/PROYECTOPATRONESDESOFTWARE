@@ -1,31 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import ipEstadisticasService from '../../Services/mapaCalor/ipEstadisticasService';
 import MapaCalorGrafico from './MapaCalorGrafico';
+import { FilaVisitante, MetricasVisitante, aceptar } from './VisitanteIP';
 import './MapaCalorIP.css';
 
 const ITEMS_POR_PAGINA = 10;
-
-const getColorPorNivel = (nivel) => {
-  if (!nivel || nivel <= 0) return '#1a2332';
-  if (nivel <= 3) return 'rgba(234, 179, 8, 0.2)';
-  if (nivel <= 6) return 'rgba(249, 115, 22, 0.25)';
-  if (nivel <= 9) return 'rgba(239, 68, 68, 0.3)';
-  return 'rgba(185, 28, 28, 0.45)';
-};
-
-const getColorBarraPorNivel = (nivel) => {
-  if (!nivel || nivel <= 0) return '#1a2332';
-  if (nivel <= 3) return '#eab308';
-  if (nivel <= 6) return '#f97316';
-  if (nivel <= 9) return '#ef4444';
-  return '#b91c1c';
-};
-
-const formatearFecha = (fecha) => {
-  if (!fecha) return '-';
-  const date = new Date(fecha);
-  return date.toLocaleString('es-ES');
-};
 
 const MapaCalorIP = ({ onMetricasUpdate }) => {
   const [ips, setIps] = useState([]);
@@ -86,17 +65,9 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
   const totalPaginas = useMemo(() => Math.max(1, Math.ceil(ips.length / ITEMS_POR_PAGINA)), [ips.length]);
   const inicio = pagina * ITEMS_POR_PAGINA;
   const ipsPagina = useMemo(() => ips.slice(inicio, inicio + ITEMS_POR_PAGINA), [ips, inicio]);
-  const totalSospechosas = useMemo(() => ips.filter((i) => i.esSospechosa).length, [ips]);
+  const filasVisitadas = useMemo(() => aceptar(ipsPagina, new FilaVisitante()), [ipsPagina]);
 
-  const metricas = useMemo(() => ({
-    totalEventos: ips.reduce((s, i) => s + (i.totalEventos || 0), 0),
-    ipsAltaActividad: ips.filter((i) => i.nivelIntensidad >= 7).length,
-    ipsCriticas: ips.filter((i) => i.nivelIntensidad === 10).length,
-    totalUsuarios: ips.reduce((s, i) => s + (i.totalUsuariosDistintos || 0), 0),
-    promedioEventos: ips.length > 0
-      ? Math.round((ips.reduce((s, i) => s + (i.totalEventos || 0), 0) / ips.length) * 10) / 10
-      : 0,
-  }), [ips]);
+  const metricas = useMemo(() => new MetricasVisitante().calcular(ips), [ips]);
 
   useEffect(() => {
     if (onMetricasUpdate) {
@@ -129,7 +100,7 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
               <line x1="12" y1="9" x2="12" y2="13" />
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            {totalSospechosas} sospechosa{totalSospechosas !== 1 ? 's' : ''}
+            {metricas.totalSospechosas} sospechosa{metricas.totalSospechosas !== 1 ? 's' : ''}
           </span>
         </div>
         <div className="mapa-calor-vistas">
@@ -208,12 +179,12 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {ipsPagina.map((ip) => (
+                  {filasVisitadas.map((fila) => (
                   <tr
-                    key={ip.ipOrigen}
-                    className={`mapa-fila ${ipExpandida === ip.ipOrigen ? 'expandida' : ''}`}
-                    style={{ backgroundColor: getColorPorNivel(ip.nivelIntensidad) }}
-                    onClick={() => toggleDetalle(ip.ipOrigen)}
+                    key={fila.ipOrigen}
+                    className={`mapa-fila ${ipExpandida === fila.ipOrigen ? 'expandida' : ''}`}
+                    style={{ backgroundColor: fila._colorFondo }}
+                    onClick={() => toggleDetalle(fila.ipOrigen)}
                   >
                     <td className="ip-cell">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="ip-icon">
@@ -221,30 +192,26 @@ const MapaCalorIP = ({ onMetricasUpdate }) => {
                         <line x1="2" y1="10" x2="22" y2="10" />
                         <line x1="10" y1="2" x2="10" y2="22" />
                       </svg>
-                      {ip.ipOrigen}
+                      {fila.ipOrigen}
                     </td>
-                    <td className="num-cell">{ip.totalEventos}</td>
-                    <td className="num-cell">{ip.totalUsuariosDistintos}</td>
-                    <td>{formatearFecha(ip.primeraVez)}</td>
-                    <td>{formatearFecha(ip.ultimaVez)}</td>
+                    <td className="num-cell">{fila.totalEventos}</td>
+                    <td className="num-cell">{fila.totalUsuariosDistintos}</td>
+                    <td>{fila._primeraVezStr}</td>
+                    <td>{fila._ultimaVezStr}</td>
                     <td>
                       <div className="intensity-bar-container">
                         <div
                           className="intensity-bar"
                           style={{
-                            width: `${ip.nivelIntensidad * 10}%`,
-                            backgroundColor: getColorBarraPorNivel(ip.nivelIntensidad),
+                            width: fila._anchoBarra,
+                            backgroundColor: fila._colorBarra,
                           }}
                         ></div>
-                        <span className="intensity-label">{ip.nivelIntensidad}/10</span>
+                        <span className="intensity-label">{fila.nivelIntensidad}/10</span>
                       </div>
                     </td>
                     <td>
-                      {ip.esSospechosa ? (
-                        <span className="badge-sospechosa">⚠ Sospechosa</span>
-                      ) : (
-                        <span className="badge-normal">✓ Normal</span>
-                      )}
+                      <span className={fila._estadoClase}>{fila._estadoLabel}</span>
                     </td>
                   </tr>
                     ))}

@@ -2,15 +2,8 @@ import React, { useMemo } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell
 } from 'recharts';
+import { COLORES_BARRA } from './VisitanteIP';
 import './MapaCalorGrafico.css';
-
-const getColorPorNivel = (nivel) => {
-  if (!nivel || nivel <= 0) return '#4b5563';
-  if (nivel <= 3) return '#eab308';
-  if (nivel <= 6) return '#f97316';
-  if (nivel <= 9) return '#ef4444';
-  return '#b91c1c';
-};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
@@ -26,7 +19,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       </div>
       <div className="chart-tooltip-row">
         <span>Intensidad:</span>
-        <span className="chart-tooltip-nivel" style={{ color: getColorPorNivel(data.nivelIntensidad) }}>
+        <span className="chart-tooltip-nivel" style={{ color: COLORES_BARRA(data.nivelIntensidad) }}>
           {data.nivelIntensidad}/10
         </span>
       </div>
@@ -76,7 +69,7 @@ const MapaCalorGrafico = ({ ips }) => {
         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(212,168,83,0.08)' }} />
         <Bar dataKey="totalEventos" radius={[0, 4, 4, 0]} minPointSize={3} isAnimationActive={false}>
           {ipsMemo.map((entry, idx) => (
-            <Cell key={idx} fill={getColorPorNivel(entry.nivelIntensidad)} fillOpacity={0.75} />
+            <Cell key={idx} fill={COLORES_BARRA(entry.nivelIntensidad)} fillOpacity={0.75} />
           ))}
         </Bar>
       </BarChart>
