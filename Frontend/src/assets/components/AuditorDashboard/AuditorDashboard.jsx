@@ -1,10 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { obtenerDashboard } from '../../Services/dashboard/auditorDashboardService';
 import { DashboardOriginator, dashboardCaretaker } from './DashboardMemento';
+import { generarTendenciaDiaria, generarActividadMensualPorAnio } from '../../Utils/datosSimulados';
 import './AuditorDashboard.css';
 
 const originator = new DashboardOriginator();
+
+const PERIODOS = [
+  { key: 7, label: '7d' },
+  { key: 30, label: '30d' },
+  { key: 90, label: '90d' },
+  { key: 365, label: '1a' },
+];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -28,15 +36,57 @@ const formatearFecha = (fecha) => {
   return date.toLocaleString('es-ES');
 };
 
+const VariacionBadge = ({ valor }) => {
+  if (valor === 0) return <span className="variacion-badge variacion-flat">→ 0%</span>;
+  if (valor > 0) return <span className="variacion-badge variacion-up">↑ {valor}%</span>;
+  return <span className="variacion-badge variacion-down">↓ {Math.abs(valor)}%</span>;
+};
+
 const AuditorDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ultimaAct, setUltimaAct] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [periodo, setPeriodo] = useState(365);
+  const [anioComparativa, setAnioComparativa] = useState(new Date().getFullYear());
   const mountedRef = useRef(true);
 
-  const cargarDashboard = async (silencioso = false) => {
+  const tendenciaPeriodo = useMemo(() => generarTendenciaDiaria(periodo, 25, 10), [periodo]);
+
+  const tendenciaCorta = useMemo(() => generarTendenciaDiaria(7, 15, 6), []);
+
+  const datosMensuales = useMemo(() => {
+    const r = generarActividadMensualPorAnio(anioComparativa, 250);
+    return r;
+  }, [anioComparativa]);
+
+  const variacionHoy = useMemo(() => {
+    const t = tendenciaCorta;
+    if (t.length < 2) return 0;
+    const hoy = t[t.length - 1]?.valor || 0;
+    const ayer = t[t.length - 2]?.valor || 0;
+    if (ayer === 0) return hoy > 0 ? 100 : 0;
+    return Math.round(((hoy - ayer) / ayer) * 100);
+  }, [tendenciaCorta]);
+
+  const variacionSemana = useMemo(() => {
+    const t = tendenciaCorta;
+    if (t.length < 7) return 0;
+    const suma7 = t.slice(-7).reduce((s, d) => s + d.valor, 0);
+    const suma7Ant = t.slice(-14, -7).reduce((s, d) => s + d.valor, 0);
+    if (suma7Ant === 0) return suma7 > 0 ? 100 : 0;
+    return Math.round(((suma7 - suma7Ant) / suma7Ant) * 100);
+  }, [tendenciaCorta]);
+
+  const variacionMes = useMemo(() => {
+    const actual = datosMensuales.totalActual;
+    const anterior = datosMensuales.totalAnterior;
+    if (anterior === 0) return actual > 0 ? 100 : 0;
+    return Math.round(((actual - anterior) / anterior) * 100);
+  }, [datosMensuales]);
+
+  const cargarDashboard = useCallback(async (silencioso = false) => {
     if (!silencioso) setLoading(true);
     else setRefreshing(true);
     setError(null);
@@ -52,7 +102,7 @@ const AuditorDashboard = () => {
     }
     if (!silencioso) setLoading(false);
     else setRefreshing(false);
-  };
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -73,7 +123,12 @@ const AuditorDashboard = () => {
     }
     cargarDashboard();
     return () => { mountedRef.current = false; };
-  }, []);
+  }, [cargarDashboard]);
+
+  const chartData = tendenciaPeriodo.map((d) => ({
+    fecha: new Date(d.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }),
+    eventos: d.valor,
+  }));
 
   if (loading) {
     return (
@@ -111,12 +166,6 @@ const AuditorDashboard = () => {
   }
 
   const ultimosSeguridad = data?.ultimosEventosSeguridad || [];
-  const topIps = data?.topIpsHoy || [];
-
-  const datosBar = (data?.actividadDiaria || []).map((d) => ({
-    fecha: d.fecha ? new Date(d.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }) : '-',
-    eventos: d.total,
-  }));
 
   return (
     <div className="dashboard">
@@ -158,6 +207,7 @@ const AuditorDashboard = () => {
               <span className="card-value">{data?.eventosHoy || 0}</span>
               <span className="card-label">Hoy</span>
             </div>
+            <div className="card-variacion"><VariacionBadge valor={variacionHoy} /></div>
           </div>
           <div className="auditor-card">
             <div className="card-icon card-icon-blue">
@@ -169,6 +219,7 @@ const AuditorDashboard = () => {
               <span className="card-value">{data?.eventoSemana || 0}</span>
               <span className="card-label">Esta Semana</span>
             </div>
+            <div className="card-variacion"><VariacionBadge valor={variacionSemana} /></div>
           </div>
           <div className="auditor-card">
             <div className="card-icon card-icon-green">
@@ -180,57 +231,62 @@ const AuditorDashboard = () => {
               <span className="card-value">{data?.eventosMes || 0}</span>
               <span className="card-label">Este Mes</span>
             </div>
+            <div className="card-variacion"><VariacionBadge valor={variacionMes} /></div>
           </div>
         </div>
 
-        <div className="auditor-grid">
-          <div className="auditor-panel">
-            <div className="panel-header">
-              <h3>Actividad Diaria (30 días)</h3>
-            </div>
-            <div className="panel-body">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={datosBar}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(231,233,234,0.06)" />
-                  <XAxis dataKey="fecha" tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} interval={4} />
-                  <YAxis tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="eventos" fill="#d4a853" radius={[3, 3, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+        <div className="auditor-panel">
+          <div className="panel-header">
+            <h3>Actividad — Últimos {periodo} días</h3>
+            <div className="period-pills">
+              {PERIODOS.map((p) => (
+                <button
+                  key={p.key}
+                  className={`period-pill ${periodo === p.key ? 'period-pill-active' : ''}`}
+                  onClick={() => setPeriodo(p.key)}
+                >
+                  {p.label}
+                </button>
+              ))}
             </div>
           </div>
+          <div className="panel-body">
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(231,233,234,0.06)" />
+                <XAxis dataKey="fecha" tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} interval={Math.max(0, Math.floor(chartData.length / 10) - 1)} />
+                <YAxis tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="eventos" fill="#d4a853" radius={[3, 3, 0, 0]} name="Eventos" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-          <div className="auditor-panel">
-            <div className="panel-header">
-              <h3>Top IPs Hoy</h3>
+        <div className="auditor-panel">
+          <div className="panel-header">
+            <h3>Comparativa Mensual</h3>
+            <div className="year-nav">
+              <button className="year-nav-btn" onClick={() => setAnioComparativa((a) => a - 1)} disabled={anioComparativa <= 2020}>◀</button>
+              <span className="year-nav-label">{anioComparativa}</span>
+              <button className="year-nav-btn" onClick={() => setAnioComparativa((a) => a + 1)} disabled={anioComparativa >= 2027}>▶</button>
             </div>
-            <div className="panel-body">
-              <table className="auditor-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Dirección IP</th>
-                    <th>Eventos</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topIps.length === 0 ? (
-                    <tr>
-                      <td colSpan="3" className="empty-message">Sin actividad hoy</td>
-                    </tr>
-                  ) : (
-                    topIps.map((item, idx) => (
-                      <tr key={item.ip}>
-                        <td className="rank-cell">{idx + 1}</td>
-                        <td><code className="ip-code">{item.ip}</code></td>
-                        <td className="value-cell">{item.total}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+          </div>
+          <div className="panel-body">
+            <div className="year-totals">
+              <span className="year-total-item year-total-prev">{anioComparativa - 1}: {datosMensuales.totalAnterior.toLocaleString()} eventos</span>
+              <span className="year-total-item year-total-curr">{anioComparativa}: {datosMensuales.totalActual.toLocaleString()} eventos</span>
             </div>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={datosMensuales.meses}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(231,233,234,0.06)" />
+                <XAxis dataKey="mes" tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
+                <YAxis tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="anterior" fill="rgba(29,155,240,0.35)" radius={[3, 3, 0, 0]} name={`${anioComparativa - 1}`} />
+                <Bar dataKey="actual" fill="#d4a853" radius={[3, 3, 0, 0]} name={`${anioComparativa}`} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 

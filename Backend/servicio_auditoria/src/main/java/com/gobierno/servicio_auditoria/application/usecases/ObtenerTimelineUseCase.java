@@ -1,6 +1,7 @@
 package com.gobierno.servicio_auditoria.application.usecases;
 
 import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
+import com.gobierno.servicio_auditoria.domain.model.ActividadDiariaDTO;
 import com.gobierno.servicio_auditoria.domain.ports.in.ObtenerTimelinePort;
 import com.gobierno.servicio_auditoria.domain.ports.out.TimelineRepositoryPort;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.TimelineEventoDTO;
@@ -27,6 +28,12 @@ public class ObtenerTimelineUseCase implements ObtenerTimelinePort {
         return auditorias.stream()
                 .map(this::mapearATimelineEventoDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ActividadDiariaDTO> obtenerActividadCalendario(Long usuarioId, Integer dias) {
+        int diasReales = (dias != null && dias > 0) ? dias : 28;
+        return timelineRepositoryPort.findActividadCalendario(usuarioId, diasReales);
     }
 
     private TimelineEventoDTO mapearATimelineEventoDTO(Auditoria auditoria) {

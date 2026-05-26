@@ -21,6 +21,7 @@ import com.gobierno.servicio_auditoria.application.usecases.ObtenerMapaCalorUseC
 import com.gobierno.servicio_auditoria.application.usecases.ObtenerEstadisticasUseCase;
 import com.gobierno.servicio_auditoria.application.usecases.ObtenerAuditorDashboardUseCase;
 import com.gobierno.servicio_auditoria.domain.entities.Auditoria;
+import com.gobierno.servicio_auditoria.domain.model.ActividadDiariaDTO;
 import com.gobierno.servicio_auditoria.domain.model.EstadisticasDTO;
 import com.gobierno.servicio_auditoria.domain.model.AuditorDashboardDTO;
 import com.gobierno.servicio_auditoria.infrastructure.adapter.dto.AuditoriaResponse;
@@ -124,6 +125,14 @@ public class AuditoriaController {  // Controlador REST para gestionar auditorí
         
         List<TimelineEventoDTO> timeline = obtenerTimelineUseCase.obtenerTimelinePorUsuario(usuarioId, limite);
         return ResponseEntity.ok(timeline);
+    }
+
+    @GetMapping("/usuario/{usuarioId}/actividad-calendario")
+    public ResponseEntity<List<ActividadDiariaDTO>> obtenerActividadCalendario(
+            @PathVariable Long usuarioId,
+            @RequestParam(required = false, defaultValue = "28") Integer dias) {
+        List<ActividadDiariaDTO> calendario = obtenerTimelineUseCase.obtenerActividadCalendario(usuarioId, dias);
+        return ResponseEntity.ok(calendario);
     }
 
     @GetMapping("/estadisticas/ips")

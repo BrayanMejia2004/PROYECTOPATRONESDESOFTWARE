@@ -168,11 +168,41 @@
   color: #8899a6;
 }
 
-.auditor-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
+.variacion-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-top: 0.2rem;
+}
+
+.variacion-up {
+  color: #00ba7c;
+  background: rgba(0, 186, 124, 0.12);
+}
+
+.variacion-down {
+  color: #f4212e;
+  background: rgba(244, 33, 46, 0.12);
+}
+
+.variacion-flat {
+  color: #8899a6;
+  background: rgba(136, 153, 166, 0.12);
+}
+
+.card-variacion {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.card-variacion .variacion-badge {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 8px;
 }
 
 .auditor-panel {
@@ -183,19 +213,118 @@
   margin-bottom: 1.5rem;
 }
 
-.auditor-grid .auditor-panel {
-  margin-bottom: 0;
-}
-
 .panel-header {
   padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(231, 233, 234, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .panel-header h3 {
   font-size: 0.95rem;
   font-weight: 600;
   color: #e7e9ea;
+  flex-shrink: 0;
+}
+
+.period-pills {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.period-pill {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(231, 233, 234, 0.12);
+  border-radius: 6px;
+  background: transparent;
+  color: #8899a6;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.period-pill:hover {
+  border-color: rgba(212, 168, 83, 0.3);
+  color: #e7e9ea;
+}
+
+.period-pill-active {
+  background: rgba(212, 168, 83, 0.15);
+  border-color: rgba(212, 168, 83, 0.4);
+  color: #d4a853;
+}
+
+.year-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.year-nav-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(231, 233, 234, 0.12);
+  border-radius: 6px;
+  background: transparent;
+  color: #8899a6;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.year-nav-btn:hover:not(:disabled) {
+  border-color: rgba(212, 168, 83, 0.3);
+  color: #d4a853;
+}
+
+.year-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.year-nav-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e7e9ea;
+  min-width: 3rem;
+  text-align: center;
+}
+
+.year-totals {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.78rem;
+}
+
+.year-total-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.year-total-item::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.year-total-prev::before {
+  background: rgba(29, 155, 240, 0.5);
+}
+
+.year-total-curr::before {
+  background: #d4a853;
 }
 
 .panel-body {
@@ -289,9 +418,6 @@
 
 @media (max-width: 900px) {
   .auditor-cards {
-    grid-template-columns: 1fr;
-  }
-  .auditor-grid {
     grid-template-columns: 1fr;
   }
 }

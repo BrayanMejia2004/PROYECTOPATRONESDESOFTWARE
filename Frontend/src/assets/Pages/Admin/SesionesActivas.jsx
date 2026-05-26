@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { obtenerSesionesActivas, revocarSesion, obtenerMetricas } from '../../Services/sesiones/sesionesService';
 import { TiempoGard, AvatarGard, IpGard, RiesgoGard } from '../../Components/Gards/SesionGard';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from 'recharts';
+import { generarTendenciaDiaria, generarDistribucionDuracion, generarSesionesPorHora } from '../../Utils/datosSimulados';
 import './SesionesActivas.css';
 
 const SesionesActivas = () => {
@@ -10,6 +12,10 @@ const SesionesActivas = () => {
   const [error, setError] = useState(null);
   const [contador, setContador] = useState(15);
   const [confirmModal, setConfirmModal] = useState({ show: false, id: null, username: '' });
+
+  const tendencia = useMemo(() => generarTendenciaDiaria(7, 8, 4), []);
+  const distribucion = useMemo(() => generarDistribucionDuracion(), []);
+  const sesionesPorHora = useMemo(() => generarSesionesPorHora(), []);
 
   const cadena = useMemo(() => {
     const tiempo = new TiempoGard();
@@ -120,6 +126,19 @@ const SesionesActivas = () => {
                 <span className="metrica-value">{metricas.revocacionesHoy}</span>
                 <span className="metrica-label">Revoc. Hoy</span>
               </div>
+              <div className="metrica-sparkline">
+                <ResponsiveContainer width="100%" height={40}>
+                  <AreaChart data={tendencia}>
+                    <defs>
+                      <linearGradient id="sparkRed" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f4212e" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#f4212e" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="valor" stroke="#f4212e" fill="url(#sparkRed)" strokeWidth={1.5} dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
             <div className="metrica-card">
               <div className="metrica-icon metrica-icon-orange">
@@ -131,6 +150,19 @@ const SesionesActivas = () => {
                 <span className="metrica-value">{metricas.revocacionesSemana}</span>
                 <span className="metrica-label">Revoc. Semana</span>
               </div>
+              <div className="metrica-sparkline">
+                <ResponsiveContainer width="100%" height={40}>
+                  <AreaChart data={tendencia}>
+                    <defs>
+                      <linearGradient id="sparkOrange" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ff9500" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#ff9500" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="valor" stroke="#ff9500" fill="url(#sparkOrange)" strokeWidth={1.5} dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
             <div className="metrica-card">
               <div className="metrica-icon metrica-icon-purple">
@@ -141,6 +173,19 @@ const SesionesActivas = () => {
               <div className="metrica-info">
                 <span className="metrica-value">{metricas.revocacionesTotales}</span>
                 <span className="metrica-label">Revoc. Totales</span>
+              </div>
+              <div className="metrica-sparkline">
+                <ResponsiveContainer width="100%" height={40}>
+                  <AreaChart data={tendencia}>
+                    <defs>
+                      <linearGradient id="sparkPurple" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#af52de" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#af52de" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="valor" stroke="#af52de" fill="url(#sparkPurple)" strokeWidth={1.5} dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
             </div>
             <div className="metrica-card">
@@ -155,9 +200,65 @@ const SesionesActivas = () => {
                 <span className="metrica-value">{metricas.sesionesHoy}</span>
                 <span className="metrica-label">Sesiones Hoy</span>
               </div>
+              <div className="metrica-sparkline">
+                <ResponsiveContainer width="100%" height={40}>
+                  <AreaChart data={tendencia}>
+                    <defs>
+                      <linearGradient id="sparkBlue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#1d9bf0" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#1d9bf0" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="valor" stroke="#1d9bf0" fill="url(#sparkBlue)" strokeWidth={1.5} dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         )}
+
+        <div className="sesiones-charts">
+          <div className="sesion-chart-panel">
+            <div className="chart-panel-header">
+              <h3>Distribución de Duración</h3>
+            </div>
+            <div className="chart-panel-body">
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={distribucion} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(231,233,234,0.06)" horizontal={false} />
+                  <XAxis type="number" tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
+                  <YAxis type="category" dataKey="rango" tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} width={90} />
+                  <Tooltip contentStyle={{ background: '#1a2332', border: '1px solid rgba(231,233,234,0.12)', borderRadius: 8, fontSize: 12 }}
+                    formatter={(value) => [`${value} sesiones`, 'Cantidad']} />
+                  <Bar dataKey="cantidad" fill="#d4a853" radius={[0, 4, 4, 0]} barSize={18} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="sesion-chart-panel">
+            <div className="chart-panel-header">
+              <h3>Sesiones por Hora</h3>
+            </div>
+            <div className="chart-panel-body">
+              <ResponsiveContainer width="100%" height={180}>
+                <AreaChart data={sesionesPorHora} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="horasGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#d4a853" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="#d4a853" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(231,233,234,0.06)" />
+                  <XAxis dataKey="hora" tick={{ fill: '#8899a6', fontSize: 10 }} tickLine={false} interval={3} />
+                  <YAxis tick={{ fill: '#8899a6', fontSize: 11 }} tickLine={false} />
+                  <Tooltip contentStyle={{ background: '#1a2332', border: '1px solid rgba(231,233,234,0.12)', borderRadius: 8, fontSize: 12 }}
+                    formatter={(value) => [`${value} sesiones`, 'Activas']} />
+                  <Area type="monotone" dataKey="sesiones" stroke="#d4a853" fill="url(#horasGrad)" strokeWidth={2} dot={false} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
 
         <div className="sesiones-panel">
           <table className="sesiones-table">
