@@ -154,9 +154,52 @@
   color: #8899a6;
 }
 
+.metrica-sparkline {
+  flex: 1;
+  min-width: 80px;
+  max-width: 140px;
+  margin-left: auto;
+}
+
+.sesiones-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.sesion-chart-panel {
+  background: rgba(21, 32, 43, 0.6);
+  border: 1px solid rgba(231, 233, 234, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.chart-panel-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid rgba(231, 233, 234, 0.06);
+}
+
+.chart-panel-header h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e7e9ea;
+  margin: 0;
+}
+
+.chart-panel-body {
+  padding: 0.75rem 0.5rem;
+}
+
 @media (max-width: 900px) {
   .metricas-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .sesiones-charts {
+    grid-template-columns: 1fr;
+  }
+  .metrica-sparkline {
+    max-width: 80px;
   }
 }
 

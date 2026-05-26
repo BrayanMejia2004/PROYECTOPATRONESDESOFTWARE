@@ -2,6 +2,51 @@
   margin-bottom: 2rem;
 }
 
+.estadisticas-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.estadisticas-panel-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #e7e9ea;
+}
+
+.period-pills {
+  display: flex;
+  gap: 0.35rem;
+  background: rgba(21, 32, 43, 0.6);
+  border: 1px solid rgba(231, 233, 234, 0.08);
+  border-radius: 10px;
+  padding: 0.25rem;
+}
+
+.period-pill {
+  background: none;
+  border: none;
+  color: #8899a6;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.35rem 0.8rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.period-pill:hover {
+  color: #e7e9ea;
+  background: rgba(231, 233, 234, 0.05);
+}
+
+.period-pill-active {
+  background: #d4a853 !important;
+  color: #0f1419 !important;
+  font-weight: 600;
+}
+
 .estadisticas-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -65,116 +110,7 @@
   margin: 0.15rem 0;
 }
 
-.estadisticas-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.estadisticas-table th {
-  text-align: left;
-  padding: 0.6rem 0.5rem;
-  font-size: 0.75rem;
-  color: #8899a6;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  border-bottom: 1px solid rgba(231, 233, 234, 0.06);
-}
-
-.estadisticas-table td {
-  padding: 0.6rem 0.5rem;
-  font-size: 0.88rem;
-  color: #e7e9ea;
-  border-bottom: 1px solid rgba(231, 233, 234, 0.04);
-}
-
-.estadisticas-table tr:last-child td {
-  border-bottom: none;
-}
-
-.estadisticas-table tr:hover td {
-  background: rgba(212, 168, 83, 0.03);
-}
-
-.rank-cell {
-  font-weight: 700;
-  color: #d4a853 !important;
-  width: 2rem;
-}
-
-.value-cell {
-  font-weight: 600;
-  text-align: right;
-}
-
-.empty-message {
-  text-align: center;
-  color: #8899a6;
-  padding: 1.5rem !important;
-}
-
-.empty-text {
-  text-align: center;
-  color: #00ba7c;
-  font-size: 0.9rem;
-  padding: 1rem;
-}
-
-.inactive-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.inactive-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: rgba(21, 32, 43, 0.4);
-  border: 1px solid rgba(231, 233, 234, 0.06);
-  border-radius: 10px;
-  padding: 0.6rem 0.9rem;
-  transition: border-color 0.2s;
-}
-
-.inactive-item:hover {
-  border-color: rgba(212, 168, 83, 0.15);
-}
-
-.inactive-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(244, 33, 46, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #f4212e;
-}
-
-.inactive-avatar svg {
-  width: 18px;
-  height: 18px;
-}
-
-.inactive-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  min-width: 0;
-}
-
-.inactive-username {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #e7e9ea;
-}
-
-.inactive-rol {
-  font-size: 0.72rem;
-  color: #8899a6;
-}
+/* ====== Loading / Error ====== */
 
 .loading-container {
   display: flex;
@@ -198,6 +134,205 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.alert-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(244, 33, 46, 0.08);
+  border: 1px solid rgba(244, 33, 46, 0.15);
+  border-radius: 12px;
+  padding: 1rem;
+  color: #f4212e;
+  font-size: 0.9rem;
+}
+
+.alert-error svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* ====== Mapa Circular Heatmap ====== */
+
+.mapa-circular-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mapa-circular-segmento {
+  cursor: pointer;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.mapa-circular-segmento:hover {
+  opacity: 1 !important;
+  filter: brightness(1.3);
+}
+
+.mapa-circular-leyenda {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.mapa-circular-leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: #8899a6;
+}
+
+.mapa-circular-leyenda-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.mapa-circular-tooltip {
+  position: absolute;
+  background: rgba(15, 25, 33, 0.95);
+  border: 1px solid rgba(231, 233, 234, 0.12);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.75rem;
+  color: #e7e9ea;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.mapa-circular-tooltip strong {
+  color: #d4a853;
+}
+
+/* ====== Timeline Anomalías ====== */
+
+.timeline-anomalias-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.timeline-anomalia-punto {
+  cursor: pointer;
+}
+
+.timeline-anomalia-ripple {
+  animation: ripple-pulse 2s ease-out infinite;
+}
+
+@keyframes ripple-pulse {
+  0% { opacity: 0.4; r: 10; }
+  100% { opacity: 0; r: 22; }
+}
+
+.timeline-anomalias-stats {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.timeline-anomalias-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: #8899a6;
+}
+
+.timeline-anomalias-stat-line {
+  width: 18px;
+  height: 3px;
+  background: #1d9bf0;
+  border-radius: 2px;
+}
+
+.timeline-anomalias-stat-dash {
+  width: 18px;
+  height: 2px;
+  background: #d4a853;
+  border-radius: 1px;
+  border-top: 2px dashed #d4a853;
+  height: 0;
+}
+
+.timeline-anomalias-stat-band {
+  width: 18px;
+  height: 8px;
+  background: rgba(29, 155, 240, 0.15);
+  border-radius: 2px;
+}
+
+.timeline-anomalias-stat-anom {
+  width: 8px;
+  height: 8px;
+  background: #f4212e;
+  border-radius: 50%;
+}
+
+.timeline-anomalias-tooltip {
+  position: absolute;
+  background: rgba(15, 25, 33, 0.95);
+  border: 1px solid rgba(231, 233, 234, 0.12);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.timeline-anomalias-tooltip-fecha {
+  color: #8899a6;
+  font-weight: 500;
+}
+
+.timeline-anomalias-tooltip-valor {
+  color: #e7e9ea;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.timeline-anomalias-tooltip-anom {
+  color: #f4212e;
+  font-weight: 600;
+  font-size: 0.7rem;
+  margin-top: 0.15rem;
+}
+
+/* ====== Ecosistema Burbujas ====== */
+
+.burbujas-wrapper {
+  width: 100%;
+}
+
+.burbuja-circulo {
+  cursor: pointer;
+}
+
+.burbuja-circulo:hover {
+  filter: brightness(1.2);
+}
+
+.burbuja-texto {
+  cursor: pointer;
+  user-select: none;
+}
+
+.burbuja-usuario {
+  animation: burbuja-fade-in 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes burbuja-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== Responsive ====== */
 
 @media (max-width: 900px) {
   .estadisticas-grid {

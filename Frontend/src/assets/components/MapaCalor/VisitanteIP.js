@@ -83,3 +83,77 @@ export class CsvVisitante extends VisitanteIP {
     return [header, ...rows].join('\n');
   }
 }
+
+export class TemporalFlowVisitante extends VisitanteIP {
+  transformar(actividadDiaria) {
+    if (!actividadDiaria || !actividadDiaria.length) return [];
+    return actividadDiaria
+      .slice()
+      .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+      .map((d) => ({ ...d, fechaStr: d.fecha }));
+  }
+
+  obtenerRango(buckets) {
+    if (!buckets || !buckets.length) return { inicio: null, fin: null, total: 0 };
+    return {
+      inicio: new Date(buckets[0].fecha),
+      fin: new Date(buckets[buckets.length - 1].fecha),
+      total: buckets.length,
+    };
+  }
+}
+
+export class TimeFrameVisitante extends VisitanteIP {
+  constructor(windowStart, windowEnd) {
+    super();
+    this.windowStart = windowStart ? new Date(windowStart) : null;
+    this.windowEnd = windowEnd ? new Date(windowEnd) : null;
+  }
+
+  visitar(ip) {
+    if (!this.windowStart || !this.windowEnd) {
+      return {
+        ...ip,
+        _activoEnVentana: true,
+        _opacidad: 1,
+        _pulsoEscala: 1,
+        _pulsoColor: COLORES_BARRA(ip.nivelIntensidad),
+        _intensidadVentana: ip.nivelIntensidad,
+      };
+    }
+
+    const ipInicio = new Date(ip.primeraVez);
+    const ipFin = new Date(ip.ultimaVez);
+    const haySuperposicion = ipInicio <= this.windowEnd && ipFin >= this.windowStart;
+
+    if (!haySuperposicion) {
+      return {
+        ...ip,
+        _activoEnVentana: false,
+        _opacidad: 0.2,
+        _pulsoEscala: 0.4,
+        _pulsoColor: '#1a2332',
+        _intensidadVentana: 0,
+      };
+    }
+
+    const totalIpMs = Math.max(1, ipFin - ipInicio);
+    const overlapInicio = ipInicio > this.windowStart ? ipInicio : this.windowStart;
+    const overlapFin = ipFin < this.windowEnd ? ipFin : this.windowEnd;
+    const overlapMs = Math.max(0, overlapFin - overlapInicio);
+    const proporcion = overlapMs / totalIpMs;
+
+    const intensidadVentana = Math.max(1, Math.min(10,
+      Math.round((ip.nivelIntensidad || 1) * (0.3 + proporcion * 0.7))
+    ));
+
+    return {
+      ...ip,
+      _activoEnVentana: true,
+      _opacidad: 1,
+      _pulsoEscala: 0.8 + (intensidadVentana / 10) * 0.6,
+      _pulsoColor: COLORES_BARRA(intensidadVentana),
+      _intensidadVentana: intensidadVentana,
+    };
+  }
+}
