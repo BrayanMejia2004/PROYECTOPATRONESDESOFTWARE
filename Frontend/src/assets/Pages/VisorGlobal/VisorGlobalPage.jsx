@@ -1,10 +1,10 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import DashboardMediator from '../../Components/DashboardMediator';
-import MapaGlobal from '../../Components/MapaGlobal';
-import LineaTiempoFilterable from '../../Components/LineaTiempoFilterable';
-import FiltrosPanel from '../../Components/FiltrosPanel';
-import ContadoresGlobales from '../../Components/ContadoresGlobales';
-import ConexionWebSocket from '../../Components/ConexionWebSocket';
+import DashboardMediator from '../../Components/Mediator/DashboardMediator';
+import MapaGlobal from '../../Components/Mediator/MapaGlobal';
+import LineaTiempoFilterable from '../../Components/Mediator/LineaTiempoFilterable';
+import FiltrosPanel from '../../Components/Mediator/FiltrosPanel';
+import ContadoresGlobales from '../../Components/Mediator/ContadoresGlobales';
+import ConexionWebSocket from '../../Components/Mediator/ConexionWebSocket';
 import { obtenerEventosGlobales, obtenerResumenGlobal } from '../../Services/eventoGlobalService';
 import './VisorGlobalPage.css';
 
