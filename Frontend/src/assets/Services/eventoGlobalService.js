@@ -1,4 +1,5 @@
 import axiosInstance from '../../Api/axiosConfig';
+import { enriquecerEventosConGeo } from './ipGeolocationService';
 
 export const obtenerEventosGlobales = async (filtros = {}) => {
   try {
@@ -17,12 +18,9 @@ export const obtenerEventosGlobales = async (filtros = {}) => {
       fecha: item.fecha,
       ipOrigen: item.ip_origen,
       usuarioId: item.usuario_id,
-      pais: 'Desconocido',
-      ciudad: '',
-      latitud: 0,
-      longitud: 0,
     }));
-    return { success: true, data };
+    const eventosEnriquecidos = await enriquecerEventosConGeo(data);
+    return { success: true, data: eventosEnriquecidos };
   } catch (error) {
     return { success: false, data: [], message: error.response?.data || error.message };
   }
